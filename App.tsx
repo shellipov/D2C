@@ -2,7 +2,7 @@ import React from 'react';
 import { useColorScheme } from 'react-native';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AppRouter from './src/AppRouter';
+import { AppRouter } from './src/AppRouter';
 
 
 function App (): React.JSX.Element {

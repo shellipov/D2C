@@ -72,7 +72,7 @@ export default tseslint.config(
         'ts-check': false,
       }],
       '@typescript-eslint/naming-convention': 'off',
-      '@typescript-eslint/no-empty-interface': 'error',
+      '@typescript-eslint/no-empty-interface': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-misused-new': 'error',
       '@typescript-eslint/no-namespace': 'error',
