@@ -6,8 +6,8 @@ type TextSize = 'small' | 'medium' | 'large' | 'title'
 const TEXT_SIZE = {
   small : 12,
   medium : 16,
-  large : 20,
-  title : 24,
+  large : 18,
+  title : 22,
 };
 
 export interface ITextUIProps extends TextProps{

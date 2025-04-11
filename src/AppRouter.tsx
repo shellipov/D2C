@@ -6,6 +6,7 @@ import { RootStackParamList, ScreenName } from './AppPouter.types';
 import { ScreenAuth } from './components/screens/Auth';
 import { AuthDataStore } from './api/AuthDataStore';
 import { observer } from 'mobx-react';
+import { ScreenCategory } from './components/screens/Category';
 
 export const AppRouter = observer(() => {
   const AuthStore = AuthDataStore;
@@ -33,6 +34,7 @@ export const AppRouter = observer(() => {
 
   const AUTH_SCREENS: { [key in ScreenName]?: { screen: React.ComponentType<any>; navigationOptions?: any } } = {
     Main: { screen: Tabs },
+    Category: { screen: ScreenCategory, navigationOptions: screenSettings('Category') },
   };
 
   const Stack = createNativeStackNavigator<RootStackParamList>();

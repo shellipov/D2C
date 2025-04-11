@@ -16,6 +16,13 @@ export enum CategoryEnum {
     hobbiesAndCreativity = 'hobbiesAndCreativity',
 }
 
+export interface ICategoryItem {
+    id: number;
+    type: CategoryEnum;
+    name: string;
+    image: string;
+}
+
 export interface IProduct {
     id: number;
     name: string;

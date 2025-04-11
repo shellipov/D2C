@@ -54,6 +54,5 @@ export const ScreenAuth = observer((props: Props) => {
         </View>
       </View>
     </SafeAreaView>
-
   );
 });
