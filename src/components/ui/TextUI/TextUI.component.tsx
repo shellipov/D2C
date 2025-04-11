@@ -11,16 +11,16 @@ const TEXT_SIZE = {
 };
 
 export interface ITextUIProps extends TextProps{
-    text: string
+    text?: string
     size : TextSize;
     children?: React.ReactNode;
 }
 
 export function TextUI (props: ITextUIProps) {
-  const { text, size, children, ...rest } = props;
+  const { text, size, children, style, ...rest } = props;
 
   return (
-    <Text style={[{ fontSize: TEXT_SIZE[size] }]} {...rest}>
+    <Text style={[{ fontSize: TEXT_SIZE[size] }, style]} {...rest}>
       {text}
       {children}
     </Text>

@@ -21,7 +21,7 @@ export class MockDataStore {
     return productList[category] || [];
   }
 
-  public IProduct (id: number) : IProduct | undefined {
+  public getProduct (id: number) : IProduct | undefined {
     return Object.values(productList).flat().find(i => i.id === id);
   }
 }

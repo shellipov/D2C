@@ -6,15 +6,18 @@ import { CategoryEnum, MockDataStore } from '../../../api';
 import { TextUI } from '../../ui/TextUI';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/AntDesign';
+import { ButtonUI } from '../../ui/ButtonUI';
+import { useNavigationHook } from '../../../hooks/useNavigation';
 
 export interface IScreenCategoryProps {
     category: CategoryEnum
 }
 
-export const ScreenCategory = observer((props: { route: { params: { category: CategoryEnum } }}) => {
+export const ScreenCategory = observer((props: { route: { params: IScreenCategoryProps }}) => {
   const isDarkMode = useColorScheme() === 'dark';
   const dataStore = new MockDataStore();
   const category = props.route.params.category;
+  const navigation = useNavigationHook();
   const data = dataStore.getCategory(category);
 
   const backgroundStyle = {
@@ -33,15 +36,19 @@ export const ScreenCategory = observer((props: { route: { params: { category: Ca
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+      <ButtonUI
+        title={'Cart'}
+        onPress={()=> navigation.navigate('Main', { screen: 'ShoppingCart' })}
+        style={{ width: 100, alignSelf: 'flex-end', marginHorizontal: 16 }} />
       <View style={[backgroundStyle, { flex: 1 }]}>
         <ScrollView style={[viewStyle, styles.scrollView]}>
           <FlatList
             data={data}
             renderItem={({ item }) => {
               return (
-                <TouchableOpacity style={[itemStyle, styles.item]}>
+                <TouchableOpacity style={[itemStyle, styles.item]} onPress={()=> navigation.navigate('ProductCard', { id: item.id })}>
                   <View style={{ flex: 1, flexDirection: 'row' }}>
-                    <View style={{ flex: 1, flexDirection: 'column', marginRight: 16 }}>
+                    <View style={{ flex: 1, flexDirection: 'column', marginRight: 16, backgroundColor: 'gray', borderRadius: 12 }}>
                       <Image src={item.image} resizeMode="cover" style={styles.image} />
                     </View>
                     <View style={{ flex: 2, flexDirection: 'column' }}>
@@ -81,7 +88,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   container: {
-    padding: 16,
+    padding: 8,
   },
   item: {
     flex: 1,
@@ -93,6 +100,6 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    borderRadius: 8,
+    borderRadius: 12,
   },
 });

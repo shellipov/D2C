@@ -7,9 +7,15 @@ import { ScreenAuth } from './components/screens/Auth';
 import { AuthDataStore } from './api/AuthDataStore';
 import { observer } from 'mobx-react';
 import { ScreenCategory } from './components/screens/Category';
+import { ScreenShoppingCart } from './components/screens/ShoppingСart';
+import { ScreenProductCard } from './components/screens/ProductCard';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { useColorScheme } from 'react-native';
 
 export const AppRouter = observer(() => {
   const AuthStore = AuthDataStore;
+  const isDarkMode = useColorScheme() === 'dark';
+
 
   useEffect(() => {
     AuthStore.refresh().then();
@@ -20,9 +26,9 @@ export const AppRouter = observer(() => {
     return {
       title,
       headerShown: true,
-      headerTintColor: 'white',
+      headerTintColor: 'black',
       headerStyle: {
-        backgroundColor: 'orange',
+        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
       },
       headerBackTitle: 'Back',
     } as NativeStackNavigationOptions;
@@ -34,7 +40,9 @@ export const AppRouter = observer(() => {
 
   const AUTH_SCREENS: { [key in ScreenName]?: { screen: React.ComponentType<any>; navigationOptions?: any } } = {
     Main: { screen: Tabs },
+    ShoppingCart: { screen: ScreenShoppingCart },
     Category: { screen: ScreenCategory, navigationOptions: screenSettings('Category') },
+    ProductCard: { screen: ScreenProductCard, navigationOptions: screenSettings('ProductCard') },
   };
 
   const Stack = createNativeStackNavigator<RootStackParamList>();

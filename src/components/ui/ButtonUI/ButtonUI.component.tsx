@@ -24,10 +24,10 @@ export function ButtonUI (props: IButtonUIProps) {
 const styles = StyleSheet.create({
   button: {
     borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    marginVertical: 8,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginVertical: 12,
     alignItems: 'center',
   },
   active: {

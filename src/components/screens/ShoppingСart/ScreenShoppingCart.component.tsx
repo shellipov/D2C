@@ -1,10 +1,11 @@
 import React from 'react';
 import { ScrollView, StatusBar, useColorScheme, View } from 'react-native';
 import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
+import { observer } from 'mobx-react';
 
 export interface IScreenShoppingCartProps {}
 
-export function ScreenShoppingCart (props: IScreenShoppingCartProps) {
+export const ScreenShoppingCart = observer((props: IScreenShoppingCartProps) => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -26,4 +27,4 @@ export function ScreenShoppingCart (props: IScreenShoppingCartProps) {
       </ScrollView>
     </View>
   );
-}
+});
