@@ -1,12 +1,13 @@
-import { SafeAreaView, StatusBar, useColorScheme, View, ViewStyle } from 'react-native';
+import { Keyboard, SafeAreaView, StyleSheet, TouchableWithoutFeedback, useColorScheme, ViewStyle } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { TextUI } from '../../ui/TextUI/TextUI.component';
-import { TextInputUI } from '../../ui/TextInputUI/TextInputUI.component';
+import { TextUI } from '../../ui/TextUI';
+import { TextInputUI } from '../../ui/TextInputUI';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { AuthDataStore } from '../../../api/AuthDataStore';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { observer } from 'mobx-react';
+import { Col } from '../../shared/Col';
 
 export interface IScreenAuthProps {}
  type Props = IScreenAuthProps | undefined
@@ -23,7 +24,7 @@ export const ScreenAuth = observer((props: Props) => {
     }
   }, [AuthStore.isAuth]);
 
-  const backgroundStyle = {
+  const blockStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     flex: 1,
     alignItems: 'center',
@@ -41,18 +42,19 @@ export const ScreenAuth = observer((props: Props) => {
   const isButtonDisabled = useMemo(()=> name.length < 4, [name]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
-      <View style={backgroundStyle}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor} />
-        <View style={backgroundStyle}>
-          <TextUI text={'Enter your name'} size={'title'} />
-          <TextUI text={'And try not to forget'} size={'small'} />
-          <TextInputUI value={name} onChangeText={onChangeText} />
-          <ButtonUI title={'Login'} onPress={onPressLogin} disabled={isButtonDisabled} />
-        </View>
-      </View>
-    </SafeAreaView>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+        <Col style={blockStyle}>
+          <TextUI text={'Введите Ваш ник'} size={'title'} />
+          <TextUI text={'и постарайтесь не забыть его'} size={'small'} />
+          <TextInputUI value={name} textSize={'large'} onChangeText={onChangeText} style={styles.input} />
+          <ButtonUI title={'Войти'} onPress={onPressLogin} disabled={isButtonDisabled} />
+        </Col>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
+});
+
+const styles = StyleSheet.create({
+  input: { textAlign: 'center' },
 });

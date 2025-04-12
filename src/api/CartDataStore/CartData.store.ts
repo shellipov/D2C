@@ -11,6 +11,7 @@ export interface ICartDataStore {
   totalCount (product: IProduct): number;
   isInCart(product: IProduct): boolean;
   addToCart (product: IProduct): Promise<void>
+  deleteCart (): Promise<void>
   refresh(): Promise<void>;
 }
 
@@ -52,6 +53,20 @@ export class CartDataStore implements ICartDataStore {
   }
 
   @action.bound
+  public async deleteCart (): Promise<void> {
+    try {
+      await AsyncStorage.removeItem('cart');
+      runInAction(() => {
+        this.cart = undefined;
+      });
+
+      await this.refresh();
+    } catch (error: any) {
+      Alert.alert('Error', error?.message || 'Api error');
+    }
+  }
+
+  @action.bound
   public async addToCart (product: IProduct): Promise<void> {
     try {
       const jsonCart = await AsyncStorage.getItem('cart');
@@ -59,6 +74,11 @@ export class CartDataStore implements ICartDataStore {
       const isExistingProduct = cart.find(i => i.product.id === product.id);
 
       if (isExistingProduct) {
+        if (product.quantityOfGoods === isExistingProduct.numberOfProducts) {
+          Alert.alert('Maximum number of products', 'Unfortunately, we don\'t have any more');
+
+          return;
+        }
         isExistingProduct.numberOfProducts = isExistingProduct.numberOfProducts + 1;
         const index = cart.findIndex(item => item.product.id === product.id);
         if (index !== -1) {

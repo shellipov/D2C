@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { Tabs } from './Tabs';
 import { createNativeStackNavigator, NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { RootStackParamList, ScreenName } from './AppPouter.types';
 import { ScreenAuth } from './components/screens/Auth';
@@ -9,18 +8,19 @@ import { observer } from 'mobx-react';
 import { ScreenCategory } from './components/screens/Category';
 import { ScreenShoppingCart } from './components/screens/ShoppingСart';
 import { ScreenProductCard } from './components/screens/ProductCard';
+import { ScreenHome } from './components/screens/Home';
+import { ScreenCreateOrder } from './components/screens/CreacteOrder';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useColorScheme } from 'react-native';
+import {ScreenProfile} from "./components/screens/Profile";
 
 export const AppRouter = observer(() => {
   const AuthStore = AuthDataStore;
   const isDarkMode = useColorScheme() === 'dark';
 
-
   useEffect(() => {
     AuthStore.refresh().then();
   }, [AuthStore.isAuth]);
-
 
   const screenSettings = (title: string) => {
     return {
@@ -39,10 +39,12 @@ export const AppRouter = observer(() => {
   };
 
   const AUTH_SCREENS: { [key in ScreenName]?: { screen: React.ComponentType<any>; navigationOptions?: any } } = {
-    Main: { screen: Tabs },
+    Main: { screen: ScreenHome },
     ShoppingCart: { screen: ScreenShoppingCart },
     Category: { screen: ScreenCategory, navigationOptions: screenSettings('Category') },
-    ProductCard: { screen: ScreenProductCard, navigationOptions: screenSettings('ProductCard') },
+    ProductCard: { screen: ScreenProductCard, navigationOptions: screenSettings('Product Card') },
+    CreateOrder: { screen: ScreenCreateOrder },
+    Profile: { screen: ScreenProfile },
   };
 
   const Stack = createNativeStackNavigator<RootStackParamList>();

@@ -9,9 +9,7 @@ import { ButtonUI } from '../../ui/ButtonUI';
 import { First } from '../../shared/Firts';
 import { SettingsVars } from '../../../settings';
 
-export interface IScreenShoppingCartProps {
-  addBackButton?: boolean
-}
+export interface IScreenShoppingCartProps {}
 
 export const ScreenShoppingCart = observer((props: { route: { params: IScreenShoppingCartProps }}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -43,18 +41,24 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
         <ButtonUI title={'Back'} style={{ height: 40, width: 80, borderRadius: 20 }} onPress={()=> navigation.goBack()} />
       </View>
       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <TextUI size={'title'} text={'Cart'} style={{ paddingVertical: 50 }} />
+        <TextUI size={'title'} text={'Cart'} style={{ paddingVertical: 35 }} />
       </View>
       <View style={[backgroundStyle, { flex: 1 }]}>
         <First>
+
           {!cart?.length && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <TextUI size={'title'} text={'Cart is empty'} />
             </View>
           )}
+
           <ScrollView style={[viewStyle, styles.scrollView]}>
             <FlatList
               data={cart}
+              keyExtractor={(item) => `item_${item.product.id}`}
+              scrollEnabled={false}
+              numColumns={1}
+              contentContainerStyle={styles.container}
               renderItem={({ item }) => {
                 return (
                   <TouchableOpacity style={[itemStyle, styles.item]} onPress={()=> navigation.navigate('ProductCard', { id: item.product.id })}>
@@ -83,12 +87,9 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
                     </View>
                   </TouchableOpacity>
                 );
-              }}
-              keyExtractor={(item) => `item_${item.product.id}`}
-              scrollEnabled={false}
-              numColumns={1}
-              contentContainerStyle={styles.container} />
+              }} />
           </ScrollView>
+
         </First>
       </View>
       <View style={{ alignItems: 'flex-end', padding: 12 }}>
@@ -101,7 +102,7 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
               <TextUI size={'small'} text={`another ${SettingsVars.minCartSum - CartDataStore.cartSum} ₽`} />
             </ButtonUI>
           )}
-          <ButtonUI title={'Create order'} style={{ width: '50%' }} />
+          <ButtonUI title={'Create order'} style={{ width: '50%' }} onPress={() => navigation.navigate('CreateOrder')} />
         </First>
       </View>
     </SafeAreaView>
@@ -133,5 +134,8 @@ const styles = StyleSheet.create({
     marginVertical: 0,
     paddingHorizontal: 12,
     paddingVertical: 6,
+    minHeight: 20,
+    minWidth: 20,
+    borderRadius: 20,
   },
 });

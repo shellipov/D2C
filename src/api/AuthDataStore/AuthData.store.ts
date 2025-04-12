@@ -5,7 +5,7 @@ import { Alert } from 'react-native';
 
 export interface IAuthDataStore {
   readonly isAuth: boolean;
-  readonly getAuthUser?: IUser;
+  readonly user?: IUser;
   login(user: string): Promise<void>;
   logout(): Promise<void>;
   refresh(): Promise<void>;
@@ -30,8 +30,25 @@ export class AuthDataStore implements IAuthDataStore {
   }
 
   @computed
-  public get getAuthUser (): IUser | undefined {
+  public get user (): IUser | undefined {
     return this._user;
+  }
+
+  @action.bound
+  public async updateAuthUserFields (fields: Partial<{ name: string; phone: string; address: string }>) {
+    try {
+      const jsonUser = await AsyncStorage.getItem('authUser');
+      const user = jsonUser ? JSON.parse(jsonUser) : undefined;
+      if (user) {
+        const updatedUser = { ...user, ...fields };
+        await AsyncStorage.setItem('authUser', JSON.stringify(updatedUser));
+        await this.refresh();
+      } else {
+        Alert.alert('Error', 'Api error');
+      }
+    } catch (error: any) {
+      Alert.alert('Error', error?.message || 'Api error');
+    }
   }
 
   @action.bound
@@ -39,14 +56,16 @@ export class AuthDataStore implements IAuthDataStore {
     try {
       const jsonUsers = await AsyncStorage.getItem('users');
       const allUsers: IUser[] = jsonUsers ? JSON.parse(jsonUsers) : [];
-      const existingUser = allUsers.find(i => i.name === userName);
+      const existingUser = allUsers.find(i => i.userName === userName);
 
       if (existingUser) {
         await AsyncStorage.setItem('authUser', JSON.stringify(existingUser));
       } else {
         const newUser: IUser = {
           id: allUsers[allUsers.length - 1]?.id + 1 || 1,
-          name: userName,
+          userName,
+          name: '',
+          phone: '',
           address: '',
           favorites: [],
         };

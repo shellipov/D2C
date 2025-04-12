@@ -2,6 +2,8 @@ import { IScreenShoppingCartProps } from './components/screens/ShoppingСart';
 import { IScreenAuthProps } from './components/screens/Auth';
 import { IScreenCategoryProps } from './components/screens/Category';
 import { IScreenProductCardProps } from './components/screens/ProductCard';
+import { IScreenCreateOrderProps } from './components/screens/CreacteOrder/ScreenCreateOrder.component';
+import { IScreenProfileProps } from './components/screens/Profile';
 
 export enum Routes {
     Main = 'Main',
@@ -9,6 +11,8 @@ export enum Routes {
     Auth = 'Auth',
     Category = 'Category',
     ProductCard = 'ProductCard',
+    CreateOrder = 'CreateOrder',
+    Profile = 'Profile',
 }
 
 export type MainTabScreens = 'ShoppingCart'
@@ -19,6 +23,8 @@ export type RootStackParamList = {
     Auth: IScreenAuthProps | undefined;
     Category: IScreenCategoryProps;
     ProductCard: IScreenProductCardProps;
+    CreateOrder: IScreenCreateOrderProps | undefined;
+    Profile: IScreenProfileProps | undefined;
 };
 
 

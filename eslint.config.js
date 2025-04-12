@@ -85,6 +85,7 @@ export default tseslint.config(
       '@typescript-eslint/triple-slash-reference': 'error',
       '@typescript-eslint/unified-signatures': 'error',
       '@typescript-eslint/no-shadow': 'error',
+      '@typescript-eslint/no-empty-object-type': 'off',
       'no-extra-boolean-cast': 'off',
       // 'arrow-body-style': 'error',
       'arrow-parens': [

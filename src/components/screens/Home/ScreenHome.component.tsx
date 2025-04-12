@@ -1,19 +1,20 @@
+// @ts-ignore
+import Ionicons from 'react-native-vector-icons/AntDesign';
 import React from 'react';
-import { FlatList, SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, useColorScheme, View, Image } from 'react-native';
+import { FlatList, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { AuthDataStore } from '../../../api/AuthDataStore';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { MockDataStore } from '../../../api';
 import { useNavigationHook } from '../../../hooks/useNavigation';
+import { CartBlockComponent } from '../../blocks/CartBlock';
 
 export interface IScreenHomeProps {}
 
 export const ScreenHome = observer((props: IScreenHomeProps) => {
   const isDarkMode = useColorScheme() === 'dark';
   const navigation = useNavigationHook();
-  const authStore = AuthDataStore;
   const dataStore = new MockDataStore();
 
   const backgroundStyle = {
@@ -37,7 +38,9 @@ export const ScreenHome = observer((props: IScreenHomeProps) => {
           barStyle={isDarkMode ? 'light-content' : 'dark-content'}
           backgroundColor={backgroundStyle.backgroundColor} />
         <View style={[backgroundStyle, { paddingHorizontal: 8, alignItems: 'flex-end' }]}>
-          <ButtonUI title={'logout'} onPress={authStore.logout} />
+          <ButtonUI title={''} onPress={() =>navigation.navigate('Profile')} style={styles.profileButton}>
+            <Ionicons name={'user'} size={28} color={'black'} />
+          </ButtonUI>
         </View>
         <ScrollView style={[viewStyle, styles.scrollView]}>
           <FlatList
@@ -47,7 +50,7 @@ export const ScreenHome = observer((props: IScreenHomeProps) => {
 
               return (
                 <TouchableOpacity style={[itemStyle, styles.item]} onPress={onPress}>
-                  <TextUI text={item.name} size={'medium'} style={{}} />
+                  <TextUI text={item.name} size={'medium'} style={{ marginBottom: 4 }} />
                   <Image src={item.image} resizeMode="contain" style={styles.image} />
                 </TouchableOpacity>
               );
@@ -57,6 +60,9 @@ export const ScreenHome = observer((props: IScreenHomeProps) => {
             numColumns={3}
             contentContainerStyle={styles.container} />
         </ScrollView>
+        <View style={{ position: 'absolute', right: 16, bottom: 16 }}>
+          <CartBlockComponent />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -85,4 +91,12 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
   },
+  profileButton: {
+    height: 50,
+    width: 50,
+    borderRadius: 16,
+    paddingHorizontal: 0,
+    paddingVertical: 0,
+    justifyContent: 'center',
+    alignItems: 'center' },
 });
