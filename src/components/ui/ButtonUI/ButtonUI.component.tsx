@@ -10,11 +10,12 @@ export interface IButtonUIProps extends TouchableOpacityProps{
 export function ButtonUI (props: IButtonUIProps) {
   const { children, title, style, ...rest } = props;
   const colorStyle = props.disabled ? styles.disabled : styles.active;
+  const testColor = props.disabled ? '#252525' : 'black';
 
   return (
     <TouchableOpacity style={[styles.button, colorStyle, style]} {...rest}>
       {!!title && (
-        <TextUI text={title} size={'large'} />
+        <TextUI text={title} size={'large'} style={{ color: testColor }} />
       )}
       {children}
     </TouchableOpacity>
@@ -23,8 +24,9 @@ export function ButtonUI (props: IButtonUIProps) {
 
 const styles = StyleSheet.create({
   button: {
+    height: 40,
     borderWidth: 1,
-    borderRadius: 16,
+    borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 8,
     marginVertical: 12,

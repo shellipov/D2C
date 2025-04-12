@@ -6,8 +6,8 @@ import { CategoryEnum, MockDataStore } from '../../../api';
 import { TextUI } from '../../ui/TextUI';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/AntDesign';
-import { ButtonUI } from '../../ui/ButtonUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
+import { CartBlockComponent } from '../../blocks/CartBlock';
 
 export interface IScreenCategoryProps {
     category: CategoryEnum
@@ -36,11 +36,7 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
-      <ButtonUI
-        title={'Cart'}
-        onPress={()=> navigation.navigate('Main', { screen: 'ShoppingCart' })}
-        style={{ width: 100, alignSelf: 'flex-end', marginHorizontal: 16 }} />
-      <View style={[backgroundStyle, { flex: 1 }]}>
+      <View style={[backgroundStyle, { flex: 1, position: 'relative' }]}>
         <ScrollView style={[viewStyle, styles.scrollView]}>
           <FlatList
             data={data}
@@ -59,7 +55,7 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
                         <TextUI text={item.description} size={'small'} numberOfLines={1} />
                       </View>
                       <View style={{ marginVertical: 4 }}>
-                        <TextUI text={item.price + ' ₽'} size={'medium'} />
+                        <TextUI text={item.price + ' ₽'} size={'medium'} style={{ color: 'green' }} />
                       </View>
                       <View style={{ marginVertical: 4, flexDirection: 'row', alignItems: 'center' }}>
                         <Ionicons name={'star'} size={20} color={'orange'} />
@@ -75,6 +71,9 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
             numColumns={1}
             contentContainerStyle={styles.container} />
         </ScrollView>
+        <View style={{ position: 'absolute', right: 16, bottom: 16 }}>
+          <CartBlockComponent />
+        </View>
       </View>
     </SafeAreaView>
   );

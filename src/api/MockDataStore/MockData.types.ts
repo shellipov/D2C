@@ -34,11 +34,12 @@ export interface IProduct {
     image: string
 }
 
-export interface ICart {
-    user: IUser
-    products: IProduct[]
-    totalPrice: number
+export interface ICartItem {
+    product: IProduct,
+    numberOfProducts: number,
 }
+
+export type ICart = ICartItem[]
 
 export interface IEvent {
     id: string;

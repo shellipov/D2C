@@ -87,8 +87,8 @@ export class AuthDataStore implements IAuthDataStore {
   public async refresh (): Promise<void> {
     try {
       const jsonUser = await AsyncStorage.getItem('authUser');
-      this._user = jsonUser ? JSON.parse(jsonUser) : undefined;
       runInAction(() => {
+        AuthStore._user = jsonUser ? JSON.parse(jsonUser) : undefined;
         AuthStore.isAuth = !!this._user;
         AuthStore.isEmpty = false;
       });
