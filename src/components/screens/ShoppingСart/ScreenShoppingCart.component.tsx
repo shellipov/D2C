@@ -8,6 +8,8 @@ import { CartDataStore } from '../../../api/CartDataStore';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { First } from '../../shared/Firts';
 import { SettingsVars } from '../../../settings';
+import { Row } from '../../shared/Row';
+import { Col } from '../../shared/Col';
 
 export interface IScreenShoppingCartProps {}
 
@@ -37,18 +39,18 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
-      <View style={{ paddingHorizontal: 16 }}>
-        <ButtonUI title={'Back'} style={{ height: 40, width: 80, borderRadius: 20 }} onPress={()=> navigation.goBack()} />
-      </View>
+      <Row style={{ paddingHorizontal: 16 }}>
+        <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
+      </Row>
       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <TextUI size={'title'} text={'Cart'} style={{ paddingVertical: 35 }} />
+        <TextUI size={'bigTitle'} text={'Корзина'} style={{ paddingVertical: 35 }} />
       </View>
       <View style={[backgroundStyle, { flex: 1 }]}>
         <First>
 
           {!cart?.length && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-              <TextUI size={'title'} text={'Cart is empty'} />
+              <TextUI size={'title'} text={'Корзина пуста'} />
             </View>
           )}
 
@@ -62,11 +64,11 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
               renderItem={({ item }) => {
                 return (
                   <TouchableOpacity style={[itemStyle, styles.item]} onPress={()=> navigation.navigate('ProductCard', { id: item.product.id })}>
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
-                      <View style={{ flex: 1, flexDirection: 'column', marginRight: 16, backgroundColor: 'gray', borderRadius: 12 }}>
+                    <Row style={{ flex: 1 }}>
+                      <Col style={{ flex: 1, marginRight: 16, backgroundColor: 'gray', borderRadius: 12 }}>
                         <Image src={item.product.image} resizeMode="cover" style={styles.image} />
-                      </View>
-                      <View style={{ flex: 2, flexDirection: 'column' }}>
+                      </Col>
+                      <Col style={{ flex: 2 }}>
                         <View style={{ marginVertical: 6 }}>
                           <TextUI text={item.product.name} size={'large'} numberOfLines={1} />
                         </View>
@@ -76,15 +78,15 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
                         <View style={{ marginVertical: 4 }}>
                           <TextUI text={item.product.price + ' ₽'} size={'medium'} style={{ color: 'green' }} />
                         </View>
-                        <View style={{ marginVertical: 4, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                        <Row style={{ marginVertical: 4, alignItems: 'flex-start', justifyContent: 'space-between' }}>
                           <TextUI text={`в корзине - ${item.numberOfProducts} шт.`} size={'medium'} />
-                          <View style={{ flexDirection: 'row' }}>
+                          <Row>
                             <ButtonUI title={'-'} style={[styles.button, { marginRight: 8 }]} onPress={()=> dataStore.deleteFromCart(item.product) } />
                             <ButtonUI title={'+'} style={styles.button} onPress={()=> dataStore.addToCart(item.product)} />
-                          </View>
-                        </View>
-                      </View>
-                    </View>
+                          </Row>
+                        </Row>
+                      </Col>
+                    </Row>
                   </TouchableOpacity>
                 );
               }} />
@@ -93,16 +95,16 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
         </First>
       </View>
       <View style={{ alignItems: 'flex-end', padding: 12 }}>
-        <TextUI size={'title'} style={{ color: 'green' }} text={`total: ${CartDataStore.cartSum} ₽`} />
+        <TextUI size={'title'} style={{ color: 'green' }} text={`итого: ${CartDataStore.cartSum} ₽`} />
       </View>
       <View style={{ alignItems: 'center', height: 80, justifyContent: 'center' }}>
         <First>
           {CartDataStore.isCreateOrderDisabled && (
-            <ButtonUI title={`Minimum order amount ${SettingsVars.minCartSum} ₽`} style={{ backgroundColor: 'gray' }} disabled={true}>
-              <TextUI size={'small'} text={`another ${SettingsVars.minCartSum - CartDataStore.cartSum} ₽`} />
+            <ButtonUI title={`Минимальная сумма - ${SettingsVars.minCartSum} ₽`} style={{ backgroundColor: 'gray' }} disabled={true}>
+              <TextUI size={'small'} text={`еще ${SettingsVars.minCartSum - CartDataStore.cartSum} ₽`} />
             </ButtonUI>
           )}
-          <ButtonUI title={'Create order'} style={{ width: '50%' }} onPress={() => navigation.navigate('CreateOrder')} />
+          <ButtonUI title={'Оформить заказ'} style={{ width: '50%' }} onPress={() => navigation.navigate('CreateOrder')} />
         </First>
       </View>
     </SafeAreaView>

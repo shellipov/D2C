@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { observer } from 'mobx-react';
@@ -7,9 +7,20 @@ import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartDataStore } from '../../../api/CartDataStore';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { AuthDataStore } from '../../../api/AuthDataStore';
-import { SettingsVars } from '../../../settings';
+import { ColorsVars, SettingsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
+import { Chip } from '../../ui/Chip';
+
+enum PaymentMethodsEnum {
+  Card = 'Card',
+  Cash= 'Cash',
+}
+
+enum DeliveryOptionsEnum {
+  Hand= 'GiveInHand',
+  Door= 'LeaveAtTheDoor',
+}
 
 export interface IScreenCreateOrderProps {}
 
@@ -19,6 +30,32 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
   const dataStore = CartDataStore;
   const user = AuthDataStore.user;
   const cart = dataStore.cart;
+  const isUserProfileError = !user?.name || !user.phone || !user.address;
+
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethodsEnum>(PaymentMethodsEnum.Card);
+  const [selectedOption, setSelectedOption] = useState<DeliveryOptionsEnum>(DeliveryOptionsEnum.Hand);
+
+  const paymentMethods = [
+    {
+      type: PaymentMethodsEnum.Card,
+      title: 'Картой',
+    },
+    {
+      type: PaymentMethodsEnum.Cash,
+      title: 'Наличными',
+    },
+  ];
+
+  const deliveryOptions = [
+    {
+      type: DeliveryOptionsEnum.Hand,
+      title: 'Отдать в руки',
+    },
+    {
+      type: DeliveryOptionsEnum.Door,
+      title: 'Уставить у двери',
+    },
+  ];
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -40,7 +77,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
         <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
       </Row>
       <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <TextUI size={'title'} text={'Создать заказ'} style={{ paddingVertical: 35 }} />
+        <TextUI size={'bigTitle'} text={'Создать заказ'} style={{ paddingVertical: 35 }} />
       </Row>
       <View style={[backgroundStyle, { flex: 1 }]}>
         <ScrollView style={[viewStyle, styles.scrollView]}>
@@ -48,15 +85,15 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
           <TouchableOpacity onPress={()=> navigation.navigate('Profile')}>
             <View style={[itemStyle, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
               <Row style={[styles.item, { justifyContent: 'space-between' }]}>
-                <TextUI size={'large'} style={{ flex: 1 }} text={'Имя'} />
+                <TextUI size={'large'} style={{ color: !user?.name ? ColorsVars.red : ColorsVars.black }} text={'Имя'} />
                 <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={user?.name} />
               </Row>
               <Row style={[styles.item, { justifyContent: 'space-between' }]}>
-                <TextUI size={'large'} text={'Телефон'} />
+                <TextUI size={'large'} style={{ color: !user?.phone ? ColorsVars.red : ColorsVars.black }} text={'Телефон'} />
                 <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={user?.phone} />
               </Row>
               <Row style={[styles.item, { justifyContent: 'space-between' }]}>
-                <TextUI size={'large'} text={'Адрес'} />
+                <TextUI size={'large'} style={{ color: !user?.address ? ColorsVars.red : ColorsVars.black }} text={'Адрес'} />
                 <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={user?.address} />
               </Row>
             </View>
@@ -95,19 +132,34 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
           </View>
 
           <View style={[itemStyle, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
-            <Row style={[styles.item, { justifyContent: 'center' }]}>
+            <Row style={[styles.item, { justifyContent: 'center', marginBottom: 12 }]}>
               <TextUI size={'large'} text={'Доставка'} />
             </Row>
-            <Row style={[styles.item, { justifyContent: 'space-between' }]}>
-              <TextUI size={'medium'} text={'Уставить у двери'} />
-              <TextUI size={'medium'} text={'Вручить в руки'} />
+            <Row style={[{ justifyContent: 'space-around' }]}>
+              {deliveryOptions.map(i => {
+                const isSelected = i.type === selectedOption;
+
+                return (
+                  <Chip key={`_${i.type}`} label={i.title} selected={isSelected} onPress={()=> {setSelectedOption(i.type);}} />
+                );
+              })
+              }
             </Row>
-            <Row style={[styles.item, { justifyContent: 'center' }]}>
+          </View>
+
+          <View style={[itemStyle, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
+            <Row style={[styles.item, { justifyContent: 'center', marginBottom: 12 }]}>
               <TextUI size={'large'} text={'Оплата'} />
             </Row>
-            <Row style={[styles.item, { justifyContent: 'space-between' }]}>
-              <TextUI size={'medium'} text={'Картой'} />
-              <TextUI size={'medium'} text={'Наличными'} />
+            <Row style={[{ justifyContent: 'space-around' }]}>
+              {paymentMethods.map(i => {
+                const isSelected = i.type === selectedMethod;
+
+                return (
+                  <Chip key={`_${i.type}`} label={i.title} selected={isSelected} onPress={()=> {setSelectedMethod(i.type);}} />
+                );
+              })
+              }
             </Row>
           </View>
 
@@ -115,8 +167,13 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
             <Row style={{ justifyContent: 'flex-end', padding: 12 }}>
               <TextUI size={'title'} style={{ color: 'green' }} text={`итого: ${CartDataStore.cartSum + SettingsVars.shippingCost} ₽`} />
             </Row>
+            <Row style={{ justifyContent: 'center' }}>
+              {isUserProfileError && (
+                <TextUI size={'medium'} text={'Заполните данные профиля'} style={{ color: ColorsVars.red }} />
+              )}
+            </Row>
             <Row style={{ alignItems: 'center', height: 80, justifyContent: 'center' }}>
-              <ButtonUI title={'Подтвердить'} style={{ width: '50%' }} />
+              <ButtonUI title={'Подтвердить'} style={{ width: '50%' }} disabled={isUserProfileError} />
             </Row>
           </View>
 

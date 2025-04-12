@@ -1,6 +1,7 @@
 import React from 'react';
 import { ColorValue, StyleSheet, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { TextUI } from '../TextUI/TextUI.component';
+import { ColorsVars } from '../../../settings';
 
 export interface IButtonUIProps extends TouchableOpacityProps{
     title: string;
@@ -11,7 +12,7 @@ export interface IButtonUIProps extends TouchableOpacityProps{
 export function ButtonUI (props: IButtonUIProps) {
   const { children, title, textColor, style, ...rest } = props;
   const colorStyle = props.disabled ? styles.disabled : styles.active;
-  const testColor = props.disabled ? '#252525' : !!textColor ? textColor : 'black';
+  const testColor = props.disabled ? ColorsVars.disabledText : !!textColor ? textColor : ColorsVars.black;
 
   return (
     <TouchableOpacity style={[styles.button, colorStyle, style]} {...rest}>
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     borderColor: 'orange',
   },
   disabled: {
-    backgroundColor: 'gray',
-    borderColor: 'gray',
+    backgroundColor: ColorsVars.disabledButton,
+    borderColor: ColorsVars.disabledButton,
   },
 });

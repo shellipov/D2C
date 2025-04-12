@@ -2,7 +2,7 @@ import { IScreenShoppingCartProps } from './components/screens/ShoppingСart';
 import { IScreenAuthProps } from './components/screens/Auth';
 import { IScreenCategoryProps } from './components/screens/Category';
 import { IScreenProductCardProps } from './components/screens/ProductCard';
-import { IScreenCreateOrderProps } from './components/screens/CreacteOrder/ScreenCreateOrder.component';
+import { IScreenCreateOrderProps } from './components/screens/CreateOrder/ScreenCreateOrder.component';
 import { IScreenProfileProps } from './components/screens/Profile';
 
 export enum Routes {

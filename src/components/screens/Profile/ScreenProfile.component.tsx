@@ -56,27 +56,47 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
           <ButtonUI title={'Выйти'} textColor={'white'} style={{ backgroundColor: ColorsVars.red, borderColor: ColorsVars.red }} onPress={logout} />
         </View>
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <TextUI size={'title'} text={'Профиль'} style={{ paddingVertical: 35 }} />
+          <TextUI size={'bigTitle'} text={'Профиль'} style={{ paddingVertical: 35 }} />
         </View>
 
         <View style={styles.userDataBlock}>
           <Row style={styles.row}>
             <Col>
               <TextUI size={'large'} text={'Имя'} />
-              <TextInputUI value={name} textSize={'medium'} style={styles.inputCenter} onChangeText={onChangeName} />
+              <TextInputUI
+                value={name}
+                textSize={'medium'}
+                style={[styles.inputCenter, { borderColor: !name ? ColorsVars.red : ColorsVars.gray }]}
+                onChangeText={onChangeName} />
             </Col>
           </Row>
           <Row style={styles.row}>
             <Col>
               <TextUI size={'large'} text={'Телефон'} />
-              <TextInputUI textSize={'medium'} keyboardType={'numeric'} style={styles.inputCenter} value={phone} onChangeText={onChangePhone} />
+              <TextInputUI
+                textSize={'medium'}
+                keyboardType={'numeric'}
+                style={[styles.inputCenter, { borderColor: !phone ? ColorsVars.red : ColorsVars.gray }]}
+                value={phone}
+                onChangeText={onChangePhone} />
             </Col>
           </Row>
           <Row style={styles.row}>
             <Col>
               <TextUI size={'large'} text={'Адрес'} />
-              <TextInputUI value={address} textSize={'small'} style={[styles.inputCenter, { minHeight: 50 }]} onChangeText={onChangeAddress} multiline={true} />
+              <TextInputUI
+                value={address}
+                textSize={'small'}
+                style={[styles.inputCenter, { borderColor: !address ? ColorsVars.red : ColorsVars.gray }, { minHeight: 50 }]}
+                onChangeText={onChangeAddress} multiline={true} />
             </Col>
+          </Row>
+        </View>
+
+        <View>
+          <Row style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 50 }}>
+            <ButtonUI title={'Заказы'} style={{ width: '35%', marginHorizontal: 8 }} onPress={() => navigation.goBack()} />
+            <ButtonUI title={'Статистика'} style={{ width: '35%', marginHorizontal: 8 }} onPress={() => navigation.goBack()} />
           </Row>
         </View>
 
@@ -95,7 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   row: {
-    paddingVertical: 8,
+    paddingVertical: 4,
   },
   inputCenter: {
     textAlign: 'center',

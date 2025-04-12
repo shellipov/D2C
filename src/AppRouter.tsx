@@ -9,7 +9,7 @@ import { ScreenCategory } from './components/screens/Category';
 import { ScreenShoppingCart } from './components/screens/ShoppingСart';
 import { ScreenProductCard } from './components/screens/ProductCard';
 import { ScreenHome } from './components/screens/Home';
-import { ScreenCreateOrder } from './components/screens/CreacteOrder';
+import { ScreenCreateOrder } from './components/screens/CreateOrder';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useColorScheme } from 'react-native';
 import {ScreenProfile} from "./components/screens/Profile";
