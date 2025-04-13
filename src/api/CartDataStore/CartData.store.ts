@@ -1,8 +1,9 @@
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
-import { ICart, ICartItem, IProduct } from '../MockDataStore';
+import { IProduct } from '../MockDataStore';
 import { SettingsVars } from '../../settings';
+import { ICart, ICartItem } from './CartData.types';
 
 export interface ICartDataStore {
   readonly cart: ICart | undefined;
@@ -15,7 +16,7 @@ export interface ICartDataStore {
   refresh(): Promise<void>;
 }
 
-export class CartDataStore implements ICartDataStore {
+class CartDataStore implements ICartDataStore {
   private static _instance: CartDataStore | null = null;
   @observable public isEmpty: boolean = true;
   @observable public cart: ICart | undefined = undefined;

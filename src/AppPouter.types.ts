@@ -4,6 +4,8 @@ import { IScreenCategoryProps } from './components/screens/Category';
 import { IScreenProductCardProps } from './components/screens/ProductCard';
 import { IScreenCreateOrderProps } from './components/screens/CreateOrder/ScreenCreateOrder.component';
 import { IScreenProfileProps } from './components/screens/Profile';
+import { IScreenOrderProps } from './components/screens/Order';
+import { IScreenOrderListProps, ScreenOrderList } from './components/screens/OrderList';
 
 export enum Routes {
     Main = 'Main',
@@ -12,6 +14,8 @@ export enum Routes {
     Category = 'Category',
     ProductCard = 'ProductCard',
     CreateOrder = 'CreateOrder',
+    Order = 'Order',
+    OrderList = 'OrderList',
     Profile = 'Profile',
 }
 
@@ -25,6 +29,8 @@ export type RootStackParamList = {
     ProductCard: IScreenProductCardProps;
     CreateOrder: IScreenCreateOrderProps | undefined;
     Profile: IScreenProfileProps | undefined;
+    Order: IScreenOrderProps ;
+    OrderList: IScreenOrderListProps | undefined ;
 };
 
 

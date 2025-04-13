@@ -21,6 +21,10 @@ export class MockDataStore {
     return productList[category] || [];
   }
 
+  public getCategoryName (type: CategoryEnum) : string {
+    return categoryItems.find(i => i.type === type)?.name || '';
+  }
+
   public getProduct (id: number) : IProduct | undefined {
     return Object.values(productList).flat().find(i => i.id === id);
   }

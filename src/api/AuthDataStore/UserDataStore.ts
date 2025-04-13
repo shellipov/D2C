@@ -11,8 +11,8 @@ export interface IAuthDataStore {
   refresh(): Promise<void>;
 }
 
-export class AuthDataStore implements IAuthDataStore {
-  private static _instance: AuthDataStore | null = null;
+class UserDataStore implements IAuthDataStore {
+  private static _instance: UserDataStore | null = null;
   @observable public isAuth: boolean = false;
   @observable public isEmpty: boolean = true;
   @observable private _user: IUser | undefined = undefined;
@@ -21,12 +21,12 @@ export class AuthDataStore implements IAuthDataStore {
     makeObservable(this);
   }
 
-  public static get instance (): AuthDataStore {
-    if (!AuthDataStore._instance) {
-      AuthDataStore._instance = new AuthDataStore();
+  public static get instance (): UserDataStore {
+    if (!UserDataStore._instance) {
+      UserDataStore._instance = new UserDataStore();
     }
 
-    return AuthDataStore._instance;
+    return UserDataStore._instance;
   }
 
   @computed
@@ -107,9 +107,9 @@ export class AuthDataStore implements IAuthDataStore {
     try {
       const jsonUser = await AsyncStorage.getItem('authUser');
       runInAction(() => {
-        AuthStore._user = jsonUser ? JSON.parse(jsonUser) : undefined;
-        AuthStore.isAuth = !!this._user;
-        AuthStore.isEmpty = false;
+        UserStore._user = jsonUser ? JSON.parse(jsonUser) : undefined;
+        UserStore.isAuth = !!this._user;
+        UserStore.isEmpty = false;
       });
     } catch (error: any) {
       Alert.alert('Error', error?.message || 'Api error');
@@ -117,4 +117,4 @@ export class AuthDataStore implements IAuthDataStore {
   }
 }
 
-export const AuthStore = AuthDataStore.instance;
+export const UserStore = UserDataStore.instance;

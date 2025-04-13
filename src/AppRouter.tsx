@@ -1,38 +1,25 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator, NativeStackNavigationOptions } from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList, ScreenName } from './AppPouter.types';
 import { ScreenAuth } from './components/screens/Auth';
-import { AuthDataStore } from './api/AuthDataStore';
+import { UserDataStore } from './api/AuthDataStore';
 import { observer } from 'mobx-react';
 import { ScreenCategory } from './components/screens/Category';
 import { ScreenShoppingCart } from './components/screens/ShoppingСart';
 import { ScreenProductCard } from './components/screens/ProductCard';
 import { ScreenHome } from './components/screens/Home';
 import { ScreenCreateOrder } from './components/screens/CreateOrder';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { useColorScheme } from 'react-native';
-import {ScreenProfile} from "./components/screens/Profile";
+import { ScreenProfile } from './components/screens/Profile';
+import { ScreenOrder } from './components/screens/Order';
+import { ScreenOrderList } from './components/screens/OrderList';
 
 export const AppRouter = observer(() => {
-  const AuthStore = AuthDataStore;
-  const isDarkMode = useColorScheme() === 'dark';
+  const userStore = UserDataStore;
 
   useEffect(() => {
-    AuthStore.refresh().then();
-  }, [AuthStore.isAuth]);
-
-  const screenSettings = (title: string) => {
-    return {
-      title,
-      headerShown: true,
-      headerTintColor: 'black',
-      headerStyle: {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-      },
-      headerBackTitle: 'Back',
-    } as NativeStackNavigationOptions;
-  };
+    userStore.refresh().then();
+  }, [userStore.isAuth]);
 
   const NOT_AUTH_SCREENS: { [key in ScreenName]?: { screen: React.ComponentType<any>; navigationOptions?: any } } = {
     Auth: { screen: ScreenAuth },
@@ -41,22 +28,24 @@ export const AppRouter = observer(() => {
   const AUTH_SCREENS: { [key in ScreenName]?: { screen: React.ComponentType<any>; navigationOptions?: any } } = {
     Main: { screen: ScreenHome },
     ShoppingCart: { screen: ScreenShoppingCart },
-    Category: { screen: ScreenCategory, navigationOptions: screenSettings('Category') },
-    ProductCard: { screen: ScreenProductCard, navigationOptions: screenSettings('Product Card') },
+    Category: { screen: ScreenCategory },
+    ProductCard: { screen: ScreenProductCard },
     CreateOrder: { screen: ScreenCreateOrder },
     Profile: { screen: ScreenProfile },
+    Order: { screen: ScreenOrder },
+    OrderList: { screen: ScreenOrderList },
   };
 
   const Stack = createNativeStackNavigator<RootStackParamList>();
 
-  if (AuthStore.isEmpty) {
+  if (userStore.isEmpty) {
     return null;
   }
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={AuthStore.isAuth ? 'Main' : 'Auth'} screenOptions={{ headerShown: false }}>
-        {AuthStore.isAuth && (
+      <Stack.Navigator initialRouteName={userStore.isAuth ? 'Main' : 'Auth'} screenOptions={{ headerShown: false }}>
+        {userStore.isAuth && (
           (Object.keys(AUTH_SCREENS) as (keyof typeof AUTH_SCREENS)[]).map((name) => (
             <Stack.Screen
               key={name} name={name} component={AUTH_SCREENS[name]!.screen}

@@ -7,7 +7,7 @@ import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartDataStore } from '../../../api/CartDataStore';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { First } from '../../shared/Firts';
-import { SettingsVars } from '../../../settings';
+import { ColorsVars, SettingsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
 
@@ -100,8 +100,10 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
       <View style={{ alignItems: 'center', height: 80, justifyContent: 'center' }}>
         <First>
           {CartDataStore.isCreateOrderDisabled && (
-            <ButtonUI title={`Минимальная сумма - ${SettingsVars.minCartSum} ₽`} style={{ backgroundColor: 'gray' }} disabled={true}>
-              <TextUI size={'small'} text={`еще ${SettingsVars.minCartSum - CartDataStore.cartSum} ₽`} />
+            <ButtonUI title={`Минимальная сумма - ${SettingsVars.minCartSum} ₽`} disabled={true}>
+              <TextUI
+                size={'small'} style={{ color: ColorsVars.disabledText }}
+                text={`еще ${SettingsVars.minCartSum - CartDataStore.cartSum} ₽`} />
             </ButtonUI>
           )}
           <ButtonUI title={'Оформить заказ'} style={{ width: '50%' }} onPress={() => navigation.navigate('CreateOrder')} />

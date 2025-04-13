@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { TextUI } from '../../ui/TextUI';
 import { TextInputUI } from '../../ui/TextInputUI';
 import { ButtonUI } from '../../ui/ButtonUI';
-import { AuthDataStore } from '../../../api/AuthDataStore';
+import { UserDataStore } from '../../../api/AuthDataStore';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { observer } from 'mobx-react';
 import { Col } from '../../shared/Col';
@@ -13,16 +13,16 @@ export interface IScreenAuthProps {}
  type Props = IScreenAuthProps | undefined
 
 export const ScreenAuth = observer((props: Props) => {
-  const AuthStore = AuthDataStore;
+  const userStore = UserDataStore;
   const isDarkMode = useColorScheme() === 'dark';
   const [name, setName] = React.useState<string>('');
   const navigation = useNavigationHook();
 
   useEffect(() => {
-    if (AuthStore.isAuth) {
+    if (userStore.isAuth) {
       navigation.navigate('Main');
     }
-  }, [AuthStore.isAuth]);
+  }, [userStore.isAuth]);
 
   const blockStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -36,7 +36,7 @@ export const ScreenAuth = observer((props: Props) => {
   }, [name]);
 
   const onPressLogin = useCallback(() => {
-    AuthStore.login(name).then();
+    userStore.login(name).then();
   }, [name]);
 
   const isButtonDisabled = useMemo(()=> name.length < 4, [name]);

@@ -5,7 +5,7 @@ import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartDataStore } from '../../../api/CartDataStore';
 import { ButtonUI } from '../../ui/ButtonUI';
-import { AuthDataStore } from '../../../api/AuthDataStore';
+import { UserDataStore } from '../../../api/AuthDataStore';
 import { Row } from '../../shared/Row';
 import { TextInputUI } from '../../ui/TextInputUI';
 import { Col } from '../../shared/Col';
@@ -15,16 +15,16 @@ export interface IScreenProfileProps {}
 
 export const ScreenProfile = observer((props: { route: { params: IScreenProfileProps }}) => {
   const isDarkMode = useColorScheme() === 'dark';
-  const authStore = AuthDataStore;
+  const userStore = UserDataStore;
   const cartStore = CartDataStore;
   const navigation = useNavigationHook();
 
-  const [name, setName] = useState(authStore.user?.name);
-  const [phone, setPhone] = useState(authStore.user?.phone);
-  const [address, setAddress] = useState(authStore.user?.address);
+  const [name, setName] = useState(userStore.user?.name);
+  const [phone, setPhone] = useState(userStore.user?.phone);
+  const [address, setAddress] = useState(userStore.user?.address);
 
   useEffect(() => {
-    authStore.updateAuthUserFields({ name, phone, address }).then();
+    userStore.updateAuthUserFields({ name, phone, address }).then();
   }, [name, phone, address]);
 
   const onChangeName = useCallback((text: string) => {
@@ -43,7 +43,7 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
       'Выйти из приложения?',
       'Ваша корзина удалится',
       [
-        { text: 'Да', onPress: () => {authStore.logout().then();cartStore.deleteCart().then();} },
+        { text: 'Да', onPress: () => {userStore.logout().then();cartStore.deleteCart().then();} },
         { text: 'Нет' },
       ]);
   }, []);
@@ -52,9 +52,13 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
 
-        <View style={[{ paddingHorizontal: 8, alignItems: 'flex-end' }]}>
-          <ButtonUI title={'Выйти'} textColor={'white'} style={{ backgroundColor: ColorsVars.red, borderColor: ColorsVars.red }} onPress={logout} />
+        <View style={[{ paddingHorizontal: 16 }]}>
+          <Row style={{ justifyContent: 'space-between' }}>
+            <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20 }} onPress={navigation.goBack} />
+            <ButtonUI title={'Выйти'} textColor={'white'} style={{ backgroundColor: ColorsVars.red, borderColor: ColorsVars.red }} onPress={logout} />
+          </Row>
         </View>
+
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <TextUI size={'bigTitle'} text={'Профиль'} style={{ paddingVertical: 35 }} />
         </View>
@@ -95,13 +99,15 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
 
         <View>
           <Row style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 50 }}>
-            <ButtonUI title={'Заказы'} style={{ width: '35%', marginHorizontal: 8 }} onPress={() => navigation.goBack()} />
-            <ButtonUI title={'Статистика'} style={{ width: '35%', marginHorizontal: 8 }} onPress={() => navigation.goBack()} />
+            <ButtonUI
+              title={'Заказы'}
+              style={styles.button}
+              onPress={() => navigation.navigate('OrderList')} />
+            <ButtonUI
+              title={'Статистика'}
+              style={styles.button}
+              onPress={() => navigation.goBack()} />
           </Row>
-        </View>
-
-        <View style={{ alignItems: 'center', height: 80, justifyContent: 'center' }}>
-          <ButtonUI title={'К покупкам'} style={{ width: '50%' }} onPress={() => navigation.goBack()} />
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -120,4 +126,9 @@ const styles = StyleSheet.create({
   inputCenter: {
     textAlign: 'center',
   },
+  button: {
+    width: '35%',
+    marginHorizontal: 8,
+    backgroundColor: ColorsVars.white,
+    borderColor: ColorsVars.gray },
 });

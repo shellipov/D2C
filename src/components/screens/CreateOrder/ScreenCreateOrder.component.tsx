@@ -1,26 +1,19 @@
-import React, { useState } from 'react';
-import { FlatList, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Alert, FlatList, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartDataStore } from '../../../api/CartDataStore';
 import { ButtonUI } from '../../ui/ButtonUI';
-import { AuthDataStore } from '../../../api/AuthDataStore';
+import { UserDataStore } from '../../../api/AuthDataStore';
 import { ColorsVars, SettingsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
 import { Chip } from '../../ui/Chip';
-
-enum PaymentMethodsEnum {
-  Card = 'Card',
-  Cash= 'Cash',
-}
-
-enum DeliveryOptionsEnum {
-  Hand= 'GiveInHand',
-  Door= 'LeaveAtTheDoor',
-}
+import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, PaymentMethodsEnum } from '../../../api/OrderDataStore';
+import { OrderDataStore } from '../../../api/OrderDataStore';
+import { dateFormatter } from '../../../helpers';
 
 export interface IScreenCreateOrderProps {}
 
@@ -28,34 +21,43 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
   const navigation = useNavigationHook();
   const isDarkMode = useColorScheme() === 'dark';
   const dataStore = CartDataStore;
-  const user = AuthDataStore.user;
+  const user = UserDataStore.user;
+  const orderData = OrderDataStore;
   const cart = dataStore.cart;
   const isUserProfileError = !user?.name || !user.phone || !user.address;
+  const totalSum = CartDataStore.cartSum + SettingsVars.shippingCost;
 
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethodsEnum>(PaymentMethodsEnum.Card);
-  const [selectedOption, setSelectedOption] = useState<DeliveryOptionsEnum>(DeliveryOptionsEnum.Hand);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsEnum>(PaymentMethodsEnum.Card);
+  const [deliveryOption, setDeliveryOption] = useState<DeliveryOptionsEnum>(DeliveryOptionsEnum.Hand);
 
-  const paymentMethods = [
-    {
-      type: PaymentMethodsEnum.Card,
-      title: 'Картой',
-    },
-    {
-      type: PaymentMethodsEnum.Cash,
-      title: 'Наличными',
-    },
-  ];
+  useEffect(() => {
+    orderData.refresh().then();
+  }, []);
 
-  const deliveryOptions = [
-    {
-      type: DeliveryOptionsEnum.Hand,
-      title: 'Отдать в руки',
-    },
-    {
-      type: DeliveryOptionsEnum.Door,
-      title: 'Уставить у двери',
-    },
-  ];
+  const onPressConfirm = useCallback(async ()=>{
+    const date = dateFormatter(new Date());
+    const order = {
+      id: orderData.orders.length + 1,
+      date,
+      user,
+      cart,
+      shippingCost: SettingsVars.shippingCost,
+      totalSum,
+      deliveryOption: orderData.deliveryOptions.find(i => i.type === deliveryOption),
+      paymentMethod: orderData.paymentMethods.find(i => i.type === paymentMethod),
+    } as IOrder;
+    const status = await orderData.addOrder(order);
+    if (status === OrderCreateStatusEnum.Success) {
+      CartDataStore.deleteCart().then();
+      navigation.reset({
+        index: 1,
+        routes: [
+          { name: 'Main' },
+          { name: 'Order', params: { order: orderData.lastOrder } },
+        ],
+      });
+    }
+  }, []);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -136,11 +138,11 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
               <TextUI size={'large'} text={'Доставка'} />
             </Row>
             <Row style={[{ justifyContent: 'space-around' }]}>
-              {deliveryOptions.map(i => {
-                const isSelected = i.type === selectedOption;
+              {orderData.deliveryOptions.map(i => {
+                const isSelected = i.type === deliveryOption;
 
                 return (
-                  <Chip key={`_${i.type}`} label={i.title} selected={isSelected} onPress={()=> {setSelectedOption(i.type);}} />
+                  <Chip key={`_${i.type}`} label={i.title} selected={isSelected} onPress={()=> {setDeliveryOption(i.type);}} />
                 );
               })
               }
@@ -152,11 +154,11 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
               <TextUI size={'large'} text={'Оплата'} />
             </Row>
             <Row style={[{ justifyContent: 'space-around' }]}>
-              {paymentMethods.map(i => {
-                const isSelected = i.type === selectedMethod;
+              {orderData.paymentMethods.map(i => {
+                const isSelected = i.type === paymentMethod;
 
                 return (
-                  <Chip key={`_${i.type}`} label={i.title} selected={isSelected} onPress={()=> {setSelectedMethod(i.type);}} />
+                  <Chip key={`_${i.type}`} label={i.title} selected={isSelected} onPress={()=> {setPaymentMethod(i.type);}} />
                 );
               })
               }
@@ -165,7 +167,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
 
           <View style={itemStyle}>
             <Row style={{ justifyContent: 'flex-end', padding: 12 }}>
-              <TextUI size={'title'} style={{ color: 'green' }} text={`итого: ${CartDataStore.cartSum + SettingsVars.shippingCost} ₽`} />
+              <TextUI size={'title'} style={{ color: 'green' }} text={`итого: ${totalSum} ₽`} />
             </Row>
             <Row style={{ justifyContent: 'center' }}>
               {isUserProfileError && (
@@ -173,7 +175,11 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
               )}
             </Row>
             <Row style={{ alignItems: 'center', height: 80, justifyContent: 'center' }}>
-              <ButtonUI title={'Подтвердить'} style={{ width: '50%' }} disabled={isUserProfileError} />
+              <ButtonUI
+                title={'Подтвердить'}
+                style={{ width: '50%' }}
+                disabled={isUserProfileError}
+                onPress={onPressConfirm} />
             </Row>
           </View>
 
@@ -198,5 +204,4 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 16,
   },
-
 });

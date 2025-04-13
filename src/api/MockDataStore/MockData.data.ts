@@ -1,6 +1,5 @@
 import { CategoryEnum, ICategoryItem, ProductListType } from './MockData.types';
 
-// created by GPT
 export const productList: ProductListType = {
   'clothesAndShoes': [
     {

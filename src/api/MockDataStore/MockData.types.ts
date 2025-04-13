@@ -1,9 +1,3 @@
-import { IUser } from '../AuthDataStore';
-
-export type ThemeType = 'light' | 'dark';
-export type ProductRatingType = 1 | 2 | 3 | 4 | 5;
-export type EventType = 'addToFavorites' | 'deleteFromFavorites' | 'addToCart' | 'deleteFromCart' | 'createOrder'
-
 export enum CategoryEnum {
     clothesAndShoes= 'clothesAndShoes',
     householdGoods = 'householdGoods',
@@ -32,21 +26,6 @@ export interface IProduct {
     quantityOfGoods: number
     productRating: number
     image: string
-}
-
-export interface ICartItem {
-    product: IProduct,
-    numberOfProducts: number,
-}
-
-export type ICart = ICartItem[]
-
-export interface IEvent {
-    id: string;
-    user: IUser
-    type: EventType;
-    time: Date;
-    cart: ICart;
 }
 
 export type ProductListType = {

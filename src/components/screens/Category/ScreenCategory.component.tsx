@@ -8,6 +8,7 @@ import { TextUI } from '../../ui/TextUI';
 import Ionicons from 'react-native-vector-icons/AntDesign';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartBlockComponent } from '../../blocks/CartBlock';
+import { NavBar } from '../../shared/NavBar';
 
 export interface IScreenCategoryProps {
     category: CategoryEnum
@@ -36,6 +37,7 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+      <NavBar title={dataStore.getCategoryName(category)} />
       <View style={[backgroundStyle, { flex: 1, position: 'relative' }]}>
         <ScrollView style={[viewStyle, styles.scrollView]}>
           <FlatList

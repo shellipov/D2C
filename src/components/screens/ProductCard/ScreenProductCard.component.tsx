@@ -10,6 +10,7 @@ import { ButtonUI } from '../../ui/ButtonUI';
 import { CartDataStore } from '../../../api/CartDataStore';
 import { First } from '../../shared/Firts';
 import { CartBlockComponent } from '../../blocks/CartBlock';
+import {NavBar} from "../../shared/NavBar";
 
 export interface IScreenProductCardProps {
     id: number;
@@ -34,6 +35,7 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+      <NavBar title={'Карточка товара'} />
       <ScrollView style={backgroundStyle}>
         <View style={{ flex: 1, flexDirection: 'column' }}>
           <View style={ styles.imageView}>
