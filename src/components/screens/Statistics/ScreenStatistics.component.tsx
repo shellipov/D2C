@@ -7,9 +7,15 @@ import { Row } from '../../shared/Row';
 import { NavBar } from '../../shared/NavBar';
 import { Screen } from '../../shared/Screen';
 import { ColorsVars } from '../../../settings';
-import { EventDataStore } from '../../../api/EventDataStore';
+import { EventDataStore, EventTypeEnum } from '../../../api/EventDataStore';
 import { Col } from '../../shared/Col';
 import { First } from '../../shared/Firts';
+
+const COLORS : {[key in EventTypeEnum]? : string} = {
+  [EventTypeEnum.AddToCart] : ColorsVars.green,
+  [EventTypeEnum.DeleteFromCart] : ColorsVars.red,
+  [EventTypeEnum.CreateOrder] : ColorsVars.green,
+};
 
 export interface IScreenStatisticsProps {}
 
@@ -54,23 +60,45 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
               <Col style={itemStyle}>
                 <View style={{ paddingBottom: 6 }}>
                   <Row style={[styles.item]}>
-                    <TextUI size={'small'} text={`${item.type}`} style={{ color: ColorsVars.green }} />
+                    <TextUI size={'small'} text={`${item.eventType}`} style={{ color: COLORS[item.eventType] }} />
                   </Row>
                   <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'center' }]}>
-                    <TextUI size={'small'} text={'Время'} />
+                    <TextUI size={'small'} text={'time'} />
                     <TextUI
                       size={'small'}
                       numberOfLines={1}
                       style={{ maxWidth: '70%' }}
-                      text={`${item.time}`} />
+                      text={`${item.date}`} />
                   </Row>
-                  <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'center' }]}>
-                    <TextUI size={'small'} text={'log'} />
+                  <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
+                    <TextUI size={'small'} text={'user'} />
                     <TextUI
                       size={'small'}
-                      numberOfLines={1}
                       style={{ maxWidth: '70%' }}
-                      text={`${item}`} />
+                      text={`${JSON.stringify(item.user)}`} />
+                  </Row>
+                  {item.product && (
+                    <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
+                      <TextUI size={'small'} text={'user'} />
+                      <TextUI
+                        size={'small'}
+                        style={{ maxWidth: '70%' }}
+                        text={`${JSON.stringify(item.product, null, 2)}`} />
+                    </Row>
+                  )}
+                  <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
+                    <TextUI size={'small'} text={'cartInfo'} />
+                    <TextUI
+                      size={'small'}
+                      style={{ maxWidth: '70%' }}
+                      text={`${JSON.stringify({ positions: item?.cartInfo?.positions, sum: item?.cartInfo?.sum })}`} />
+                  </Row>
+                  <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
+                    <TextUI size={'small'} text={'cart'} />
+                    <TextUI
+                      size={'small'}
+                      style={{ maxWidth: '70%' }}
+                      text={`${JSON.stringify(item?.cartInfo?.cart, null, 2)}`} />
                   </Row>
                 </View>
               </Col>

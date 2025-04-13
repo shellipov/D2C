@@ -3,11 +3,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 import { IProduct } from '../MockDataStore';
 import { SettingsVars } from '../../settings';
-import { ICart, ICartItem } from './CartData.types';
+import { ICart, ICartInfo, ICartItem, ISimplifiedCart } from './CartData.types';
 
 export interface ICartDataStore {
+  readonly isEmpty: boolean;
   readonly cart: ICart | undefined;
   readonly cartSum: number;
+  readonly simplifiedCart: ISimplifiedCart;
+  readonly totalPositions: number;
+  readonly cartInfo: ICartInfo,
   readonly isCreateOrderDisabled: boolean;
   totalCount (product: IProduct): number;
   isInCart(product: IProduct): boolean;
@@ -36,6 +40,24 @@ class CartDataStore implements ICartDataStore {
   @computed
   public get cartSum () {
     return this.cart?.reduce((acc, i) => acc + (i.product.price * i.numberOfProducts), 0) || 0;
+  }
+
+  @computed
+  public get simplifiedCart () {
+    return this.cart?.map(i => ({ product: { id: i.product.id, name: i.product.name, price: i.product.price }, numberOfProducts: i.numberOfProducts })) || [];
+  }
+
+  @computed
+  public get totalPositions () {
+    return this.cart?.reduce((acc, i) => acc + i.numberOfProducts, 0) || 0;
+  }
+  @computed
+  public get cartInfo (): ICartInfo {
+    return {
+      positions: this.totalPositions,
+      sum: this.cartSum + ' ₽',
+      cart : this.simplifiedCart,
+    };
   }
 
   @computed

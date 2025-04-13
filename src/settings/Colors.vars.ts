@@ -8,4 +8,5 @@ export const ColorsVars = {
   blackBackground: '#1b1b1b',
   white: '#ffffff',
   green: '#008000',
+  violet: '#5d018e',
 };

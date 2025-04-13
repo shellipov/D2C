@@ -1,11 +1,13 @@
-import { IUser } from './UserData.types';
+import { ISimplifiedUser, IUser } from './UserData.types';
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import { ISimplifiedProduct } from '../MockDataStore';
 
 export interface IAuthDataStore {
   readonly isAuth: boolean;
   readonly user?: IUser;
+  readonly simplifiedUser?: ISimplifiedUser;
   login(user: string): Promise<void>;
   logout(): Promise<void>;
   refresh(): Promise<void>;
@@ -32,6 +34,14 @@ class UserDataStore implements IAuthDataStore {
   @computed
   public get user (): IUser | undefined {
     return this._user;
+  }
+
+  @computed
+  public get simplifiedUser (): ISimplifiedUser | undefined {
+    return !!this._user ? {
+      id: this._user?.id,
+      userName: this._user?.userName,
+    } : undefined;
   }
 
   @action.bound

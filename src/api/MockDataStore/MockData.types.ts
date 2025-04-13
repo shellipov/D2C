@@ -28,6 +28,8 @@ export interface IProduct {
     image: string
 }
 
+export interface ISimplifiedProduct extends Pick<IProduct, 'id' | 'name' | 'price'> {}
+
 export type ProductListType = {
 [key in CategoryEnum]: (IProduct | never)[];
 }

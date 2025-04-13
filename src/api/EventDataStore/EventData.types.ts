@@ -1,15 +1,25 @@
-import { IUser } from '../UserDataStore';
-import { ICart } from '../CartDataStore';
+import { ISimplifiedUser } from '../UserDataStore';
+import { ICartInfo } from '../CartDataStore';
+import { ISimplifiedProduct } from '../MockDataStore';
 
-export type EventType = 'addToFavorites' | 'deleteFromFavorites' | 'addToCart' | 'deleteFromCart' | 'createOrder'
+export enum EventTypeEnum {
+    AddToFavorites = 'AddToFavorites',
+    DeleteFromFavorites = 'DeleteFromFavorites',
+    AddToCart = 'AddToCart',
+    DeleteFromCart = 'DeleteFromCart',
+    CreateOrder = 'CreateOrder'
+}
 
 export interface IEvent {
     id: string;
-    user: IUser
-    type: EventType;
-    time: string;
-    cart: ICart;
+    date: string;
+    product?: ISimplifiedProduct,
+    cartInfo: ICartInfo,
+    eventType: EventTypeEnum;
+    user: ISimplifiedUser
 }
+
+export interface ISimplifiedEvent extends Omit<IEvent, 'id'> {}
 
 export enum OrderStorageTypeEnum {
     Events= 'Events'

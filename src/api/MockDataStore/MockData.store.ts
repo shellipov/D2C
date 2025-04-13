@@ -1,4 +1,4 @@
-import { CategoryEnum, ICategoryItem, IProduct, ProductListType } from './MockData.types';
+import { CategoryEnum, ICategoryItem, IProduct, ISimplifiedProduct, ProductListType } from './MockData.types';
 import { categoryItems, productList } from './MockData.data';
 import { computed, makeObservable } from 'mobx';
 
@@ -27,5 +27,15 @@ export class MockDataStore {
 
   public getProduct (id: number) : IProduct | undefined {
     return Object.values(productList).flat().find(i => i.id === id);
+  }
+
+  public getSimplifiedProduct (id: number) : ISimplifiedProduct | undefined {
+    const item = Object.values(productList).flat().find(i => i.id === id);
+
+    return !!item ? {
+      id: item?.id,
+      name: item?.name,
+      price: item?.price,
+    } : undefined;
   }
 }

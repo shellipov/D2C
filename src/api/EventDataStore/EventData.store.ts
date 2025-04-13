@@ -1,7 +1,7 @@
 import { action, makeObservable, observable, runInAction } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
-import { IEvent, OrderStorageTypeEnum } from './EventData.types';
+import { IEvent, ISimplifiedEvent, OrderStorageTypeEnum } from './EventData.types';
 
 export interface IEventDataStore {
     readonly events: IEvent[];
@@ -26,14 +26,15 @@ class EventDataStore implements IEventDataStore {
     };
 
     @action.bound
-    public async addEvent (order: IEvent): Promise<void> {
+    public async addEvent (order: ISimplifiedEvent): Promise<void> {
       try {
         const jsonEvents = await AsyncStorage.getItem(OrderStorageTypeEnum.Events);
         const orders = jsonEvents ? JSON.parse(jsonEvents) : [];
         if (orders) {
-          const newEvents = [order, ...orders];
+          const newEvents = [{ ...order, id: orders.length + 1 }, ...orders];
           await AsyncStorage.setItem(OrderStorageTypeEnum.Events, JSON.stringify(newEvents));
         } else {
+          console.log('>>>> тут?');
           Alert.alert('Error', 'Api error');
         }
 

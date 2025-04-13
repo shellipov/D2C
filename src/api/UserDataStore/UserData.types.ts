@@ -6,3 +6,5 @@ export interface IUser {
     address?: string;
     favorites: number[]
 }
+
+export interface ISimplifiedUser extends Pick<IUser, 'id' | 'userName'> {}

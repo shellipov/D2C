@@ -3,7 +3,7 @@ import Ionicons from 'react-native-vector-icons/AntDesign';
 import { observer } from 'mobx-react';
 import { Image, ScrollView, StyleSheet, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { MockDataStore } from '../../../api';
 import { TextUI } from '../../ui/TextUI';
 import { ButtonUI } from '../../ui/ButtonUI';
@@ -12,6 +12,9 @@ import { First } from '../../shared/Firts';
 import { CartBlockComponent } from '../../blocks/CartBlock';
 import { NavBar } from '../../shared/NavBar';
 import { Screen } from '../../shared/Screen';
+import { EventDataStore, EventTypeEnum } from '../../../api/EventDataStore';
+import { UserDataStore } from '../../../api/UserDataStore';
+import { eventCreator } from '../../../helpers/eventCreator';
 
 export interface IScreenProductCardProps {
     id: number;
@@ -22,13 +25,42 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
   const cartStore = CartDataStore;
   const id = props.route.params.id;
   const dataStore = new MockDataStore();
+  const eventStore = EventDataStore;
+  const userStore = UserDataStore;
   const item = dataStore.getProduct(id);
+  const simplifiedProduct = dataStore.getSimplifiedProduct(id);
   const isInCart = cartStore.isInCart(item);
   const totalCount = cartStore.totalCount(item);
+
+  const getEventData = () => ({
+    user: userStore.simplifiedUser,
+    product: simplifiedProduct,
+    cartInfo: cartStore.cartInfo,
+  });
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  const onAddToCart = useCallback(async ()=>{
+    if (!!item) {
+      await cartStore.addToCart(item);
+      const newEvent = eventCreator({ ...getEventData(), eventType: EventTypeEnum.AddToCart });
+      if (!!newEvent) {
+        eventStore.addEvent(newEvent).then();
+      }
+    }
+  }, [item, cartStore.cart?.length]);
+
+  const onDeleteFromCart = useCallback(async ()=> {
+    if (!!item) {
+      await cartStore.deleteFromCart(item).then();
+      const newEvent = eventCreator({ ...getEventData(), eventType: EventTypeEnum.DeleteFromCart });
+      if (!!newEvent) {
+        eventStore.addEvent(newEvent).then();
+      }
+    }
+  }, [item, cartStore.cart?.length]);
 
   if (!item) {
     return null;
@@ -68,12 +100,12 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
           <First>
             {isInCart && (
               <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                <ButtonUI title={'-'} style={{ flex: 1 }} onPress={() => cartStore.deleteFromCart(item)} />
+                <ButtonUI title={'-'} style={{ flex: 1 }} onPress={onDeleteFromCart} />
                 <TextUI text={`${totalCount}`} size={'title'} style={{ marginHorizontal: 16 }} />
-                <ButtonUI title={'+'} style={{ flex: 1 }} onPress={() => cartStore.addToCart(item)} />
+                <ButtonUI title={'+'} style={{ flex: 1 }} onPress={onAddToCart} />
               </View>
             )}
-            <ButtonUI title={'add to cart'} style={{ width: '100%' }} onPress={() => cartStore.addToCart(item)} />
+            <ButtonUI title={'add to cart'} style={{ width: '100%' }} onPress={onAddToCart} />
           </First>
         </View>
       </View>
