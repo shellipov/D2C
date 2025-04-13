@@ -4,14 +4,14 @@ import { Alert } from 'react-native';
 import { IEvent, OrderStorageTypeEnum } from './EventData.types';
 
 export interface IEventDataStore {
-    readonly orders: IEvent[];
+    readonly events: IEvent[];
     addEvent (order: IEvent): Promise<void>
     refresh(): Promise<void>;
 }
 
 class EventDataStore implements IEventDataStore {
   private static _instance: EventDataStore | null = null;
-    @observable public orders: IEvent[] = [];
+    @observable public events: IEvent[] = [];
 
     private constructor () {
       makeObservable(this);
@@ -49,7 +49,7 @@ class EventDataStore implements IEventDataStore {
         const jsonEvents = await AsyncStorage.getItem(OrderStorageTypeEnum.Events);
         if (!!jsonEvents) {
           runInAction(() => {
-            this.orders = JSON.parse(jsonEvents);
+            this.events = JSON.parse(jsonEvents);
           });
         }
       } catch (error: any) {

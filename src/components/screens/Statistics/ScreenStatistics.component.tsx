@@ -1,27 +1,24 @@
-import { FlatList, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { FlatList, StyleSheet, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
-import { useNavigationHook } from '../../../hooks/useNavigation';
-import { OrderDataStore } from '../../../api/OrderDataStore';
 import { Row } from '../../shared/Row';
 import { NavBar } from '../../shared/NavBar';
-import { UserDataStore } from '../../../api/AuthDataStore';
 import { Screen } from '../../shared/Screen';
 import { ColorsVars } from '../../../settings';
+import { EventDataStore } from '../../../api/EventDataStore';
+import { Col } from '../../shared/Col';
 import { First } from '../../shared/Firts';
 
-export interface IScreenOrderListProps {}
+export interface IScreenStatisticsProps {}
 
-export const ScreenOrderList = observer((props: { route: { params: IScreenOrderListProps } }) => {
+export const ScreenStatistics = observer((props: { route: { params: IScreenStatisticsProps } }) => {
   const isDarkMode = useColorScheme() === 'dark';
-  const user = UserDataStore.user;
-  const orders = OrderDataStore.orders.filter(i => i.user.id === user?.id);
-  const navigation = useNavigationHook();
+  const events = EventDataStore.events;
 
   useEffect(() => {
-    OrderDataStore.refresh().then();
+    EventDataStore.refresh().then();
   }, []);
 
   const backgroundStyle = {
@@ -39,52 +36,44 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
 
   return (
     <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
-      <NavBar title={'Заказы'} />
+      <NavBar title={'Статистика'} />
       <View style={[backgroundStyle, { flex: 1, paddingTop: 8 }]}>
         <First>
 
-          {!orders?.length && (
+          {!events?.length && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <TextUI size={'title'} text={'Tут пока ничего нет'} />
             </View>
           )}
 
           <FlatList
-            data={orders}
+            data={events}
             keyExtractor={(item) => `item_${item.id}`}
             contentContainerStyle={styles.container}
             renderItem={({ item }) => (
-              <TouchableOpacity style={itemStyle} onPress={() => navigation.navigate('Order', { order: item })}>
+              <Col style={itemStyle}>
                 <View style={{ paddingBottom: 6 }}>
                   <Row style={[styles.item]}>
-                    <TextUI size={'large'} text={`Заказ № ${item.id}`} style={{ color: ColorsVars.green }} />
+                    <TextUI size={'small'} text={`${item.type}`} style={{ color: ColorsVars.green }} />
                   </Row>
                   <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'center' }]}>
-                    <TextUI size={'large'} text={'Время'} />
+                    <TextUI size={'small'} text={'Время'} />
                     <TextUI
-                      size={'medium'}
+                      size={'small'}
                       numberOfLines={1}
                       style={{ maxWidth: '70%' }}
-                      text={`${item.date}`} />
+                      text={`${item.time}`} />
                   </Row>
                   <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'center' }]}>
-                    <TextUI size={'large'} text={'Кол-во товаров'} />
+                    <TextUI size={'small'} text={'log'} />
                     <TextUI
-                      size={'medium'}
+                      size={'small'}
                       numberOfLines={1}
                       style={{ maxWidth: '70%' }}
-                      text={`${item.cart.reduce((acc, i) => acc + i.numberOfProducts, 0)} шт`} />
-                  </Row>
-                  <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'center' }]}>
-                    <TextUI size={'large'} text={'Стоимость'} />
-                    <TextUI
-                      size={'medium'}
-                      numberOfLines={1}
-                      style={{ maxWidth: '70%' }}
-                      text={`${item.totalSum || 0} ₽`} />
+                      text={`${item}`} />
                   </Row>
                 </View>
-              </TouchableOpacity>
+              </Col>
             )} />
         </First>
       </View>

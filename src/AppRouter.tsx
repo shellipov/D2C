@@ -13,6 +13,7 @@ import { ScreenCreateOrder } from './components/screens/CreateOrder';
 import { ScreenProfile } from './components/screens/Profile';
 import { ScreenOrder } from './components/screens/Order';
 import { ScreenOrderList } from './components/screens/OrderList';
+import { ScreenStatistics } from './components/screens/Statistics';
 
 export const AppRouter = observer(() => {
   const userStore = UserDataStore;
@@ -34,6 +35,7 @@ export const AppRouter = observer(() => {
     Profile: { screen: ScreenProfile },
     Order: { screen: ScreenOrder },
     OrderList: { screen: ScreenOrderList },
+    Statistics: { screen: ScreenStatistics },
   };
 
   const Stack = createNativeStackNavigator<RootStackParamList>();

@@ -15,7 +15,7 @@ const _DebugPanel: FC<Props> = (props: Props) => {
   const insets = useSafeAreaInsets();
 
   return (
-    <Col style={{ position: 'absolute', left: 8, top: insets.top, zIndex: 2000, backgroundColor: '#ffffff', borderRadius: 3 }} {...props}>
+    <Col style={{ position: 'absolute', right: 16, top: insets.top, zIndex: 2000, backgroundColor: '#ffffff', borderRadius: 3 }} {...props}>
       { DebugVars?.showScreenNames && (
         <TextUI size={'small'} style={{ color: 'red' }} text={'Screen' + route.name} />
       )}

@@ -99,7 +99,7 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
         </View>
 
         <View>
-          <Row style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 50 }}>
+          <Col style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 50 }}>
             <ButtonUI
               title={'Заказы'}
               style={styles.button}
@@ -107,8 +107,12 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
             <ButtonUI
               title={'Статистика'}
               style={styles.button}
+              onPress={() => navigation.navigate('Statistics')} />
+            <ButtonUI
+              title={'Bugs'}
+              style={styles.button}
               onPress={() => navigation.goBack()} />
-          </Row>
+          </Col>
         </View>
       </Screen>
     </TouchableWithoutFeedback>
