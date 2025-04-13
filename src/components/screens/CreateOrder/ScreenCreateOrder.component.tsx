@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, FlatList, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
@@ -11,8 +11,7 @@ import { ColorsVars, SettingsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
 import { Chip } from '../../ui/Chip';
-import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, PaymentMethodsEnum } from '../../../api/OrderDataStore';
-import { OrderDataStore } from '../../../api/OrderDataStore';
+import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, OrderDataStore, PaymentMethodsEnum } from '../../../api/OrderDataStore';
 import { dateFormatter } from '../../../helpers';
 
 export interface IScreenCreateOrderProps {}
@@ -46,6 +45,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
       deliveryOption: orderData.deliveryOptions.find(i => i.type === deliveryOption),
       paymentMethod: orderData.paymentMethods.find(i => i.type === paymentMethod),
     } as IOrder;
+
     const status = await orderData.addOrder(order);
     if (status === OrderCreateStatusEnum.Success) {
       CartDataStore.deleteCart().then();
@@ -57,7 +57,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
         ],
       });
     }
-  }, []);
+  }, [paymentMethod, deliveryOption, user?.name, user?.phone, user?.address]);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,

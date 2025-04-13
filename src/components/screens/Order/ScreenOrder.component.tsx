@@ -59,11 +59,11 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
               <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={user?.address} />
             </Row>
             <Row style={[styles.item, { justifyContent: 'space-between' }]}>
-              <TextUI size={'large'} style={{ color: !user?.address ? ColorsVars.red : ColorsVars.black }} text={'Способ достаки'} />
+              <TextUI size={'large'} text={'Способ достаки'} />
               <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={deliveryOption.title} />
             </Row>
             <Row style={[styles.item, { justifyContent: 'space-between' }]}>
-              <TextUI size={'large'} style={{ color: !user?.address ? ColorsVars.red : ColorsVars.black }} text={'Способ оплаты'} />
+              <TextUI size={'large'} text={'Способ оплаты'} />
               <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={paymentMethod.title} />
             </Row>
           </View>

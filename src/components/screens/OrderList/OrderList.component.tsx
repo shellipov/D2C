@@ -4,18 +4,18 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
-import { CartBlockComponent } from '../../blocks/CartBlock';
 import { OrderDataStore } from '../../../api/OrderDataStore';
 import { Row } from '../../shared/Row';
-import { ButtonUI } from '../../ui/ButtonUI';
 import { NavBar } from '../../shared/NavBar';
+import { UserDataStore } from '../../../api/AuthDataStore';
 
 export interface IScreenOrderListProps {
 }
 
 export const ScreenOrderList = observer((props: { route: { params: IScreenOrderListProps }}) => {
   const isDarkMode = useColorScheme() === 'dark';
-  const orders = OrderDataStore.orders;
+  const user = UserDataStore.user;
+  const orders = OrderDataStore.orders.filter(i => i.user.id === user?.id);
   const navigation = useNavigationHook();
 
   const backgroundStyle = {
