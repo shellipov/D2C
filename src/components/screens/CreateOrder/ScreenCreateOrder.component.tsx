@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
@@ -13,6 +13,8 @@ import { Col } from '../../shared/Col';
 import { Chip } from '../../ui/Chip';
 import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, OrderDataStore, PaymentMethodsEnum } from '../../../api/OrderDataStore';
 import { dateFormatter } from '../../../helpers';
+import { FlatListVars } from '../../../settings/FlatList.vars';
+import { Screen } from '../../shared/Screen';
 
 export interface IScreenCreateOrderProps {}
 
@@ -69,12 +71,12 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
   };
 
   const itemStyle = {
-    backgroundColor: isDarkMode ? 'black' : 'white',
-    borderColor: isDarkMode ? 'black' : 'white',
+    backgroundColor: isDarkMode ? ColorsVars.blackBackground : 'white',
+    borderColor: isDarkMode ? ColorsVars.blackBackground : 'white',
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
       <Row style={{ paddingHorizontal: 16 }}>
         <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
       </Row>
@@ -107,6 +109,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
             scrollEnabled={false}
             numColumns={1}
             contentContainerStyle={styles.container}
+            {... FlatListVars}
             renderItem={({ item }) => {
               return (
                 <View style={[itemStyle, styles.item]}>
@@ -185,7 +188,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
 
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 });
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FlatList, Image, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { FlatList, Image, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
@@ -10,6 +10,8 @@ import { First } from '../../shared/Firts';
 import { ColorsVars, SettingsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
+import { FlatListVars } from '../../../settings/FlatList.vars';
+import { Screen } from '../../shared/Screen';
 
 export interface IScreenShoppingCartProps {}
 
@@ -38,7 +40,7 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
       <Row style={{ paddingHorizontal: 16 }}>
         <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
       </Row>
@@ -61,6 +63,7 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
               scrollEnabled={false}
               numColumns={1}
               contentContainerStyle={styles.container}
+              {... FlatListVars}
               renderItem={({ item }) => {
                 return (
                   <TouchableOpacity style={[itemStyle, styles.item]} onPress={()=> navigation.navigate('ProductCard', { id: item.product.id })}>
@@ -109,7 +112,7 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
           <ButtonUI title={'Оформить заказ'} style={{ width: '50%' }} onPress={() => navigation.navigate('CreateOrder')} />
         </First>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 });
 

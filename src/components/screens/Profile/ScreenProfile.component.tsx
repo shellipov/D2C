@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, Keyboard, SafeAreaView, StyleSheet, TouchableWithoutFeedback, useColorScheme, View } from 'react-native';
+import { Alert, Keyboard, StyleSheet, TouchableWithoutFeedback, useColorScheme, View } from 'react-native';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
@@ -9,6 +9,7 @@ import { UserDataStore } from '../../../api/AuthDataStore';
 import { Row } from '../../shared/Row';
 import { TextInputUI } from '../../ui/TextInputUI';
 import { Col } from '../../shared/Col';
+import { Screen } from '../../shared/Screen';
 import { ColorsVars } from '../../../settings';
 
 export interface IScreenProfileProps {}
@@ -50,7 +51,7 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+      <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
 
         <View style={[{ paddingHorizontal: 16 }]}>
           <Row style={{ justifyContent: 'space-between' }}>
@@ -109,7 +110,7 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
               onPress={() => navigation.goBack()} />
           </Row>
         </View>
-      </SafeAreaView>
+      </Screen>
     </TouchableWithoutFeedback>
   );
 });

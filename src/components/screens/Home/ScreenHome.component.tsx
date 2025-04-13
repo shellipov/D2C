@@ -1,7 +1,7 @@
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/AntDesign';
 import React from 'react';
-import { FlatList, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { FlatList, Image, ScrollView, StatusBar, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { observer } from 'mobx-react';
@@ -9,6 +9,8 @@ import { TextUI } from '../../ui/TextUI';
 import { MockDataStore } from '../../../api';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartBlockComponent } from '../../blocks/CartBlock';
+import { FlatListVars } from '../../../settings/FlatList.vars';
+import { Screen } from '../../shared/Screen';
 
 export interface IScreenHomeProps {}
 
@@ -32,7 +34,7 @@ export const ScreenHome = observer((props: IScreenHomeProps) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
       <View style={[backgroundStyle, { flex: 1 }]}>
         <StatusBar
           barStyle={isDarkMode ? 'light-content' : 'dark-content'}
@@ -45,6 +47,11 @@ export const ScreenHome = observer((props: IScreenHomeProps) => {
         <ScrollView style={[viewStyle, styles.scrollView]}>
           <FlatList
             data={dataStore.categories}
+            keyExtractor={(item) => `item_${item.id}`}
+            scrollEnabled={false}
+            numColumns={3}
+            contentContainerStyle={styles.container}
+            {... FlatListVars}
             renderItem={({ item }) => {
               const onPress = () => navigation.navigate('Category', { category: item.type });
 
@@ -54,17 +61,13 @@ export const ScreenHome = observer((props: IScreenHomeProps) => {
                   <Image src={item.image} resizeMode="contain" style={styles.image} />
                 </TouchableOpacity>
               );
-            }}
-            keyExtractor={(item) => `item_${item.id}`}
-            scrollEnabled={false}
-            numColumns={3}
-            contentContainerStyle={styles.container} />
+            }} />
         </ScrollView>
         <View style={{ position: 'absolute', right: 16, bottom: 16 }}>
           <CartBlockComponent />
         </View>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 });
 

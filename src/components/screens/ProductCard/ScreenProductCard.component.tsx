@@ -1,7 +1,7 @@
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/AntDesign';
 import { observer } from 'mobx-react';
-import { Image, SafeAreaView, ScrollView, StyleSheet, useColorScheme, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React from 'react';
 import { MockDataStore } from '../../../api';
@@ -10,7 +10,8 @@ import { ButtonUI } from '../../ui/ButtonUI';
 import { CartDataStore } from '../../../api/CartDataStore';
 import { First } from '../../shared/Firts';
 import { CartBlockComponent } from '../../blocks/CartBlock';
-import {NavBar} from "../../shared/NavBar";
+import { NavBar } from '../../shared/NavBar';
+import { Screen } from '../../shared/Screen';
 
 export interface IScreenProductCardProps {
     id: number;
@@ -34,7 +35,7 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
       <NavBar title={'Карточка товара'} />
       <ScrollView style={backgroundStyle}>
         <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -79,7 +80,7 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
       <View style={{ position: 'absolute', right: 16, bottom: 124 }}>
         <CartBlockComponent />
       </View>
-    </SafeAreaView>
+    </Screen>
 
   );
 });

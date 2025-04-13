@@ -1,2 +1,2 @@
-export * from './settings.vars';
-export * from './colors.vars';
+export * from './Settings.vars';
+export * from './Colors.vars';

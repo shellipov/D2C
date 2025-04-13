@@ -1,4 +1,4 @@
-import { FlatList, Image, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { FlatList, Image, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React from 'react';
 import { observer } from 'mobx-react';
@@ -9,6 +9,10 @@ import Ionicons from 'react-native-vector-icons/AntDesign';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartBlockComponent } from '../../blocks/CartBlock';
 import { NavBar } from '../../shared/NavBar';
+import { FlatListVars } from '../../../settings/FlatList.vars';
+import { Row } from '../../shared/Row';
+import { Col } from '../../shared/Col';
+import { Screen } from '../../shared/Screen';
 
 export interface IScreenCategoryProps {
     category: CategoryEnum
@@ -36,20 +40,25 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
       <NavBar title={dataStore.getCategoryName(category)} />
       <View style={[backgroundStyle, { flex: 1, position: 'relative' }]}>
         <ScrollView style={[viewStyle, styles.scrollView]}>
           <FlatList
             data={data}
+            keyExtractor={(item) => `item_${item.id}`}
+            scrollEnabled={false}
+            numColumns={1}
+            contentContainerStyle={styles.container}
+            {... FlatListVars}
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity style={[itemStyle, styles.item]} onPress={()=> navigation.navigate('ProductCard', { id: item.id })}>
-                  <View style={{ flex: 1, flexDirection: 'row' }}>
+                  <Row style={{ flex: 1 }}>
                     <View style={{ flex: 1, flexDirection: 'column', marginRight: 16, backgroundColor: 'gray', borderRadius: 12 }}>
                       <Image src={item.image} resizeMode="cover" style={styles.image} />
                     </View>
-                    <View style={{ flex: 2, flexDirection: 'column' }}>
+                    <Col style={{ flex: 2 }}>
                       <View style={{ marginVertical: 6 }}>
                         <TextUI text={item.name} size={'large'} numberOfLines={1} />
                       </View>
@@ -59,25 +68,21 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
                       <View style={{ marginVertical: 4 }}>
                         <TextUI text={item.price + ' ₽'} size={'medium'} style={{ color: 'green' }} />
                       </View>
-                      <View style={{ marginVertical: 4, flexDirection: 'row', alignItems: 'center' }}>
+                      <Row style={{ marginVertical: 4, flexDirection: 'row', alignItems: 'center' }}>
                         <Ionicons name={'star'} size={20} color={'orange'} />
                         <TextUI text={` - ${item.productRating}`} size={'medium'} />
-                      </View>
-                    </View>
-                  </View>
+                      </Row>
+                    </Col>
+                  </Row>
                 </TouchableOpacity>
               );
-            }}
-            keyExtractor={(item) => `item_${item.id}`}
-            scrollEnabled={false}
-            numColumns={1}
-            contentContainerStyle={styles.container} />
+            }} />
         </ScrollView>
         <View style={{ position: 'absolute', right: 16, bottom: 16 }}>
           <CartBlockComponent />
         </View>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 });
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, SafeAreaView, ScrollView, StyleSheet, useColorScheme, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
@@ -9,6 +9,8 @@ import { ColorsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
 import { IOrder } from '../../../api/OrderDataStore';
+import { FlatListVars } from '../../../settings/FlatList.vars';
+import { Screen } from '../../shared/Screen';
 
 export interface IScreenOrderProps {
     order: IOrder
@@ -34,7 +36,7 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
       <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
         <TextUI size={'bigTitle'} text={'Заказ успешно создан'} style={{ paddingBottom: 35, paddingTop: 75, color: ColorsVars.green }} />
       </Row>
@@ -74,6 +76,7 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
             scrollEnabled={false}
             numColumns={1}
             contentContainerStyle={styles.container}
+            {... FlatListVars}
             renderItem={({ item }) => {
               return (
                 <View style={[itemStyle, styles.item]}>
@@ -113,7 +116,7 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
           </Row>
         </Col>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 });
 

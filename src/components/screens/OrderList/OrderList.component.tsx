@@ -1,4 +1,4 @@
-import { FlatList, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React from 'react';
 import { observer } from 'mobx-react';
@@ -8,6 +8,8 @@ import { OrderDataStore } from '../../../api/OrderDataStore';
 import { Row } from '../../shared/Row';
 import { NavBar } from '../../shared/NavBar';
 import { UserDataStore } from '../../../api/AuthDataStore';
+import { FlatListVars } from '../../../settings/FlatList.vars';
+import { Screen } from '../../shared/Screen';
 
 export interface IScreenOrderListProps {
 }
@@ -33,12 +35,17 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
       <NavBar title={'Заказы'} />
       <View style={[backgroundStyle, { flex: 1, position: 'relative' }]}>
         <ScrollView style={[viewStyle, styles.scrollView]}>
           <FlatList
             data={orders}
+            keyExtractor={(item) => `item_${item.id}`}
+            scrollEnabled={false}
+            numColumns={1}
+            contentContainerStyle={styles.container}
+            {... FlatListVars}
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity
@@ -64,14 +71,10 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
                   </View>
                 </TouchableOpacity>
               );
-            }}
-            keyExtractor={(item) => `item_${item.id}`}
-            scrollEnabled={false}
-            numColumns={1}
-            contentContainerStyle={styles.container} />
+            }} />
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 });
 
