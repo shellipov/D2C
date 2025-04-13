@@ -7,7 +7,7 @@ import { useNavigationHook } from '../../../hooks/useNavigation';
 import { OrderDataStore } from '../../../api/OrderDataStore';
 import { Row } from '../../shared/Row';
 import { NavBar } from '../../shared/NavBar';
-import { UserDataStore } from '../../../api/AuthDataStore';
+import { UserDataStore } from '../../../api/UserDataStore';
 import { Screen } from '../../shared/Screen';
 import { ColorsVars } from '../../../settings';
 import { First } from '../../shared/Firts';

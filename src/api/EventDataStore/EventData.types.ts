@@ -1,4 +1,4 @@
-import { IUser } from '../AuthDataStore';
+import { IUser } from '../UserDataStore';
 import { ICart } from '../CartDataStore';
 
 export type EventType = 'addToFavorites' | 'deleteFromFavorites' | 'addToCart' | 'deleteFromCart' | 'createOrder'

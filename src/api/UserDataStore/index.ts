@@ -1,2 +1,2 @@
 export { UserStore as UserDataStore } from './UserDataStore';
-export * from './AuthData.types';
+export * from './UserData.types';

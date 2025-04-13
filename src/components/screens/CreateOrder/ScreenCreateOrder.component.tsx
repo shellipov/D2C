@@ -6,7 +6,7 @@ import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartDataStore } from '../../../api/CartDataStore';
 import { ButtonUI } from '../../ui/ButtonUI';
-import { UserDataStore } from '../../../api/AuthDataStore';
+import { UserDataStore } from '../../../api/UserDataStore';
 import { ColorsVars, SettingsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';

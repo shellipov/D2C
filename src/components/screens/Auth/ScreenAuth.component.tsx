@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { TextUI } from '../../ui/TextUI';
 import { TextInputUI } from '../../ui/TextInputUI';
 import { ButtonUI } from '../../ui/ButtonUI';
-import { UserDataStore } from '../../../api/AuthDataStore';
+import { UserDataStore } from '../../../api/UserDataStore';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { observer } from 'mobx-react';
 import { Col } from '../../shared/Col';

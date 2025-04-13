@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList, ScreenName } from './AppPouter.types';
 import { ScreenAuth } from './components/screens/Auth';
-import { UserDataStore } from './api/AuthDataStore';
+import { UserDataStore } from './api/UserDataStore';
 import { observer } from 'mobx-react';
 import { ScreenCategory } from './components/screens/Category';
 import { ScreenShoppingCart } from './components/screens/ShoppingСart';
