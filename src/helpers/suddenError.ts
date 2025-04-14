@@ -16,7 +16,7 @@ export async function suddenError (errorMessage?: string): Promise<void> {
       return;
     }
 
-    const probability = probabilityLevel / 10;
+    const probability = probabilityLevel / 100;
     const randomValue = Math.random();
 
     if (randomValue < probability) {

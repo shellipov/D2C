@@ -28,7 +28,9 @@ export const Screen = observer((props: IScreenProps) => {
         )}
         <View style={styles.errorView}>
           <TextUI size={'bigTitle'} style={styles.errorText} text={'Ошибка обновления\nданных'} />
-          <ButtonUI title={'Обновить'} style={styles.button} textColor={ColorsVars.red} onPress={props.onRefresh} />
+          {!!props.onRefresh && (
+            <ButtonUI title={'Обновить'} style={styles.button} textColor={ColorsVars.red} onPress={props.onRefresh} />
+          )}
         </View>
       </SafeAreaView>
     );

@@ -24,6 +24,18 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
     OrderDataStore.refresh().then();
   }, []);
 
+  const isError = UserDataStore.isError || OrderDataStore.isError;
+
+  const onRefresh = () => {
+    if (UserDataStore.isError) {
+      UserDataStore.refresh().then();
+    }
+
+    if (OrderDataStore.isError) {
+      OrderDataStore.refresh().then();
+    }
+  };
+
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -38,7 +50,10 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
   };
 
   return (
-    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen
+      style={styles.screen}
+      isError={isError}
+      onRefresh={onRefresh}>
       <NavBar title={'Заказы'} />
       <View style={[backgroundStyle, { flex: 1, paddingTop: 8 }]}>
         <First>
@@ -48,7 +63,6 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
               <TextUI size={'title'} text={'Tут пока ничего нет'} />
             </View>
           )}
-
           <FlatList
             data={orders}
             keyExtractor={(item) => `item_${item.id}`}
@@ -93,6 +107,10 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
 });
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: ColorsVars.white,
+  },
   container: {
     paddingBottom: 20,
   },

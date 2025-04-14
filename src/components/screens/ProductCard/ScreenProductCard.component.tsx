@@ -15,6 +15,7 @@ import { Screen } from '../../shared/Screen';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../api/EventDataStore';
 import { UserDataStore } from '../../../api/UserDataStore';
 import { eventCreator } from '../../../helpers/eventCreator';
+import { ColorsVars } from '../../../settings';
 
 export interface IScreenProductCardProps {
     id: number;
@@ -30,6 +31,23 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
   const item = productStore.getProduct(id);
   const isInCart = cartStore.isInCart(item);
   const totalCount = cartStore.totalCount(item);
+
+  const isError = CartDataStore.isError || EventDataStore.isError || UserDataStore.isError || ProductDataStore.isError;
+
+  const onRefresh = () => {
+    if (CartDataStore.isError) {
+      CartDataStore.refresh().then();
+    }
+    if (EventDataStore.isError) {
+      EventDataStore.refresh().then();
+    }
+    if (UserDataStore.isError) {
+      UserDataStore.refresh().then();
+    }
+    if (ProductDataStore.isError) {
+      ProductDataStore.refresh().then();
+    }
+  };
 
   const getEventData = () => ({
     user: userStore.simplifiedUser,
@@ -67,7 +85,10 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
   }
 
   return (
-    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen
+      style={styles.screen}
+      isError={isError}
+      onRefresh={onRefresh}>
       <NavBar title={'Карточка товара'} />
       <ScrollView style={backgroundStyle}>
         <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -119,6 +140,10 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
 });
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: ColorsVars.white,
+  },
   imageView: {
     flex: 1,
     flexDirection: 'row',

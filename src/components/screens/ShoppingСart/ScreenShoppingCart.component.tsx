@@ -35,7 +35,10 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
   };
 
   return (
-    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen
+      style={styles.screen}
+      isError={CartDataStore.isError}
+      onRefresh={CartDataStore.refresh}>
       <Row style={{ paddingHorizontal: 16 }}>
         <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
       </Row>
@@ -86,6 +89,10 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
 });
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: ColorsVars.white,
+  },
   scrollView: {
     flex: 1,
     borderWidth: 1,

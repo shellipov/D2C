@@ -4,19 +4,20 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
-import { CartDataStore } from '../../../api/CartDataStore';
 import { ButtonUI } from '../../ui/ButtonUI';
-import { UserDataStore } from '../../../api/UserDataStore';
 import { ColorsVars, SettingsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
 import { Chip } from '../../shared/Chip';
-import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, OrderDataStore, PaymentMethodsEnum } from '../../../api/OrderDataStore';
 import { dateFormatter } from '../../../helpers';
 import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Screen } from '../../shared/Screen';
-import { eventCreator } from '../../../helpers/eventCreator';
+import { eventCreator } from '../../../helpers';
+import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, OrderDataStore, PaymentMethodsEnum } from '../../../api/OrderDataStore';
+import { CartDataStore } from '../../../api/CartDataStore';
+import { UserDataStore } from '../../../api/UserDataStore';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../api/EventDataStore';
+import { ProductDataStore } from '../../../api';
 
 export interface IScreenCreateOrderProps {}
 
@@ -33,6 +34,26 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsEnum>(PaymentMethodsEnum.Card);
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOptionsEnum>(DeliveryOptionsEnum.Hand);
+
+  const isError = CartDataStore.isError || EventDataStore.isError || UserDataStore.isError || ProductDataStore.isError || OrderDataStore.isError;
+
+  const onRefresh = () => {
+    if (CartDataStore.isError) {
+      CartDataStore.refresh().then();
+    }
+    if (EventDataStore.isError) {
+      EventDataStore.refresh().then();
+    }
+    if (UserDataStore.isError) {
+      UserDataStore.refresh().then();
+    }
+    if (ProductDataStore.isError) {
+      ProductDataStore.refresh().then();
+    }
+    if (OrderDataStore.isError) {
+      OrderDataStore.refresh().then();
+    }
+  };
 
   const getEventData = () => ({
     user: UserDataStore.simplifiedUser,
@@ -93,7 +114,10 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
   };
 
   return (
-    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen
+      style={styles.screen}
+      isError={isError}
+      onRefresh={onRefresh}>
       <Row style={{ paddingHorizontal: 16 }}>
         <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
       </Row>
@@ -210,6 +234,10 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
 });
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: ColorsVars.white,
+  },
   scrollView: {
     flex: 1,
     borderWidth: 1,

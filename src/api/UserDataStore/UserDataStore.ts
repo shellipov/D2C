@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 import { errorService } from '../ErrorDataStore/errorService';
 import { ErrorTypeEnum } from '../ErrorDataStore';
+import { suddenError } from '../../helpers';
 
 export interface IAuthDataStore {
   readonly isAuth: boolean;
@@ -119,18 +120,19 @@ class UserDataStore implements IAuthDataStore {
   @action.bound
   public async refresh (): Promise<void> {
     try {
+      await suddenError('UserDataStore: refresh');
       const jsonUser = await AsyncStorage.getItem('authUser');
       runInAction(() => {
         UserStore._user = jsonUser ? JSON.parse(jsonUser) : undefined;
         UserStore.isAuth = !!this._user;
         UserStore.isEmpty = false;
-        this.isError = false;
+        UserStore.isError = false;
       });
     } catch (error: any) {
       runInAction(() => {
         this.isError = true;
       });
-      await errorService({ type:ErrorTypeEnum.LoadData, error });
+      await errorService({ type:ErrorTypeEnum.LoadData, error, withoutAlerts: true });
     }
   }
 }

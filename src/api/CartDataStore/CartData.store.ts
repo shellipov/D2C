@@ -27,7 +27,7 @@ export interface ICartDataStore {
 class CartDataStore implements ICartDataStore {
   private static _instance: CartDataStore | null = null;
   @observable public isEmpty: boolean = true;
-  @observable public isError: boolean = true;
+  @observable public isError: boolean = false;
   @observable public cart: ICart | undefined = undefined;
 
   private constructor () {

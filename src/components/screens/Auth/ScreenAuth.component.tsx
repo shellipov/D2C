@@ -9,6 +9,7 @@ import { useNavigationHook } from '../../../hooks/useNavigation';
 import { observer } from 'mobx-react';
 import { Col } from '../../shared/Col';
 import { Screen } from '../../shared/Screen';
+import { ColorsVars } from '../../../settings';
 
 export interface IScreenAuthProps {}
  type Props = IScreenAuthProps | undefined
@@ -44,7 +45,7 @@ export const ScreenAuth = observer((props: Props) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+      <Screen style={styles.screen} isError={UserDataStore.isError} onRefresh={UserDataStore.refresh}>
         <Col style={blockStyle}>
           <TextUI text={'Введите Ваш ник'} size={'title'} />
           <TextUI text={'и постарайтесь не забыть его'} size={'small'} />
@@ -57,5 +58,9 @@ export const ScreenAuth = observer((props: Props) => {
 });
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: ColorsVars.white,
+  },
   input: { textAlign: 'center' },
 });

@@ -15,13 +15,17 @@ import { ScreenOrderList } from './components/screens/OrderList';
 import { ScreenStatistics } from './components/screens/Statistics';
 import { ScreenErrors } from './components/screens/Errors';
 import { ScreenMain } from './components/screens/Main';
+import { SafeAreaView, View, StyleSheet } from 'react-native';
+import { TextUI } from './components/ui/TextUI';
+import { ButtonUI } from './components/ui/ButtonUI';
+import { ColorsVars } from './settings';
 
 export const AppRouter = observer(() => {
-  const userStore = UserDataStore;
+  const { isError, isEmpty, isAuth } = UserDataStore;
 
   useEffect(() => {
-    userStore.refresh().then();
-  }, [userStore.isAuth]);
+    UserDataStore.refresh().then();
+  }, [isAuth]);
 
   const NOT_AUTH_SCREENS: { [key in ScreenName]?: { screen: React.ComponentType<any>; navigationOptions?: any } } = {
     Auth: { screen: ScreenAuth },
@@ -42,14 +46,25 @@ export const AppRouter = observer(() => {
 
   const Stack = createNativeStackNavigator<RootStackParamList>();
 
-  if (userStore.isEmpty) {
+  if (isError && isEmpty) {
+    return (
+      <SafeAreaView style={styles.screen}>
+        <View style={styles.errorView}>
+          <TextUI size={'bigTitle'} style={styles.errorText} text={'Ошибка обновления\nданных'} />
+          <ButtonUI title={'Обновить'} style={styles.button} textColor={ColorsVars.red} onPress={UserDataStore.refresh} />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (UserDataStore.isEmpty) {
     return null;
   }
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={userStore.isAuth ? 'Main' : 'Auth'} screenOptions={{ headerShown: false }}>
-        {userStore.isAuth && (
+      <Stack.Navigator initialRouteName={UserDataStore.isAuth ? 'Main' : 'Auth'} screenOptions={{ headerShown: false }}>
+        {UserDataStore.isAuth && (
           (Object.keys(AUTH_SCREENS) as (keyof typeof AUTH_SCREENS)[]).map((name) => (
             <Stack.Screen
               key={name} name={name} component={AUTH_SCREENS[name]!.screen}
@@ -63,4 +78,26 @@ export const AppRouter = observer(() => {
       </Stack.Navigator>
     </NavigationContainer>
   );
+});
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: ColorsVars.white,
+  },
+  errorView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  errorText: {
+    color: ColorsVars.red,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: ColorsVars.white,
+    borderColor: ColorsVars.red,
+    marginTop: 60,
+  },
 });

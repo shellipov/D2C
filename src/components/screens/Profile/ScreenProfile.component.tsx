@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, Keyboard, StyleSheet, TouchableWithoutFeedback, useColorScheme, View } from 'react-native';
+import { Alert, Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
@@ -15,7 +15,6 @@ import { ColorsVars } from '../../../settings';
 export interface IScreenProfileProps {}
 
 export const ScreenProfile = observer((props: { route: { params: IScreenProfileProps }}) => {
-  const isDarkMode = useColorScheme() === 'dark';
   const userStore = UserDataStore;
   const cartStore = CartDataStore;
   const navigation = useNavigationHook();
@@ -38,20 +37,38 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
     setAddress(text);
   }, [name]);
 
+  const onRefresh = () => {
+    if (UserDataStore.isError) {
+      UserDataStore.refresh().then();
+      UserDataStore.refresh().then();
+    }
+    if (CartDataStore.isError) {
+      CartDataStore.refresh().then();
+    }
+  };
+
 
   const logout = useCallback(()=> {
     Alert.alert(
       'Выйти из приложения?',
       'Ваша корзина удалится',
       [
-        { text: 'Да', onPress: () => {userStore.logout().then();cartStore.deleteCart().then();} },
+        { text: 'Да', onPress: async () => {
+          await userStore.logout();
+          if (!userStore.user) {
+            cartStore.deleteCart().then();
+          }
+        } },
         { text: 'Нет' },
       ]);
   }, []);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+      <Screen
+        style={styles.screen}
+        isError={UserDataStore.isError || CartDataStore.isError}
+        onRefresh={onRefresh}>
 
         <View style={[{ paddingHorizontal: 16 }]}>
           <Row style={{ justifyContent: 'space-between' }}>
@@ -120,6 +137,10 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
 });
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: ColorsVars.white,
+  },
   userDataBlock: {
     flex: 1,
     alignItems: 'center',

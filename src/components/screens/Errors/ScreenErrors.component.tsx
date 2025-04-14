@@ -35,7 +35,10 @@ export const ScreenErrors = observer((props: { route: { params: IScreenErrorsPro
   };
 
   return (
-    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen
+      style={styles.screen}
+      isError={ErrorDataStore.isError}
+      onRefresh={ErrorDataStore.refresh}>
       <NavBar title={'Ошибки'} />
       <View style={[backgroundStyle, { flex: 1, paddingTop: 8 }]}>
         <First>
@@ -78,6 +81,10 @@ export const ScreenErrors = observer((props: { route: { params: IScreenErrorsPro
 });
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: ColorsVars.white,
+  },
   container: {
     paddingBottom: 20,
   },

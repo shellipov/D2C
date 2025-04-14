@@ -2,7 +2,7 @@ import { FlatList, Image, ScrollView, StyleSheet, TouchableOpacity, useColorSche
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React from 'react';
 import { observer } from 'mobx-react';
-import { CategoryEnum, ProductDataStore } from '../../../api';
+import { CartDataStore, CategoryEnum, ProductDataStore } from '../../../api';
 import { TextUI } from '../../ui/TextUI';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/AntDesign';
@@ -13,6 +13,7 @@ import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
 import { Screen } from '../../shared/Screen';
+import { ColorsVars } from '../../../settings';
 
 export interface IScreenCategoryProps {
     category: CategoryEnum
@@ -24,6 +25,15 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   const category = props.route.params.category;
   const navigation = useNavigationHook();
   const data = productStore.getCategory(category);
+
+  const onRefresh = () => {
+    if (ProductDataStore.isError) {
+      ProductDataStore.refresh().then();
+    }
+    if (CartDataStore.isError) {
+      CartDataStore.refresh().then();
+    }
+  };
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -40,7 +50,10 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   };
 
   return (
-    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen
+      style={styles.screen}
+      isError={ProductDataStore.isError || CartDataStore.isError}
+      onRefresh={onRefresh}>
       <NavBar title={productStore.getCategoryName(category)} />
       <View style={[backgroundStyle, { flex: 1, position: 'relative' }]}>
         <ScrollView style={[viewStyle, styles.scrollView]}>
@@ -87,6 +100,10 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
 });
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: ColorsVars.white,
+  },
   scrollView: {
     flex: 1,
     borderWidth: 1,
