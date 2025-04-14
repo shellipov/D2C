@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from 'react-native';
-import { TextUI } from '../TextUI';
+import { TextUI } from '../../ui/TextUI';
 import React from 'react';
 import { ColorsVars } from '../../../settings';
 

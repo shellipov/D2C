@@ -1,10 +1,10 @@
 import { ISimplifiedProduct } from '../api';
-import { ICartInfo } from '../api/CartDataStore';
-import { ISimplifiedUser } from '../api/UserDataStore';
+import { ICartInfo } from '../api';
+import { ISimplifiedUser } from '../api';
 import { EventTypeEnum, ISimplifiedEvent } from '../api/EventDataStore';
 import { dateFormatter } from './dateFormatter';
 import { Alert } from 'react-native';
-import { IOrderOptions } from '../api/OrderDataStore';
+import { IOrderOptions } from '../api';
 
 interface Props {
   cartInfo: ICartInfo,

@@ -109,9 +109,9 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
               style={styles.button}
               onPress={() => navigation.navigate('Statistics')} />
             <ButtonUI
-              title={'Bugs'}
-              style={styles.button}
-              onPress={() => navigation.goBack()} />
+              title={'Bugs'} textColor={ColorsVars.red}
+              style={[styles.button, styles.redButton]}
+              onPress={() => navigation.navigate('Errors')} />
           </Col>
         </View>
       </Screen>
@@ -135,5 +135,9 @@ const styles = StyleSheet.create({
     width: '35%',
     marginHorizontal: 8,
     backgroundColor: ColorsVars.white,
-    borderColor: ColorsVars.gray },
+    borderColor: ColorsVars.gray,
+  },
+  redButton: {
+    borderColor: ColorsVars.red,
+  },
 });

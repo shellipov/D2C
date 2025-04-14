@@ -6,16 +6,17 @@ import { TextUI } from '../../../ui/TextUI';
 import { ButtonUI } from '../../../ui/ButtonUI';
 import { useNavigationHook } from '../../../../hooks/useNavigation';
 import { CartDataStore, ICartItem } from '../../../../api/CartDataStore';
-import { eventCreator } from '../../../../helpers/eventCreator';
+import { eventCreator } from '../../../../helpers';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../../api/EventDataStore';
 import { UserDataStore } from '../../../../api/UserDataStore';
 import { ProductDataStore } from '../../../../api';
+import { observer } from 'mobx-react';
 
 export interface ICardItemProps{
     item: ICartItem
 }
 
-export const CardItem = (props: ICardItemProps)=> {
+export const CardItem = observer((props: ICardItemProps)=> {
   const item = props.item;
   const navigation = useNavigationHook();
   const isDarkMode = useColorScheme() === 'dark';
@@ -44,7 +45,7 @@ export const CardItem = (props: ICardItemProps)=> {
       }
     }
   }, [item, cartStore.cart?.length]);
-
+  // тут не норм
   const onDeleteFromCart = useCallback(async ()=> {
     if (!!item) {
       await cartStore.deleteFromCart(item.product).then();
@@ -86,7 +87,7 @@ export const CardItem = (props: ICardItemProps)=> {
       </Row>
     </TouchableOpacity>
   );
-};
+});
 
 const styles = StyleSheet.create({
   item: {

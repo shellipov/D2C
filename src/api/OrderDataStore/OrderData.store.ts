@@ -1,7 +1,9 @@
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
 import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, orderStorageTypeEnum, PaymentMethodsEnum } from './OrderData.types';
+import { errorService } from '../ErrorDataStore/errorService';
+import { errorStorageTypeEnum, ErrorTypeEnum } from '../ErrorDataStore';
+import { suddenError } from '../../helpers';
 
 export interface IOrderDataStore {
     readonly orders: IOrder[];
@@ -64,13 +66,14 @@ class OrderDataStore implements IOrderDataStore {
     @action.bound
     public async addOrder (order: IOrder): Promise<OrderCreateStatusEnum> {
       try {
+        await suddenError('OrderDataStore: addOrder');
         const jsonOrders = await AsyncStorage.getItem(orderStorageTypeEnum.Orders);
         const orders = jsonOrders ? JSON.parse(jsonOrders) : [];
         if (orders) {
           const newOrders = [order, ...orders];
           await AsyncStorage.setItem(orderStorageTypeEnum.Orders, JSON.stringify(newOrders));
         } else {
-          Alert.alert('Error', 'Api error');
+          await errorService({ type:ErrorTypeEnum.CreateOrder });
 
           return OrderCreateStatusEnum.Error;
         }
@@ -79,25 +82,32 @@ class OrderDataStore implements IOrderDataStore {
 
         return OrderCreateStatusEnum.Success;
       } catch (error: any) {
-        Alert.alert('Error', error?.message || 'Api error');
+        await errorService({ type:ErrorTypeEnum.CreateOrder, error });
 
         return OrderCreateStatusEnum.Error;
       }
     }
 
-    @action.bound
-    public async refresh (): Promise<void> {
-      try {
-        const jsonOrders = await AsyncStorage.getItem(orderStorageTypeEnum.Orders);
-        if (!!jsonOrders) {
-          runInAction(() => {
-            this.orders = JSON.parse(jsonOrders);
-          });
-        }
-      } catch (error: any) {
-        Alert.alert('Error', error?.message || 'Api error');
-      }
+  @action.bound
+    public async clear (): Promise<void> {
+      await AsyncStorage.removeItem(orderStorageTypeEnum.Orders);
+      this.refresh().then();
     }
+
+    @action.bound
+  public async refresh (): Promise<void> {
+    try {
+      await suddenError('OrderDataStore: refresh');
+      const jsonOrders = await AsyncStorage.getItem(orderStorageTypeEnum.Orders);
+      if (!!jsonOrders) {
+        runInAction(() => {
+          this.orders = JSON.parse(jsonOrders);
+        });
+      }
+    } catch (error: any) {
+      await errorService({ type:ErrorTypeEnum.LoadData, error });
+    }
+  }
 }
 
 export const OrderStore = OrderDataStore.instance;

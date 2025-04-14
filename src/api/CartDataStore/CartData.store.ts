@@ -4,6 +4,9 @@ import { Alert } from 'react-native';
 import { IProduct } from '../ProductDataStore';
 import { SettingsVars } from '../../settings';
 import { ICart, ICartInfo, ICartItem, ISimplifiedCart } from './CartData.types';
+import { errorService } from '../ErrorDataStore/errorService';
+import { ErrorTypeEnum } from '../ErrorDataStore';
+import { suddenError } from '../../helpers';
 
 export interface ICartDataStore {
   readonly isEmpty: boolean;
@@ -86,20 +89,21 @@ class CartDataStore implements ICartDataStore {
 
       await this.refresh();
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Api error');
+      await errorService({ type:ErrorTypeEnum.LoadData, error });
     }
   }
 
   @action.bound
   public async addToCart (product: IProduct): Promise<void> {
     try {
+      await suddenError('CartDataStore: addToCart');
       const jsonCart = await AsyncStorage.getItem('cart');
       const cart: ICart = jsonCart ? JSON.parse(jsonCart) : [];
       const isExistingProduct = cart.find(i => i.product.id === product.id);
 
       if (isExistingProduct) {
         if (product.quantityOfGoods === isExistingProduct.numberOfProducts) {
-          Alert.alert('Maximum number of products', 'Unfortunately, we don\'t have any more');
+          Alert.alert('Максимальное колличество товаров', 'К сожалению у нас больше нет');
 
           return;
         }
@@ -118,13 +122,14 @@ class CartDataStore implements ICartDataStore {
 
       await this.refresh();
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Api error');
+      await errorService({ type:ErrorTypeEnum.AddToCart, error });
     }
   }
 
   @action.bound
   public async deleteFromCart (product: IProduct): Promise<void> {
     try {
+      await suddenError('CartDataStore: deleteFromCart');
       const jsonCart = await AsyncStorage.getItem('cart');
       const cart: ICart = jsonCart ? JSON.parse(jsonCart) : [];
       const cartProduct = cart.find(i => i.product.id === product.id);
@@ -138,17 +143,18 @@ class CartDataStore implements ICartDataStore {
         }
         await AsyncStorage.setItem('cart', JSON.stringify(cart));
       } else {
-        Alert.alert('Error', 'Api error');
+        await errorService({ type:ErrorTypeEnum.DeleteFromCart });
       }
       await this.refresh();
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Api error');
+      await errorService({ type:ErrorTypeEnum.DeleteFromCart, error });
     }
   }
 
   @action.bound
   public async refresh (): Promise<void> {
     try {
+      await suddenError('CartDataStore: refresh');
       const jsonCart = await AsyncStorage.getItem('cart');
       if (!jsonCart) {
         const newCart = [] as ICart;
@@ -160,7 +166,7 @@ class CartDataStore implements ICartDataStore {
       }
       runInAction(()=> this.isEmpty = false);
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Api error');
+      await errorService({ type:ErrorTypeEnum.LoadData, error });
     }
   }
 }

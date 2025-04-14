@@ -14,6 +14,7 @@ import { ScreenProfile } from './components/screens/Profile';
 import { ScreenOrder } from './components/screens/Order';
 import { ScreenOrderList } from './components/screens/OrderList';
 import { ScreenStatistics } from './components/screens/Statistics';
+import { ScreenErrors } from './components/screens/Errors';
 
 export const AppRouter = observer(() => {
   const userStore = UserDataStore;
@@ -36,6 +37,7 @@ export const AppRouter = observer(() => {
     Order: { screen: ScreenOrder },
     OrderList: { screen: ScreenOrderList },
     Statistics: { screen: ScreenStatistics },
+    Errors: { screen: ScreenErrors },
   };
 
   const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -52,8 +54,7 @@ export const AppRouter = observer(() => {
             <Stack.Screen
               key={name} name={name} component={AUTH_SCREENS[name]!.screen}
               options={AUTH_SCREENS[name]!.navigationOptions} />
-          ))
-        )}
+          )))}
         {(Object.keys(NOT_AUTH_SCREENS) as (keyof typeof NOT_AUTH_SCREENS)[]).map((name) => (
           <Stack.Screen
             key={name} name={name} component={NOT_AUTH_SCREENS[name]!.screen}

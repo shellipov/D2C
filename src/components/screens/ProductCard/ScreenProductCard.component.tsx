@@ -51,6 +51,7 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
     }
   }, [item, cartStore.cart?.length]);
 
+  // тут норм
   const onDeleteFromCart = useCallback(async ()=> {
     if (!!item) {
       await cartStore.deleteFromCart(item).then();

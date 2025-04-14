@@ -7,6 +7,7 @@ import { IScreenProfileProps } from './components/screens/Profile';
 import { IScreenOrderProps } from './components/screens/Order';
 import { IScreenOrderListProps } from './components/screens/OrderList';
 import { IScreenStatisticsProps } from './components/screens/Statistics';
+import { IScreenErrorsProps } from './components/screens/Errors';
 
 export enum Routes {
     Main = 'Main',
@@ -19,6 +20,7 @@ export enum Routes {
     OrderList = 'OrderList',
     Profile = 'Profile',
     Statistics = 'Statistics',
+    Errors = 'Errors',
 }
 
 export type MainTabScreens = 'ShoppingCart'
@@ -34,6 +36,7 @@ export type RootStackParamList = {
     Order: IScreenOrderProps ;
     OrderList: IScreenOrderListProps | undefined ;
     Statistics: IScreenStatisticsProps | undefined ;
+    Errors: IScreenErrorsProps | undefined ;
 };
 
 

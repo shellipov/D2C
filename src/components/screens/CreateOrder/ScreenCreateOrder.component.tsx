@@ -10,7 +10,7 @@ import { UserDataStore } from '../../../api/UserDataStore';
 import { ColorsVars, SettingsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
-import { Chip } from '../../ui/Chip';
+import { Chip } from '../../shared/Chip';
 import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, OrderDataStore, PaymentMethodsEnum } from '../../../api/OrderDataStore';
 import { dateFormatter } from '../../../helpers';
 import { FlatListVars } from '../../../settings/FlatList.vars';
@@ -213,7 +213,6 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     borderWidth: 1,
-    borderRadius: 16,
     paddingVertical: 8,
     overflow: 'hidden',
   },
