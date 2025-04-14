@@ -37,8 +37,11 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
 
   return (
     <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+      <Row style={{ paddingHorizontal: 16 }}>
+        <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
+      </Row>
       <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <TextUI size={'bigTitle'} text={'Заказ успешно создан'} style={{ paddingBottom: 35, paddingTop: 75, color: ColorsVars.green }} />
+        <TextUI size={'bigTitle'} text={'Заказ успешно создан'} style={{ paddingVertical: 35, color: ColorsVars.green }} />
       </Row>
       <View style={[backgroundStyle, { flex: 1 }]}>
         <ScrollView style={[viewStyle, styles.scrollView]}>
@@ -112,7 +115,7 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
         </ScrollView>
         <Col>
           <Row style={{ paddingHorizontal: 16, paddingBottom: 40, justifyContent: 'center' }}>
-            <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
+            <ButtonUI title={'Ok'} style={styles.button} onPress={()=> navigation.goBack()} />
           </Row>
         </Col>
       </View>
@@ -134,5 +137,11 @@ const styles = StyleSheet.create({
   item: {
     paddingVertical: 6,
     paddingHorizontal: 16,
+  },
+  button: {
+    width: '35%',
+    marginHorizontal: 8,
+    backgroundColor: ColorsVars.white,
+    borderColor: ColorsVars.gray,
   },
 });
