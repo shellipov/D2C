@@ -1,14 +1,14 @@
-import { CategoryEnum, ICategoryItem, IProduct, ISimplifiedProduct, ProductListType } from './MockData.types';
-import { categoryItems, productList } from './MockData.data';
+import { CategoryEnum, ICategoryItem, IProduct, ISimplifiedProduct, ProductListType } from './ProductData.types';
+import { categoryItems, productList } from './ProductData.data';
 import { computed, makeObservable } from 'mobx';
 
-export class MockDataStore {
+export class ProductDataStore {
   public constructor () {
     makeObservable(this);
   }
 
   @computed
-  public get list () : ProductListType {
+  public get products () : ProductListType {
     return productList;
   }
 

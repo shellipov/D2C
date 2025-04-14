@@ -1,4 +1,4 @@
-import { IProduct, ISimplifiedProduct } from '../MockDataStore';
+import { IProduct, ISimplifiedProduct } from '../ProductDataStore';
 
 export interface ICartItem {
     product: IProduct,

@@ -1,6 +1,6 @@
 import { ISimplifiedUser } from '../UserDataStore';
 import { ICartInfo } from '../CartDataStore';
-import { ISimplifiedProduct } from '../MockDataStore';
+import { ISimplifiedProduct } from '../ProductDataStore';
 import { IOrderOptions } from '../OrderDataStore';
 
 export enum EventTypeEnum {

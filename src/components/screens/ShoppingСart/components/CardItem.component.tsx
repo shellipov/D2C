@@ -9,7 +9,7 @@ import { CartDataStore, ICartItem } from '../../../../api/CartDataStore';
 import { eventCreator } from '../../../../helpers/eventCreator';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../../api/EventDataStore';
 import { UserDataStore } from '../../../../api/UserDataStore';
-import { MockDataStore } from '../../../../api';
+import { ProductDataStore } from '../../../../api';
 
 export interface ICardItemProps{
     item: ICartItem
@@ -22,11 +22,11 @@ export const CardItem = (props: ICardItemProps)=> {
   const cartStore = CartDataStore;
   const eventStore = EventDataStore;
   const userStore = UserDataStore;
-  const dataStore = new MockDataStore();
+  const productStore = new ProductDataStore();
 
   const getEventData = () => ({
     user: userStore.simplifiedUser,
-    product: dataStore.getSimplifiedProduct(item.product.id),
+    product: productStore.getSimplifiedProduct(item.product.id),
     cartInfo: cartStore.cartInfo,
   }) as ISimplifiedEventData;
 

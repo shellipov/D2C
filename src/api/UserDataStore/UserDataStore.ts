@@ -2,7 +2,6 @@ import { ISimplifiedUser, IUser } from './UserData.types';
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
-import { ISimplifiedProduct } from '../MockDataStore';
 
 export interface IAuthDataStore {
   readonly isAuth: boolean;

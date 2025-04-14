@@ -1,4 +1,4 @@
-import { CategoryEnum, ICategoryItem, ProductListType } from './MockData.types';
+import { CategoryEnum, ICategoryItem, ProductListType } from './ProductData.types';
 
 export const productList: ProductListType = {
   'clothesAndShoes': [

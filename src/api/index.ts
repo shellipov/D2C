@@ -1,1 +1,1 @@
-export * from './MockDataStore';
+export * from './ProductDataStore';

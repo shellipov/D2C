@@ -1,7 +1,7 @@
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
-import { IProduct } from '../MockDataStore';
+import { IProduct } from '../ProductDataStore';
 import { SettingsVars } from '../../settings';
 import { ICart, ICartInfo, ICartItem, ISimplifiedCart } from './CartData.types';
 

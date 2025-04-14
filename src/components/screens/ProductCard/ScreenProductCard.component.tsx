@@ -4,12 +4,12 @@ import { observer } from 'mobx-react';
 import { Image, ScrollView, StyleSheet, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React, { useCallback } from 'react';
-import { MockDataStore } from '../../../api';
+import { ProductDataStore } from '../../../api';
 import { TextUI } from '../../ui/TextUI';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { CartDataStore } from '../../../api/CartDataStore';
 import { First } from '../../shared/Firts';
-import { CartBlockComponent } from '../../blocks/CartBlock';
+import { CartBlockComponent } from '../../shared/CartBlock';
 import { NavBar } from '../../shared/NavBar';
 import { Screen } from '../../shared/Screen';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../api/EventDataStore';
@@ -25,15 +25,15 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
   const cartStore = CartDataStore;
   const eventStore = EventDataStore;
   const userStore = UserDataStore;
-  const dataStore = new MockDataStore();
+  const productStore = new ProductDataStore();
   const id = props.route.params.id;
-  const item = dataStore.getProduct(id);
+  const item = productStore.getProduct(id);
   const isInCart = cartStore.isInCart(item);
   const totalCount = cartStore.totalCount(item);
 
   const getEventData = () => ({
     user: userStore.simplifiedUser,
-    product: dataStore.getSimplifiedProduct(id),
+    product: productStore.getSimplifiedProduct(id),
     cartInfo: cartStore.cartInfo,
   }) as ISimplifiedEventData;
 
@@ -94,7 +94,8 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
         </View>
       </ScrollView>
       <View style={styles.bottomBlock}>
-        <ButtonUI title={'add to favorites'} style={{ backgroundColor: 'gray', borderColor: 'gray', width: '48%' }} />
+        {/* TODO: пока не работает */}
+        <ButtonUI title={'в избранное'} style={{ width: '48%' }} disabled={true} />
         <View style={{ width: '48%' }}>
           <First>
             {isInCart && (
@@ -104,7 +105,7 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
                 <ButtonUI title={'+'} style={{ flex: 1 }} onPress={onAddToCart} />
               </View>
             )}
-            <ButtonUI title={'add to cart'} style={{ width: '100%' }} onPress={onAddToCart} />
+            <ButtonUI title={'в корзину'} style={{ width: '100%' }} onPress={onAddToCart} />
           </First>
         </View>
       </View>

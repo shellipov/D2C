@@ -6,9 +6,9 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
-import { MockDataStore } from '../../../api';
+import { ProductDataStore } from '../../../api';
 import { useNavigationHook } from '../../../hooks/useNavigation';
-import { CartBlockComponent } from '../../blocks/CartBlock';
+import { CartBlockComponent } from '../../shared/CartBlock';
 import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Screen } from '../../shared/Screen';
 
@@ -17,7 +17,7 @@ export interface IScreenHomeProps {}
 export const ScreenHome = observer((props: IScreenHomeProps) => {
   const isDarkMode = useColorScheme() === 'dark';
   const navigation = useNavigationHook();
-  const dataStore = new MockDataStore();
+  const productStore = new ProductDataStore();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -46,7 +46,7 @@ export const ScreenHome = observer((props: IScreenHomeProps) => {
         </View>
         <ScrollView style={[viewStyle, styles.scrollView]}>
           <FlatList
-            data={dataStore.categories}
+            data={productStore.categories}
             keyExtractor={(item) => `item_${item.id}`}
             scrollEnabled={false}
             numColumns={3}

@@ -2,12 +2,12 @@ import { FlatList, Image, ScrollView, StyleSheet, TouchableOpacity, useColorSche
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React from 'react';
 import { observer } from 'mobx-react';
-import { CategoryEnum, MockDataStore } from '../../../api';
+import { CategoryEnum, ProductDataStore } from '../../../api';
 import { TextUI } from '../../ui/TextUI';
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/AntDesign';
 import { useNavigationHook } from '../../../hooks/useNavigation';
-import { CartBlockComponent } from '../../blocks/CartBlock';
+import { CartBlockComponent } from '../../shared/CartBlock';
 import { NavBar } from '../../shared/NavBar';
 import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Row } from '../../shared/Row';
@@ -20,10 +20,10 @@ export interface IScreenCategoryProps {
 
 export const ScreenCategory = observer((props: { route: { params: IScreenCategoryProps }}) => {
   const isDarkMode = useColorScheme() === 'dark';
-  const dataStore = new MockDataStore();
+  const productStore = new ProductDataStore();
   const category = props.route.params.category;
   const navigation = useNavigationHook();
-  const data = dataStore.getCategory(category);
+  const data = productStore.getCategory(category);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -41,7 +41,7 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
 
   return (
     <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
-      <NavBar title={dataStore.getCategoryName(category)} />
+      <NavBar title={productStore.getCategoryName(category)} />
       <View style={[backgroundStyle, { flex: 1, position: 'relative' }]}>
         <ScrollView style={[viewStyle, styles.scrollView]}>
           <FlatList
