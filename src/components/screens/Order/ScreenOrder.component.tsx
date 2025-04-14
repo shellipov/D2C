@@ -8,7 +8,7 @@ import { ButtonUI } from '../../ui/ButtonUI';
 import { ColorsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
-import { IOrder } from '../../../api/OrderDataStore';
+import { IOrder } from '../../../api';
 import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Screen } from '../../shared/Screen';
 
@@ -37,8 +37,7 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
 
   return (
     <Screen
-      style={styles.screen}
-      isError={!props.route.params.order}>
+      style={styles.screen}>
       <Row style={{ paddingHorizontal: 16 }}>
         <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
       </Row>
