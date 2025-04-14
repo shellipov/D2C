@@ -51,6 +51,7 @@ class CartDataStore implements ICartDataStore {
   public get totalPositions () {
     return this.cart?.reduce((acc, i) => acc + i.numberOfProducts, 0) || 0;
   }
+
   @computed
   public get cartInfo (): ICartInfo {
     return {

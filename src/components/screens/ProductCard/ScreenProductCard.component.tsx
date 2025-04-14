@@ -23,18 +23,17 @@ export interface IScreenProductCardProps {
 export const ScreenProductCard = observer((props: { route: { params: IScreenProductCardProps }}) => {
   const isDarkMode = useColorScheme() === 'dark';
   const cartStore = CartDataStore;
-  const id = props.route.params.id;
-  const dataStore = new MockDataStore();
   const eventStore = EventDataStore;
   const userStore = UserDataStore;
+  const dataStore = new MockDataStore();
+  const id = props.route.params.id;
   const item = dataStore.getProduct(id);
-  const simplifiedProduct = dataStore.getSimplifiedProduct(id);
   const isInCart = cartStore.isInCart(item);
   const totalCount = cartStore.totalCount(item);
 
   const getEventData = () => ({
     user: userStore.simplifiedUser,
-    product: simplifiedProduct,
+    product: dataStore.getSimplifiedProduct(id),
     cartInfo: cartStore.cartInfo,
   });
 

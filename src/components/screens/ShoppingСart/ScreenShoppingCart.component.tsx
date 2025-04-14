@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FlatList, Image, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
@@ -9,9 +9,9 @@ import { ButtonUI } from '../../ui/ButtonUI';
 import { First } from '../../shared/Firts';
 import { ColorsVars, SettingsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
-import { Col } from '../../shared/Col';
 import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Screen } from '../../shared/Screen';
+import { CardItem } from './components';
 
 export interface IScreenShoppingCartProps {}
 
@@ -32,11 +32,6 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
   const viewStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     borderColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  const itemStyle = {
-    backgroundColor: isDarkMode ? 'black' : 'white',
-    borderColor: isDarkMode ? 'black' : 'white',
   };
 
   return (
@@ -65,33 +60,7 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
               contentContainerStyle={styles.container}
               {... FlatListVars}
               renderItem={({ item }) => {
-                return (
-                  <TouchableOpacity style={[itemStyle, styles.item]} onPress={()=> navigation.navigate('ProductCard', { id: item.product.id })}>
-                    <Row style={{ flex: 1 }}>
-                      <Col style={{ flex: 1, marginRight: 16, backgroundColor: 'gray', borderRadius: 12 }}>
-                        <Image src={item.product.image} resizeMode="cover" style={styles.image} />
-                      </Col>
-                      <Col style={{ flex: 2 }}>
-                        <View style={{ marginVertical: 6 }}>
-                          <TextUI text={item.product.name} size={'large'} numberOfLines={1} />
-                        </View>
-                        <View style={{ marginVertical: 4 }}>
-                          <TextUI text={item.product.description} size={'small'} numberOfLines={1} />
-                        </View>
-                        <View style={{ marginVertical: 4 }}>
-                          <TextUI text={item.product.price + ' ₽'} size={'medium'} style={{ color: 'green' }} />
-                        </View>
-                        <Row style={{ marginVertical: 4, alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                          <TextUI text={`в корзине - ${item.numberOfProducts} шт.`} size={'medium'} />
-                          <Row>
-                            <ButtonUI title={'-'} style={[styles.button, { marginRight: 8 }]} onPress={()=> dataStore.deleteFromCart(item.product) } />
-                            <ButtonUI title={'+'} style={styles.button} onPress={()=> dataStore.addToCart(item.product)} />
-                          </Row>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </TouchableOpacity>
-                );
+                return (<CardItem key={item.product.id} item={item} />);
               }} />
           </ScrollView>
 
@@ -125,24 +94,5 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 8,
-  },
-  item: {
-    flex: 1,
-    borderRadius: 16,
-    borderWidth: 1,
-    margin: 8,
-    padding: 6,
-  },
-  image: {
-    flex: 1,
-    borderRadius: 12,
-  },
-  button: {
-    marginVertical: 0,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    minHeight: 20,
-    minWidth: 20,
-    borderRadius: 20,
   },
 });
