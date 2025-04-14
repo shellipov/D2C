@@ -20,7 +20,7 @@ export interface IScreenCategoryProps {
 
 export const ScreenCategory = observer((props: { route: { params: IScreenCategoryProps }}) => {
   const isDarkMode = useColorScheme() === 'dark';
-  const productStore = new ProductDataStore();
+  const productStore = ProductDataStore;
   const category = props.route.params.category;
   const navigation = useNavigationHook();
   const data = productStore.getCategory(category);

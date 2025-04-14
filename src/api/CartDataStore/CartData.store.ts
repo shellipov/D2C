@@ -10,6 +10,7 @@ import { suddenError } from '../../helpers';
 
 export interface ICartDataStore {
   readonly isEmpty: boolean;
+  readonly isError: boolean;
   readonly cart: ICart | undefined;
   readonly cartSum: number;
   readonly simplifiedCart: ISimplifiedCart;
@@ -26,6 +27,7 @@ export interface ICartDataStore {
 class CartDataStore implements ICartDataStore {
   private static _instance: CartDataStore | null = null;
   @observable public isEmpty: boolean = true;
+  @observable public isError: boolean = true;
   @observable public cart: ICart | undefined = undefined;
 
   private constructor () {
@@ -161,12 +163,16 @@ class CartDataStore implements ICartDataStore {
         await AsyncStorage.setItem('cart', JSON.stringify(newCart));
       } else {
         runInAction(() => {
-          this.cart = !!jsonCart ? JSON.parse(jsonCart) : undefined;
+          CartStore.cart = !!jsonCart ? JSON.parse(jsonCart) : undefined;
+          CartStore.isError = false;
         });
       }
       runInAction(()=> this.isEmpty = false);
     } catch (error: any) {
-      await errorService({ type:ErrorTypeEnum.LoadData, error });
+      runInAction(() => {
+        CartStore.isError = true;
+      });
+      await errorService({ type:ErrorTypeEnum.LoadData, error, withoutAlerts: true });
     }
   }
 }

@@ -9,8 +9,8 @@ import { CartDataStore, ICartItem } from '../../../../api/CartDataStore';
 import { eventCreator } from '../../../../helpers';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../../api/EventDataStore';
 import { UserDataStore } from '../../../../api/UserDataStore';
-import { ProductDataStore } from '../../../../api';
 import { observer } from 'mobx-react';
+import { ProductDataStore } from '../../../../api';
 
 export interface ICardItemProps{
     item: ICartItem
@@ -23,7 +23,7 @@ export const CardItem = observer((props: ICardItemProps)=> {
   const cartStore = CartDataStore;
   const eventStore = EventDataStore;
   const userStore = UserDataStore;
-  const productStore = new ProductDataStore();
+  const productStore = ProductDataStore;
 
   const getEventData = () => ({
     user: userStore.simplifiedUser,

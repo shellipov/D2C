@@ -1,23 +1,36 @@
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/AntDesign';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FlatList, Image, ScrollView, StatusBar, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
-import { ProductDataStore } from '../../../api';
+import { CartDataStore, ProductDataStore } from '../../../api';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartBlockComponent } from '../../shared/CartBlock';
 import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Screen } from '../../shared/Screen';
+import { ColorsVars } from '../../../settings';
 
-export interface IScreenHomeProps {}
+export interface IScreenMainProps {}
 
-export const ScreenHome = observer((props: IScreenHomeProps) => {
+export const ScreenMain = observer((props: IScreenMainProps) => {
   const isDarkMode = useColorScheme() === 'dark';
   const navigation = useNavigationHook();
-  const productStore = new ProductDataStore();
+
+  const onRefresh = () => {
+    if (ProductDataStore.isError) {
+      ProductDataStore.refresh().then();
+    }
+    if (CartDataStore.isError) {
+      CartDataStore.refresh().then();
+    }
+  };
+
+  useEffect(() => {
+    ProductDataStore.refresh().then();
+  }, []);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -34,7 +47,10 @@ export const ScreenHome = observer((props: IScreenHomeProps) => {
   };
 
   return (
-    <Screen style={{ flex: 1, backgroundColor: isDarkMode ? 'rgb(24, 24, 24)' : 'white' }}>
+    <Screen
+      style={styles.screen}
+      isError={ProductDataStore.isError || CartDataStore.isError}
+      onRefresh={onRefresh}>
       <View style={[backgroundStyle, { flex: 1 }]}>
         <StatusBar
           barStyle={isDarkMode ? 'light-content' : 'dark-content'}
@@ -46,7 +62,7 @@ export const ScreenHome = observer((props: IScreenHomeProps) => {
         </View>
         <ScrollView style={[viewStyle, styles.scrollView]}>
           <FlatList
-            data={productStore.categories}
+            data={ProductDataStore.categories}
             keyExtractor={(item) => `item_${item.id}`}
             scrollEnabled={false}
             numColumns={3}
@@ -72,6 +88,10 @@ export const ScreenHome = observer((props: IScreenHomeProps) => {
 });
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: ColorsVars.white,
+  },
   scrollView: {
     flex: 1,
     borderWidth: 1,

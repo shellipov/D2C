@@ -6,12 +6,14 @@ import { suddenError } from '../../helpers';
 
 export interface IErrorDataStore {
     readonly errors: IError[];
+    readonly isError: boolean;
     refresh(): Promise<void>;
 }
 
 class ErrorDataStore implements IErrorDataStore {
   private static _instance: ErrorDataStore | null = null;
     @observable public errors: IError[] = [];
+    @observable public isError = false;
 
     public constructor () {
       makeObservable(this);
@@ -39,10 +41,14 @@ class ErrorDataStore implements IErrorDataStore {
       if (!!jsonErrors) {
         runInAction(() => {
           this.errors = JSON.parse(jsonErrors);
+          ErrorStore.isError = false;
         });
       }
     } catch (error: any) {
-      await errorService({ type:ErrorTypeEnum.LoadData, error });
+      runInAction(() => {
+        ErrorStore.isError = true;
+      });
+      await errorService({ type:ErrorTypeEnum.LoadData, error, withoutAlerts: true });
     }
   }
 }

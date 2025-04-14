@@ -8,13 +8,13 @@ import { observer } from 'mobx-react';
 import { ScreenCategory } from './components/screens/Category';
 import { ScreenShoppingCart } from './components/screens/ShoppingСart';
 import { ScreenProductCard } from './components/screens/ProductCard';
-import { ScreenHome } from './components/screens/Home';
 import { ScreenCreateOrder } from './components/screens/CreateOrder';
 import { ScreenProfile } from './components/screens/Profile';
 import { ScreenOrder } from './components/screens/Order';
 import { ScreenOrderList } from './components/screens/OrderList';
 import { ScreenStatistics } from './components/screens/Statistics';
 import { ScreenErrors } from './components/screens/Errors';
+import { ScreenMain } from './components/screens/Main';
 
 export const AppRouter = observer(() => {
   const userStore = UserDataStore;
@@ -28,7 +28,7 @@ export const AppRouter = observer(() => {
   };
 
   const AUTH_SCREENS: { [key in ScreenName]?: { screen: React.ComponentType<any>; navigationOptions?: any } } = {
-    Main: { screen: ScreenHome },
+    Main: { screen: ScreenMain },
     ShoppingCart: { screen: ScreenShoppingCart },
     Category: { screen: ScreenCategory },
     ProductCard: { screen: ScreenProductCard },

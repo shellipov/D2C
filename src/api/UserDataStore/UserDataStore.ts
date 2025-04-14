@@ -2,10 +2,14 @@ import { ISimplifiedUser, IUser } from './UserData.types';
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import { errorService } from '../ErrorDataStore/errorService';
+import { ErrorTypeEnum } from '../ErrorDataStore';
 
 export interface IAuthDataStore {
   readonly isAuth: boolean;
   readonly user?: IUser;
+  readonly isEmpty: boolean;
+  readonly isError: boolean;
   readonly simplifiedUser?: ISimplifiedUser;
   login(user: string): Promise<void>;
   logout(): Promise<void>;
@@ -16,6 +20,7 @@ class UserDataStore implements IAuthDataStore {
   private static _instance: UserDataStore | null = null;
   @observable public isAuth: boolean = false;
   @observable public isEmpty: boolean = true;
+  @observable public isError = false;
   @observable private _user: IUser | undefined = undefined;
 
   private constructor () {
@@ -83,7 +88,7 @@ class UserDataStore implements IAuthDataStore {
 
       await this.refresh();
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Api error');
+      await errorService({ type:ErrorTypeEnum.LoadData, error });
     }
   }
 
@@ -107,7 +112,7 @@ class UserDataStore implements IAuthDataStore {
 
       await this.refresh();
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Api error');
+      await errorService({ type:ErrorTypeEnum.LoadData, error });
     }
   }
 
@@ -119,9 +124,13 @@ class UserDataStore implements IAuthDataStore {
         UserStore._user = jsonUser ? JSON.parse(jsonUser) : undefined;
         UserStore.isAuth = !!this._user;
         UserStore.isEmpty = false;
+        this.isError = false;
       });
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Api error');
+      runInAction(() => {
+        this.isError = true;
+      });
+      await errorService({ type:ErrorTypeEnum.LoadData, error });
     }
   }
 }

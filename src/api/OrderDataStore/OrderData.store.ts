@@ -7,6 +7,7 @@ import { suddenError } from '../../helpers';
 
 export interface IOrderDataStore {
     readonly orders: IOrder[];
+    readonly isError: boolean;
     readonly paymentMethods: { type: PaymentMethodsEnum, title: string }[];
     readonly deliveryOptions: { type: DeliveryOptionsEnum, title: string }[];
     addOrder (order: IOrder): Promise<OrderCreateStatusEnum>
@@ -16,23 +17,24 @@ export interface IOrderDataStore {
 class OrderDataStore implements IOrderDataStore {
   private static _instance: OrderDataStore | null = null;
     @observable public orders: IOrder[] = [];
+  @observable public isError = false;
 
-    private constructor () {
-      makeObservable(this);
+  private constructor () {
+    makeObservable(this);
+  }
+
+  public static get instance (): OrderDataStore {
+    if (!OrderDataStore._instance) {
+      OrderDataStore._instance = new OrderDataStore();
     }
 
-    public static get instance (): OrderDataStore {
-      if (!OrderDataStore._instance) {
-        OrderDataStore._instance = new OrderDataStore();
-      }
-
-      return OrderDataStore._instance;
-    };
+    return OrderDataStore._instance;
+  };
 
     @computed
-    public get lastOrder () {
-      return this.orders[0];
-    };
+  public get lastOrder () {
+    return this.orders[0];
+  };
 
     @computed
     public get paymentMethods () {
@@ -101,11 +103,15 @@ class OrderDataStore implements IOrderDataStore {
       const jsonOrders = await AsyncStorage.getItem(orderStorageTypeEnum.Orders);
       if (!!jsonOrders) {
         runInAction(() => {
-          this.orders = JSON.parse(jsonOrders);
+          OrderStore.orders = JSON.parse(jsonOrders);
+          OrderStore.isError = false;
         });
       }
     } catch (error: any) {
-      await errorService({ type:ErrorTypeEnum.LoadData, error });
+      runInAction(() => {
+        this.isError = true;
+      });
+      await errorService({ type:ErrorTypeEnum.LoadData, error, withoutAlerts: true });
     }
   }
 }

@@ -23,8 +23,15 @@ const ERROR_DATA = {
   },
 };
 
-export async function errorService (props:{type: ErrorTypeEnum, error?: {message?: string}}): Promise<ApiStatusEnum> {
+interface IErrorService {
+  type: ErrorTypeEnum,
+  withoutAlerts?: boolean;
+  error?: { message?: string }
+}
+
+export async function errorService (props:IErrorService): Promise<ApiStatusEnum> {
   const message = props.error?.message;
+  const withoutAlerts = props.withoutAlerts;
   const errorData = ERROR_DATA[props.type];
   const date = dateFormatter(new Date());
 
@@ -37,16 +44,22 @@ export async function errorService (props:{type: ErrorTypeEnum, error?: {message
       const newErrors = [{ ...errorData, id, date, message }, ...errors];
 
       await AsyncStorage.setItem(errorStorageTypeEnum.Errors, JSON.stringify(newErrors));
-      Alert.alert(errorData.title, [errorData.description, message].join('\n'));
+      if (!withoutAlerts) {
+        Alert.alert(errorData.title, [errorData.description, message].join('\n'));
+      }
 
       return ApiStatusEnum.Error;
     } else {
-      Alert.alert(errorData.title, [errorData.description, message].join('\n'));
+      if (!withoutAlerts) {
+        Alert.alert(errorData.title, [errorData.description, message].join('\n'));
+      }
 
       return ApiStatusEnum.Error;
     }
   } catch (err: any) {
-    Alert.alert(errorData.title, [errorData.description, message, err.message].join('\n'));
+    if (!withoutAlerts) {
+      Alert.alert(errorData.title, [errorData.description, message, err.message].join('\n'));
+    }
 
     return ApiStatusEnum.Error;
   }
