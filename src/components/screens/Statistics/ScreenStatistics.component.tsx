@@ -14,7 +14,7 @@ import { First } from '../../shared/Firts';
 const COLORS : {[key in EventTypeEnum]? : string} = {
   [EventTypeEnum.AddToCart] : ColorsVars.green,
   [EventTypeEnum.DeleteFromCart] : ColorsVars.red,
-  [EventTypeEnum.CreateOrder] : ColorsVars.green,
+  [EventTypeEnum.CreateOrder] : ColorsVars.violet,
 };
 
 export interface IScreenStatisticsProps {}
@@ -79,15 +79,24 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
                   </Row>
                   {item.product && (
                     <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
-                      <TextUI size={'small'} text={'user'} />
+                      <TextUI size={'small'} text={'product'} />
                       <TextUI
                         size={'small'}
                         style={{ maxWidth: '70%' }}
                         text={`${JSON.stringify(item.product, null, 2)}`} />
                     </Row>
                   )}
+                  {item.orderOptions && (
+                    <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
+                      <TextUI size={'small'} text={'order options'} />
+                      <TextUI
+                        size={'small'}
+                        style={{ maxWidth: '70%' }}
+                        text={`${JSON.stringify(item.orderOptions, null, 2)}`} />
+                    </Row>
+                  )}
                   <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
-                    <TextUI size={'small'} text={'cartInfo'} />
+                    <TextUI size={'small'} text={'cart info'} />
                     <TextUI
                       size={'small'}
                       style={{ maxWidth: '70%' }}

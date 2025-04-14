@@ -20,6 +20,11 @@ export enum OrderCreateStatusEnum {
     Error = 'Error',
 }
 
+export interface IOrderOptions {
+    paymentMethod: PaymentMethodsEnum,
+    deliveryOption: DeliveryOptionsEnum,
+}
+
 export interface IOrder {
     id: number;
     date: string;

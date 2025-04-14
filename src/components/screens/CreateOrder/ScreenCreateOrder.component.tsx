@@ -15,49 +15,66 @@ import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, OrderDataStore, Pay
 import { dateFormatter } from '../../../helpers';
 import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Screen } from '../../shared/Screen';
+import { eventCreator } from '../../../helpers/eventCreator';
+import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../api/EventDataStore';
 
 export interface IScreenCreateOrderProps {}
 
 export const ScreenCreateOrder = observer((props: { route: { params: IScreenCreateOrderProps }}) => {
   const navigation = useNavigationHook();
   const isDarkMode = useColorScheme() === 'dark';
-  const dataStore = CartDataStore;
+  const cartStore = CartDataStore;
   const user = UserDataStore.user;
-  const orderData = OrderDataStore;
-  const cart = dataStore.cart;
+  const orderStore = OrderDataStore;
+  const eventStore = EventDataStore;
+  const cart = cartStore.cart;
   const isUserProfileError = !user?.name || !user.phone || !user.address;
   const totalSum = CartDataStore.cartSum + SettingsVars.shippingCost;
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsEnum>(PaymentMethodsEnum.Card);
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOptionsEnum>(DeliveryOptionsEnum.Hand);
 
+  const getEventData = () => ({
+    user: UserDataStore.simplifiedUser,
+    orderOptions: {
+      paymentMethod, deliveryOption,
+    },
+    cartInfo: cartStore.cartInfo,
+  }) as ISimplifiedEventData;
+
   useEffect(() => {
-    orderData.refresh().then();
+    orderStore.refresh().then();
   }, []);
 
   const onPressConfirm = useCallback(async ()=>{
     const date = dateFormatter(new Date());
     const order = {
-      id: orderData.orders.length + 1,
+      id: orderStore.orders.length + 1,
       date,
       user,
       cart,
       shippingCost: SettingsVars.shippingCost,
       totalSum,
-      deliveryOption: orderData.deliveryOptions.find(i => i.type === deliveryOption),
-      paymentMethod: orderData.paymentMethods.find(i => i.type === paymentMethod),
+      deliveryOption: orderStore.deliveryOptions.find(i => i.type === deliveryOption),
+      paymentMethod: orderStore.paymentMethods.find(i => i.type === paymentMethod),
     } as IOrder;
 
-    const status = await orderData.addOrder(order);
+    const status = await orderStore.addOrder(order);
     if (status === OrderCreateStatusEnum.Success) {
       CartDataStore.deleteCart().then();
       navigation.reset({
         index: 1,
         routes: [
           { name: 'Main' },
-          { name: 'Order', params: { order: orderData.lastOrder } },
+          { name: 'Order', params: { order: orderStore.lastOrder } },
         ],
       });
+      const newEvent = eventCreator({ ...getEventData(), eventType: EventTypeEnum.CreateOrder });
+      if (!!newEvent) {
+        eventStore.addEvent(newEvent).then();
+      }
+    } else {
+      // TODO: add ScreenError
     }
   }, [paymentMethod, deliveryOption, user?.name, user?.phone, user?.address]);
 
@@ -141,7 +158,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
               <TextUI size={'large'} text={'Доставка'} />
             </Row>
             <Row style={[{ justifyContent: 'space-around' }]}>
-              {orderData.deliveryOptions.map(i => {
+              {orderStore.deliveryOptions.map(i => {
                 const isSelected = i.type === deliveryOption;
 
                 return (
@@ -157,7 +174,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
               <TextUI size={'large'} text={'Оплата'} />
             </Row>
             <Row style={[{ justifyContent: 'space-around' }]}>
-              {orderData.paymentMethods.map(i => {
+              {orderStore.paymentMethods.map(i => {
                 const isSelected = i.type === paymentMethod;
 
                 return (

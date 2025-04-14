@@ -12,7 +12,7 @@ import { First } from '../../shared/Firts';
 import { CartBlockComponent } from '../../blocks/CartBlock';
 import { NavBar } from '../../shared/NavBar';
 import { Screen } from '../../shared/Screen';
-import { EventDataStore, EventTypeEnum } from '../../../api/EventDataStore';
+import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../api/EventDataStore';
 import { UserDataStore } from '../../../api/UserDataStore';
 import { eventCreator } from '../../../helpers/eventCreator';
 
@@ -35,7 +35,7 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
     user: userStore.simplifiedUser,
     product: dataStore.getSimplifiedProduct(id),
     cartInfo: cartStore.cartInfo,
-  });
+  }) as ISimplifiedEventData;
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,

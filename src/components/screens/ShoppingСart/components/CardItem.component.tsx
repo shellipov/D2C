@@ -7,7 +7,7 @@ import { ButtonUI } from '../../../ui/ButtonUI';
 import { useNavigationHook } from '../../../../hooks/useNavigation';
 import { CartDataStore, ICartItem } from '../../../../api/CartDataStore';
 import { eventCreator } from '../../../../helpers/eventCreator';
-import { EventDataStore, EventTypeEnum } from '../../../../api/EventDataStore';
+import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../../api/EventDataStore';
 import { UserDataStore } from '../../../../api/UserDataStore';
 import { MockDataStore } from '../../../../api';
 
@@ -28,7 +28,7 @@ export const CardItem = (props: ICardItemProps)=> {
     user: userStore.simplifiedUser,
     product: dataStore.getSimplifiedProduct(item.product.id),
     cartInfo: cartStore.cartInfo,
-  });
+  }) as ISimplifiedEventData;
 
   const itemStyle = {
     backgroundColor: isDarkMode ? 'black' : 'white',

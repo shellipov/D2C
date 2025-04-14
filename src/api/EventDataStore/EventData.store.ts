@@ -34,7 +34,6 @@ class EventDataStore implements IEventDataStore {
           const newEvents = [{ ...order, id: orders.length + 1 }, ...orders];
           await AsyncStorage.setItem(OrderStorageTypeEnum.Events, JSON.stringify(newEvents));
         } else {
-          console.log('>>>> тут?');
           Alert.alert('Error', 'Api error');
         }
 
