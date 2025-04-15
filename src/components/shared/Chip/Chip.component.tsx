@@ -5,16 +5,16 @@ import { ColorsVars } from '../../../settings';
 
 interface IChipProps extends TouchableOpacityProps {
     label: string,
-    selected: boolean,
+    isSelected: boolean,
     onPress: () => void,
 }
 
 export const Chip = (props: IChipProps) => {
-  const { label, selected = false, onPress, ...rest } = props;
+  const { label, style, isSelected = false, onPress, ...rest } = props;
 
   return (
-    <TouchableOpacity style={[styles.chip, selected && styles.selectedChip]} onPress={onPress} {...rest}>
-      <TextUI size={'medium'} text={label} style={[styles.chipText, selected && styles.selectedChipText]} />
+    <TouchableOpacity style={[styles.chip, isSelected && styles.selectedChip, style]} onPress={onPress} {...rest}>
+      <TextUI size={'medium'} text={label} style={[styles.chipText, isSelected && styles.selectedChipText]} />
     </TouchableOpacity>
   );
 };
@@ -27,6 +27,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     marginRight: 8,
     marginBottom: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minWidth: 45,
   },
   selectedChip: {
     borderColor: ColorsVars.black,

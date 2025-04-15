@@ -186,7 +186,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
                 const isSelected = i.type === deliveryOption;
 
                 return (
-                  <Chip key={`_${i.type}`} label={i.title} selected={isSelected} onPress={()=> {setDeliveryOption(i.type);}} />
+                  <Chip key={`_${i.type}`} label={i.title} isSelected={isSelected} onPress={()=> {setDeliveryOption(i.type);}} />
                 );
               })
               }
@@ -202,7 +202,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
                 const isSelected = i.type === paymentMethod;
 
                 return (
-                  <Chip key={`_${i.type}`} label={i.title} selected={isSelected} onPress={()=> {setPaymentMethod(i.type);}} />
+                  <Chip key={`_${i.type}`} label={i.title} isSelected={isSelected} onPress={()=> {setPaymentMethod(i.type);}} />
                 );
               })
               }

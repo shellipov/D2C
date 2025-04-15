@@ -1,6 +1,6 @@
 import { FlatList, Image, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { observer } from 'mobx-react';
 import { CartDataStore, CategoryEnum, ProductDataStore } from '../../../api';
 import { TextUI } from '../../ui/TextUI';
@@ -14,6 +14,8 @@ import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
 import { Screen } from '../../shared/Screen';
 import { ColorsVars } from '../../../settings';
+import { paginationData } from '../../../helpers';
+import { Chip } from '../../shared/Chip';
 
 export interface IScreenCategoryProps {
     category: CategoryEnum
@@ -25,6 +27,12 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   const category = props.route.params.category;
   const navigation = useNavigationHook();
   const data = productStore.getCategory(category);
+
+  const flatListRef = useRef<FlatList>(null);
+  const formattedData = paginationData(data);
+  const pageButtons = Object.keys(formattedData);
+  const isPaginationVisible = pageButtons.length > 1;
+  const [selectedPage, setSelectedPage] = useState(1);
 
   const onRefresh = () => {
     if (ProductDataStore.isError) {
@@ -58,7 +66,8 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
       <View style={[backgroundStyle, { flex: 1, position: 'relative' }]}>
         <ScrollView style={[viewStyle, styles.scrollView]}>
           <FlatList
-            data={data}
+            ref={flatListRef}
+            data={formattedData[selectedPage]}
             keyExtractor={(item) => `item_${item.id}`}
             scrollEnabled={false}
             numColumns={1}
@@ -91,7 +100,29 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
               );
             }} />
         </ScrollView>
-        <View style={{ position: 'absolute', right: 16, bottom: 16 }}>
+        {isPaginationVisible && (
+          <View>
+            <FlatList
+              style={styles.list}
+              data={pageButtons}
+              horizontal={true}
+              renderItem={(item)=> {
+                const onPress = () => {
+                  setSelectedPage(+item.item);
+                  flatListRef.current?.scrollToOffset({ offset: 0, animated: false });
+                };
+
+                return (
+                  <Chip
+                    style={styles.chip}
+                    label={`${item.item}`}
+                    isSelected={+item.item === selectedPage}
+                    onPress={onPress} />
+                );
+              }} />
+          </View>
+        )}
+        <View style={{ position: 'absolute', right: 16, bottom: isPaginationVisible ? 65 : 16 }}>
           <CartBlockComponent />
         </View>
       </View>
@@ -124,5 +155,12 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     borderRadius: 12,
+  },
+  chip: {
+    marginTop: 8,
+    marginRight: 12,
+  },
+  list: {
+    paddingHorizontal: 16,
   },
 });
