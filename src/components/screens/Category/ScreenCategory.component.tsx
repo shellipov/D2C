@@ -70,7 +70,7 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
       onRefresh={onRefresh}>
       <NavBar title={productStore.getCategoryName(category)} />
       <FlatListWithPagination data={data} renderItem={renderProductItem}>
-        <View style={{ position: 'absolute', right: 16, bottom: isPaginationVisible ? 54 : 8 }}>
+        <View style={{ position: 'absolute', right: 16, bottom: isPaginationVisible ? 67 : 16 }}>
           <CartBlockComponent />
         </View>
       </FlatListWithPagination>
