@@ -46,7 +46,7 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
   return (
     <Screen isError={ProductDataStore.isError || CartDataStore.isError} onRefresh={onRefresh}>
       <View style={styles.block}>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={Colors.lighter} />
+        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={ColorsVars.white} />
         <View style={styles.header}>
           <ButtonUI title={''} onPress={() =>navigation.navigate('Profile')} style={styles.profileButton}>
             <Ionicons name={'user'} size={28} color={'black'} />
