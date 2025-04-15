@@ -1,21 +1,19 @@
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/AntDesign';
-import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import React, { useRef, useState } from 'react';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React from 'react';
 import { observer } from 'mobx-react';
 import { CartDataStore, CategoryEnum, ProductDataStore } from '../../../api';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartBlockComponent } from '../../shared/CartBlock';
 import { NavBar } from '../../shared/NavBar';
-import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
 import { Screen } from '../../shared/Screen';
 import { ColorsVars } from '../../../settings';
 import { paginationData } from '../../../helpers';
-import { Chip } from '../../shared/Chip';
+import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
 
 export interface IScreenCategoryProps {
     category: CategoryEnum
@@ -27,11 +25,9 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   const navigation = useNavigationHook();
   const data = productStore.getCategory(category);
 
-  const flatListRef = useRef<FlatList>(null);
   const formattedData = paginationData(data);
   const pageButtons = Object.keys(formattedData);
   const isPaginationVisible = pageButtons.length > 1;
-  const [selectedPage, setSelectedPage] = useState(1);
 
   const onRefresh = () => {
     if (ProductDataStore.isError) {
@@ -67,47 +63,17 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
     </TouchableOpacity>
   );
 
-  const renderPageButton = (item)=> {
-    const onPress = () => {
-      setSelectedPage(+item.item);
-      flatListRef.current?.scrollToOffset({ offset: 0, animated: false });
-    };
-
-    return (
-      <Chip
-        style={styles.chip}
-        label={`${item.item}`}
-        isSelected={+item.item === selectedPage}
-        onPress={onPress} />
-    );
-  };
-
   return (
     <Screen
       style={styles.screen}
       isError={ProductDataStore.isError || CartDataStore.isError}
       onRefresh={onRefresh}>
       <NavBar title={productStore.getCategoryName(category)} />
-      <View style={[{ position: 'relative' }, styles.contentContainer]}>
-        <FlatList
-          ref={flatListRef}
-          data={formattedData[selectedPage]}
-          keyExtractor={(item) => `item_${item.id}`}
-          renderItem={renderProductItem}
-          showsVerticalScrollIndicator={false}
-          {...FlatListVars} />
-        {isPaginationVisible && (
-          <FlatList
-            data={pageButtons}
-            renderItem={renderPageButton}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.paginationContainer} />
-        )}
+      <FlatListWithPagination data={data} renderItem={renderProductItem}>
         <View style={{ position: 'absolute', right: 16, bottom: isPaginationVisible ? 54 : 8 }}>
           <CartBlockComponent />
         </View>
-      </View>
+      </FlatListWithPagination>
     </Screen>
   );
 });
@@ -116,11 +82,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: ColorsVars.white,
-  },
-  contentContainer: {
-    backgroundColor: Colors.lighter,
-    flex: 1,
-    paddingHorizontal: 8,
   },
   item: {
     flex: 1,
@@ -135,12 +96,5 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     borderRadius: 12,
-  },
-  chip: {
-    marginTop: 8,
-    marginRight: 12,
-  },
-  paginationContainer: {
-    paddingHorizontal: 16,
   },
 });

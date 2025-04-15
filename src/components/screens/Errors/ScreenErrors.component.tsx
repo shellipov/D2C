@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, useColorScheme, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
@@ -9,11 +9,11 @@ import { Screen } from '../../shared/Screen';
 import { ColorsVars } from '../../../settings';
 import { First } from '../../shared/Firts';
 import { ErrorDataStore } from '../../../api';
+import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
 
 export interface IScreenErrorsProps {}
 
 export const ScreenErrors = observer((props: { route: { params: IScreenErrorsProps } }) => {
-  const isDarkMode = useColorScheme() === 'dark';
   const errorStore = ErrorDataStore;
   const errors = errorStore.errors;
 
@@ -21,18 +21,27 @@ export const ScreenErrors = observer((props: { route: { params: IScreenErrorsPro
     errorStore.refresh().then();
   }, []);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  const itemStyle = {
-    backgroundColor: isDarkMode ? 'black' : 'white',
-    marginVertical: 4,
-    marginHorizontal: 16,
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingTop: 8,
-  };
+  const renderItem = ({ item }: { item: any }) => (
+    <View style={styles.item}>
+      <View style={{ paddingBottom: 6 }}>
+        <Row style={[styles.row]}>
+          <TextUI size={'medium'} text={item.title} style={{ color: ColorsVars.red }} />
+        </Row>
+        <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'center' }]}>
+          <TextUI
+            size={'small'}
+            numberOfLines={1}
+            text={item.date} />
+        </Row>
+        <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'center' }]}>
+          <TextUI size={'small'} text={item.description} />
+        </Row>
+        <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'center' }]}>
+          <TextUI size={'small'} text={item.message} />
+        </Row>
+      </View>
+    </View>
+  );
 
   return (
     <Screen
@@ -40,40 +49,14 @@ export const ScreenErrors = observer((props: { route: { params: IScreenErrorsPro
       isError={ErrorDataStore.isError}
       onRefresh={ErrorDataStore.refresh}>
       <NavBar title={'Ошибки'} />
-      <View style={[backgroundStyle, { flex: 1, paddingTop: 8 }]}>
+      <View style={{ flex: 1, paddingTop: 8, backgroundColor: Colors.lighter }}>
         <First>
-
           {!errors?.length && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <TextUI size={'title'} text={'Tут пока ничего нет'} />
             </View>
           )}
-
-          <FlatList
-            data={errors}
-            keyExtractor={(item) => `item_${item.id}`}
-            contentContainerStyle={styles.container}
-            renderItem={({ item }) => (
-              <View style={itemStyle}>
-                <View style={{ paddingBottom: 6 }}>
-                  <Row style={[styles.item]}>
-                    <TextUI size={'medium'} text={item.title} style={{ color: ColorsVars.red }} />
-                  </Row>
-                  <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'center' }]}>
-                    <TextUI
-                      size={'small'}
-                      numberOfLines={1}
-                      text={item.date} />
-                  </Row>
-                  <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'center' }]}>
-                    <TextUI size={'small'} text={item.description} />
-                  </Row>
-                  <Row style={[styles.item, { justifyContent: 'space-between', alignItems: 'center' }]}>
-                    <TextUI size={'small'} text={item.message} />
-                  </Row>
-                </View>
-              </View>
-            )} />
+          <FlatListWithPagination data={errors} renderItem={renderItem} />
         </First>
       </View>
     </Screen>
@@ -85,10 +68,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: ColorsVars.white,
   },
-  container: {
-    paddingBottom: 20,
-  },
   item: {
+    backgroundColor: ColorsVars.white,
+    marginVertical: 4,
+    marginHorizontal: 8,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+  },
+  row: {
     paddingVertical: 4,
   },
 });

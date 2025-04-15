@@ -1,1 +1,1 @@
-export * from './OrderList.component';
+export * from './ScreenOrderList.component';
