@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
@@ -10,7 +10,6 @@ import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
 import { Chip } from '../../shared/Chip';
 import { dateFormatter, eventCreator } from '../../../helpers';
-import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Screen } from '../../shared/Screen';
 import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, OrderDataStore, PaymentMethodsEnum } from '../../../api/OrderDataStore';
 import { CartDataStore } from '../../../api/CartDataStore';
@@ -18,6 +17,7 @@ import { UserDataStore } from '../../../api/UserDataStore';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../api/EventDataStore';
 import { ProductDataStore } from '../../../api';
 import { phoneFormatter } from '../../../helpers/phoneFormatter';
+import { OrderCartItem } from '../Order/components';
 
 export interface IScreenCreateOrderProps {}
 
@@ -100,25 +100,6 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
     }
   }, [paymentMethod, deliveryOption, user?.name, user?.phone, user?.address]);
 
-  const renderItem = ({ item }: { item: any }) => {
-    return (
-      <View style={[styles.item, styles.row]}>
-        <Row style={{ flex: 1 }}>
-          <Col style={{ flex: 2 }}>
-            <View style={{ marginVertical: 4 }}>
-              <TextUI text={item.product.name} size={'large'} numberOfLines={1} />
-            </View>
-            <View style={{ marginVertical: 2, flexDirection: 'row', justifyContent: 'space-between' }}>
-              <TextUI text={item.product.price + ' ₽'} size={'medium'} />
-              <TextUI text={`${item.numberOfProducts} шт.`} size={'medium'} />
-              <TextUI text={`${item.product.price * item.numberOfProducts} ₽`} size={'medium'} />
-            </View>
-          </Col>
-        </Row>
-      </View>
-    );
-  };
-
   return (
     <Screen isError={isError} onRefresh={onRefresh}>
       <Row style={{ paddingHorizontal: 16 }}>
@@ -154,14 +135,9 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
             </View>
           </TouchableOpacity>
 
-          <FlatList
-            data={cart}
-            keyExtractor={(item) => `item_${item.product.id}`}
-            scrollEnabled={false}
-            numColumns={1}
-            contentContainerStyle={styles.container}
-            renderItem={renderItem}
-            {... FlatListVars} />
+          <Col style={styles.container}>
+            {cart?.map(OrderCartItem)}
+          </Col>
 
           <View style={[styles.item, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
             <Row style={[styles.row, { justifyContent: 'space-between' }]}>
