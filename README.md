@@ -35,7 +35,8 @@ Android Studio (для Android)
 Имитация ошибок (файл Settings.vars.ts):
 errorProbability - вероятность возникновения ошибок
 Можно полностью отключить ошибки
-Отладка (файл debug.vars.ts):
+
+Отладка (файл debug.vars.ts)
 DebugVars.showScreenNames - отображение названий экранов
 
 ### Приложение написано в соответствии с задачей https://docs.google.com/document/d/1DRror8Rbj9xc8NJMXVosGVwdqY9k4uQ-gBrFrz71qss/edit?usp=sharing
