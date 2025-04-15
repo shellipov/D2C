@@ -1,7 +1,7 @@
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/AntDesign';
 import React, { useEffect } from 'react';
-import { FlatList, Image, ScrollView, StatusBar, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { Image, StatusBar, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { observer } from 'mobx-react';
@@ -9,9 +9,9 @@ import { TextUI } from '../../ui/TextUI';
 import { CartDataStore, ProductDataStore } from '../../../api';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartBlockComponent } from '../../shared/CartBlock';
-import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Screen } from '../../shared/Screen';
 import { ColorsVars } from '../../../settings';
+import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
 
 export interface IScreenMainProps {}
 
@@ -32,50 +32,27 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
     ProductDataStore.refresh().then();
   }, []);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const renderItem = ({ item }: { item: any }) => {
+    const onPress = () => navigation.navigate('Category', { category: item.type });
 
-  const viewStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    borderColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  const itemStyle = {
-    backgroundColor: isDarkMode ? 'black' : 'white',
-    borderColor: isDarkMode ? 'black' : 'white',
+    return (
+      <TouchableOpacity style={styles.item} onPress={onPress}>
+        <TextUI text={item.name} size={'medium'} style={{ marginBottom: 4 }} />
+        <Image src={item.image} resizeMode="contain" style={styles.image} />
+      </TouchableOpacity>
+    );
   };
 
   return (
     <Screen isError={ProductDataStore.isError || CartDataStore.isError} onRefresh={onRefresh}>
-      <View style={[backgroundStyle, { flex: 1 }]}>
-        <StatusBar
-          barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-          backgroundColor={backgroundStyle.backgroundColor} />
-        <View style={[backgroundStyle, { paddingHorizontal: 8, alignItems: 'flex-end' }]}>
+      <View style={styles.block}>
+        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={Colors.lighter} />
+        <View style={styles.header}>
           <ButtonUI title={''} onPress={() =>navigation.navigate('Profile')} style={styles.profileButton}>
             <Ionicons name={'user'} size={28} color={'black'} />
           </ButtonUI>
         </View>
-        <ScrollView style={[viewStyle, styles.scrollView]}>
-          <FlatList
-            data={ProductDataStore.categories}
-            keyExtractor={(item) => `item_${item.id}`}
-            scrollEnabled={false}
-            numColumns={3}
-            contentContainerStyle={styles.container}
-            {... FlatListVars}
-            renderItem={({ item }) => {
-              const onPress = () => navigation.navigate('Category', { category: item.type });
-
-              return (
-                <TouchableOpacity style={[itemStyle, styles.item]} onPress={onPress}>
-                  <TextUI text={item.name} size={'medium'} style={{ marginBottom: 4 }} />
-                  <Image src={item.image} resizeMode="contain" style={styles.image} />
-                </TouchableOpacity>
-              );
-            }} />
-        </ScrollView>
+        <FlatListWithPagination data={ProductDataStore.categories} renderItem={renderItem} numColumns={3} />
         <View style={{ position: 'absolute', right: 16, bottom: 16 }}>
           <CartBlockComponent />
         </View>
@@ -85,16 +62,15 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
 });
 
 const styles = StyleSheet.create({
-  scrollView: {
+  block: {
     flex: 1,
-    borderWidth: 1,
-    borderRadius: 16,
-    paddingVertical: 8,
-    marginBottom: 16,
-    marginTop: 64,
+    backgroundColor: Colors.lighter,
   },
-  container: {
-    padding: 16,
+  header: {
+    paddingHorizontal: 8,
+    alignItems: 'flex-end',
+    backgroundColor: Colors.lighter,
+    marginBottom: 64,
   },
   item: {
     flex: 1,
@@ -103,6 +79,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     margin: 8,
     padding: 6,
+    backgroundColor: ColorsVars.white,
+    borderColor: ColorsVars.white,
   },
   image: {
     flex: 1,

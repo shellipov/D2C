@@ -1,10 +1,9 @@
 import React, { useRef, useState } from 'react';
-import { FlatList, StyleSheet, View, ViewProps } from 'react-native';
+import { FlatList, ListRenderItem, StyleSheet, View, ViewProps } from 'react-native';
 import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { Chip } from '../Chip';
 import { paginationData } from '../../../helpers';
-import { ListRenderItem } from 'react-native';
 
 export interface IListItem {
   id: string | number | undefined;
@@ -18,6 +17,7 @@ export type IRenderItem<T = IListItem> = ListRenderItem<T>;
 export interface IFlatListWithPaginationProps extends ViewProps {
   data: IListData;
   withoutScroll?: boolean;
+  numColumns?: number;
   renderItem: IRenderItem;
   children?: React.ReactNode;
 }
@@ -25,8 +25,9 @@ export interface IFlatListWithPaginationProps extends ViewProps {
 export function FlatListWithPagination<T extends IListItem> ({
   data = [],
   renderItem,
-  children,
   withoutScroll,
+  numColumns,
+  children,
   ...viewProps
 }: IFlatListWithPaginationProps) {
   const flatListRef = useRef<FlatList<T>>(null);
@@ -55,6 +56,7 @@ export function FlatListWithPagination<T extends IListItem> ({
       <FlatList<T>
         style={styles.list}
         ref={flatListRef}
+        numColumns={numColumns}
         scrollEnabled={!withoutScroll}
         data={formattedData[selectedPage] as T[]}
         keyExtractor={(item) => `item_${item?.id || item?.product?.id}`}
@@ -68,7 +70,8 @@ export function FlatListWithPagination<T extends IListItem> ({
           renderItem={renderPageButton}
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.paginationContainer} />
+          contentContainerStyle={styles.paginationContainer}
+          {...FlatListVars} />
       )}
 
       {children}
