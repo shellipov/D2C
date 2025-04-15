@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, Keyboard, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
+import { Alert, Keyboard, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
@@ -80,57 +80,60 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <TextUI size={'bigTitle'} text={'Профиль'} style={{ paddingVertical: 35 }} />
         </View>
+        <ScrollView>
 
-        <View style={styles.userDataBlock}>
-          <Row style={styles.row}>
-            <Col>
-              <TextUI size={'large'} text={'Имя'} />
-              <TextInputUI
-                value={name}
-                textSize={'medium'}
-                style={[styles.inputCenter, { borderColor: !name ? ColorsVars.red : ColorsVars.gray }]}
-                onChangeText={onChangeName} />
-            </Col>
-          </Row>
-          <Row style={styles.row}>
-            <Col>
-              <TextUI size={'large'} text={'Телефон'} />
-              <TextInputUI
-                textSize={'medium'}
-                keyboardType={'numeric'}
-                style={[styles.inputCenter, { borderColor: !phone ? ColorsVars.red : ColorsVars.gray }]}
-                value={phone}
-                onChangeText={onChangePhone} />
-            </Col>
-          </Row>
-          <Row style={styles.row}>
-            <Col>
-              <TextUI size={'large'} text={'Адрес'} />
-              <TextInputUI
-                value={address}
-                textSize={'small'}
-                style={[styles.inputCenter, { borderColor: !address ? ColorsVars.red : ColorsVars.gray }, { minHeight: 50 }]}
-                onChangeText={onChangeAddress} multiline={true} />
-            </Col>
-          </Row>
-        </View>
+          <View style={styles.userDataBlock}>
+            <Row style={styles.row}>
+              <Col>
+                <TextUI size={'large'} text={'Имя'} />
+                <TextInputUI
+                  value={name}
+                  textSize={'medium'}
+                  style={[styles.inputCenter, { borderColor: !name ? ColorsVars.red : ColorsVars.gray }]}
+                  onChangeText={onChangeName} />
+              </Col>
+            </Row>
+            <Row style={styles.row}>
+              <Col>
+                <TextUI size={'large'} text={'Телефон'} />
+                <TextInputUI
+                  textSize={'medium'}
+                  keyboardType={'numeric'}
+                  style={[styles.inputCenter, { borderColor: !phone ? ColorsVars.red : ColorsVars.gray }]}
+                  value={phone}
+                  onChangeText={onChangePhone} />
+              </Col>
+            </Row>
+            <Row style={styles.row}>
+              <Col>
+                <TextUI size={'large'} text={'Адрес'} />
+                <TextInputUI
+                  value={address}
+                  textSize={'small'}
+                  style={[styles.inputCenter, { borderColor: !address ? ColorsVars.red : ColorsVars.gray }, { minHeight: 50 }]}
+                  onChangeText={onChangeAddress} multiline={true} />
+              </Col>
+            </Row>
+          </View>
 
-        <View>
-          <Col style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 50 }}>
-            <ButtonUI
-              title={'Заказы'}
-              style={styles.button}
-              onPress={() => navigation.navigate('OrderList')} />
-            <ButtonUI
-              title={'Статистика'}
-              style={styles.button}
-              onPress={() => navigation.navigate('Statistics')} />
-            <ButtonUI
-              title={'Bugs'} textColor={ColorsVars.red}
-              style={[styles.button, styles.redButton]}
-              onPress={() => navigation.navigate('Errors')} />
-          </Col>
-        </View>
+          <View>
+            <Col style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
+              <ButtonUI
+                title={'Заказы'}
+                style={styles.button}
+                onPress={() => navigation.navigate('OrderList')} />
+              <ButtonUI
+                title={'Статистика'}
+                style={styles.button}
+                onPress={() => navigation.navigate('Statistics')} />
+              <ButtonUI
+                title={'Bugs'} textColor={ColorsVars.red}
+                style={[styles.button, styles.redButton]}
+                onPress={() => navigation.navigate('Errors')} />
+            </Col>
+          </View>
+        </ScrollView>
+
       </Screen>
     </TouchableWithoutFeedback>
   );

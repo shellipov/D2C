@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { FlatList, ScrollView, StyleSheet, useColorScheme, View } from 'react-native';
+import { ScrollView, StyleSheet, useColorScheme, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
@@ -9,9 +9,9 @@ import { ButtonUI } from '../../ui/ButtonUI';
 import { First } from '../../shared/Firts';
 import { ColorsVars, SettingsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
-import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Screen } from '../../shared/Screen';
 import { CardItem } from './components';
+import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
 
 export interface IScreenShoppingCartProps {}
 
@@ -47,26 +47,12 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
       </View>
       <View style={[backgroundStyle, { flex: 1 }]}>
         <First>
-
           {!cart?.length && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <TextUI size={'title'} text={'Корзина пуста'} />
             </View>
           )}
-
-          <ScrollView style={[viewStyle, styles.scrollView]}>
-            <FlatList
-              data={cart}
-              keyExtractor={(item) => `item_${item.product.id}`}
-              scrollEnabled={false}
-              numColumns={1}
-              contentContainerStyle={styles.container}
-              {... FlatListVars}
-              renderItem={({ item }) => {
-                return (<CardItem key={item.product.id} item={item} />);
-              }} />
-          </ScrollView>
-
+          <FlatListWithPagination data={cart} renderItem={({ item }: { item: any }) => <CardItem key={item?.product?.id} item={item} />} />
         </First>
       </View>
       <View style={{ alignItems: 'flex-end', padding: 12 }}>

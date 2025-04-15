@@ -7,8 +7,8 @@ import { paginationData } from '../../../helpers';
 import { ListRenderItem } from 'react-native';
 
 export interface IListItem {
-  id: string | number;  // Обязательное уникальное поле
-  [key: string]: any;  // Дополнительные поля могут быть любыми
+  id: string | number | undefined;
+  [key: string]: any;
 }
 
 export type IListData = IListItem[] | null | undefined;
@@ -16,21 +16,9 @@ export type IListData = IListItem[] | null | undefined;
 export type IRenderItem<T = IListItem> = ListRenderItem<T>;
 
 export interface IFlatListWithPaginationProps extends ViewProps {
-  /**
-   * Массив данных для отображения
-   * @default []
-   */
   data: IListData;
-
-  /**
-   * Функция для рендеринга каждого элемента
-   * @example ({ item }) => <Text>{item.title}</Text>
-   */
+  withoutScroll?: boolean;
   renderItem: IRenderItem;
-
-  /**
-   * Дочерние элементы (например, кнопка корзины)
-   */
   children?: React.ReactNode;
 }
 
@@ -38,6 +26,7 @@ export function FlatListWithPagination<T extends IListItem> ({
   data = [],
   renderItem,
   children,
+  withoutScroll,
   ...viewProps
 }: IFlatListWithPaginationProps) {
   const flatListRef = useRef<FlatList<T>>(null);
@@ -64,9 +53,11 @@ export function FlatListWithPagination<T extends IListItem> ({
   return (
     <View style={[styles.contentContainer, viewProps.style]}>
       <FlatList<T>
+        style={styles.list}
         ref={flatListRef}
+        scrollEnabled={!withoutScroll}
         data={formattedData[selectedPage] as T[]}
-        keyExtractor={(item) => `item_${item.id}`}
+        keyExtractor={(item) => `item_${item?.id || item?.product?.id}`}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         {...FlatListVars} />
@@ -91,9 +82,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 8,
   },
+  list: {
+    marginVertical: 8,
+  },
   chip: {
     marginTop: 8,
     marginRight: 12,
+    height: 40,
+    alignSelf: 'flex-end',
   },
   paginationContainer: {
     paddingHorizontal: 16,
