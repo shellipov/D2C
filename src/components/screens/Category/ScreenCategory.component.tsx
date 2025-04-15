@@ -24,7 +24,6 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   const category = props.route.params.category;
   const navigation = useNavigationHook();
   const data = productStore.getCategory(category);
-
   const formattedData = paginationData(data);
   const pageButtons = Object.keys(formattedData);
   const isPaginationVisible = pageButtons.length > 1;

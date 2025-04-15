@@ -45,7 +45,7 @@ export const CardItem = observer((props: ICardItemProps)=> {
       }
     }
   }, [item, cartStore.cart?.length]);
-  // тут не норм
+
   const onDeleteFromCart = useCallback(async ()=> {
     if (!!item) {
       await cartStore.deleteFromCart(item.product).then();

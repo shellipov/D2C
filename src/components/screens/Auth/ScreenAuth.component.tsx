@@ -9,7 +9,6 @@ import { useNavigationHook } from '../../../hooks/useNavigation';
 import { observer } from 'mobx-react';
 import { Col } from '../../shared/Col';
 import { Screen } from '../../shared/Screen';
-import { ColorsVars } from '../../../settings';
 
 export interface IScreenAuthProps {}
  type Props = IScreenAuthProps | undefined
@@ -18,6 +17,7 @@ export const ScreenAuth = observer((props: Props) => {
   const userStore = UserDataStore;
   const [name, setName] = React.useState<string>('');
   const navigation = useNavigationHook();
+  const isButtonDisabled = useMemo(()=> name.length < 4, [name]);
 
   useEffect(() => {
     if (userStore.isAuth) {
@@ -32,8 +32,6 @@ export const ScreenAuth = observer((props: Props) => {
   const onPressLogin = useCallback(() => {
     userStore.login(name).then();
   }, [name]);
-
-  const isButtonDisabled = useMemo(()=> name.length < 4, [name]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

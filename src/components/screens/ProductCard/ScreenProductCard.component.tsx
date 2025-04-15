@@ -15,7 +15,6 @@ import { Screen } from '../../shared/Screen';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../api/EventDataStore';
 import { UserDataStore } from '../../../api/UserDataStore';
 import { eventCreator } from '../../../helpers/eventCreator';
-import { ColorsVars } from '../../../settings';
 
 export interface IScreenProductCardProps {
     id: number;
@@ -69,7 +68,6 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
     }
   }, [item, cartStore.cart?.length]);
 
-  // тут норм
   const onDeleteFromCart = useCallback(async ()=> {
     if (!!item) {
       await cartStore.deleteFromCart(item).then();
@@ -132,7 +130,6 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
         <CartBlockComponent />
       </View>
     </Screen>
-
   );
 });
 

@@ -100,6 +100,25 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
     }
   }, [paymentMethod, deliveryOption, user?.name, user?.phone, user?.address]);
 
+  const renderItem = ({ item }: { item: any }) => {
+    return (
+      <View style={[styles.item, styles.row]}>
+        <Row style={{ flex: 1 }}>
+          <Col style={{ flex: 2 }}>
+            <View style={{ marginVertical: 4 }}>
+              <TextUI text={item.product.name} size={'large'} numberOfLines={1} />
+            </View>
+            <View style={{ marginVertical: 2, flexDirection: 'row', justifyContent: 'space-between' }}>
+              <TextUI text={item.product.price + ' ₽'} size={'medium'} />
+              <TextUI text={`${item.numberOfProducts} шт.`} size={'medium'} />
+              <TextUI text={`${item.product.price * item.numberOfProducts} ₽`} size={'medium'} />
+            </View>
+          </Col>
+        </Row>
+      </View>
+    );
+  };
+
   return (
     <Screen isError={isError} onRefresh={onRefresh}>
       <Row style={{ paddingHorizontal: 16 }}>
@@ -141,25 +160,8 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
             scrollEnabled={false}
             numColumns={1}
             contentContainerStyle={styles.container}
-            {... FlatListVars}
-            renderItem={({ item }) => {
-              return (
-                <View style={[styles.item, styles.row]}>
-                  <Row style={{ flex: 1 }}>
-                    <Col style={{ flex: 2 }}>
-                      <View style={{ marginVertical: 4 }}>
-                        <TextUI text={item.product.name} size={'large'} numberOfLines={1} />
-                      </View>
-                      <View style={{ marginVertical: 2, flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <TextUI text={item.product.price + ' ₽'} size={'medium'} />
-                        <TextUI text={`${item.numberOfProducts} шт.`} size={'medium'} />
-                        <TextUI text={`${item.product.price * item.numberOfProducts} ₽`} size={'medium'} />
-                      </View>
-                    </Col>
-                  </Row>
-                </View>
-              );
-            }} />
+            renderItem={renderItem}
+            {... FlatListVars} />
 
           <View style={[styles.item, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
             <Row style={[styles.row, { justifyContent: 'space-between' }]}>
@@ -179,8 +181,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
                 return (
                   <Chip key={`_${i.type}`} label={i.title} isSelected={isSelected} onPress={()=> {setDeliveryOption(i.type);}} />
                 );
-              })
-              }
+              })}
             </Row>
           </View>
 
@@ -195,8 +196,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
                 return (
                   <Chip key={`_${i.type}`} label={i.title} isSelected={isSelected} onPress={()=> {setPaymentMethod(i.type);}} />
                 );
-              })
-              }
+              })}
             </Row>
           </View>
 

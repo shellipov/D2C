@@ -18,6 +18,7 @@ export interface IFlatListWithPaginationProps extends ViewProps {
   data: IListData;
   withoutScroll?: boolean;
   numColumns?: number;
+  header?: React.ComponentType<any> | React.ReactElement;
   renderItem: IRenderItem;
   children?: React.ReactNode;
 }
@@ -25,6 +26,7 @@ export interface IFlatListWithPaginationProps extends ViewProps {
 export function FlatListWithPagination<T extends IListItem> ({
   data = [],
   renderItem,
+  header,
   withoutScroll,
   numColumns,
   children,
@@ -55,6 +57,7 @@ export function FlatListWithPagination<T extends IListItem> ({
     <View style={[styles.contentContainer, viewProps.style]}>
       <FlatList<T>
         style={styles.list}
+        ListHeaderComponent={header}
         ref={flatListRef}
         numColumns={numColumns}
         scrollEnabled={!withoutScroll}

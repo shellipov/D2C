@@ -32,6 +32,10 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
     ProductDataStore.refresh().then();
   }, []);
 
+  const renderHeader = () => {
+    return (<View style={{ height: 64 }} />);
+  };
+
   const renderItem = ({ item }: { item: any }) => {
     const onPress = () => navigation.navigate('Category', { category: item.type });
 
@@ -52,7 +56,11 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
             <Ionicons name={'user'} size={28} color={'black'} />
           </ButtonUI>
         </View>
-        <FlatListWithPagination data={ProductDataStore.categories} renderItem={renderItem} numColumns={3} />
+        <FlatListWithPagination
+          data={ProductDataStore.categories}
+          renderItem={renderItem}
+          header={renderHeader}
+          numColumns={3} />
         <View style={{ position: 'absolute', right: 16, bottom: 16 }}>
           <CartBlockComponent />
         </View>
@@ -70,7 +78,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     alignItems: 'flex-end',
     backgroundColor: Colors.lighter,
-    marginBottom: 64,
   },
   item: {
     flex: 1,

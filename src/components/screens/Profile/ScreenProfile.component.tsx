@@ -50,7 +50,6 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
     }
   };
 
-
   const logout = useCallback(()=> {
     Alert.alert(
       'Выйти из приложения?',
