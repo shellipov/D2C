@@ -1,11 +1,11 @@
-import { FlatList, Image, ScrollView, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+// @ts-ignore
+import Ionicons from 'react-native-vector-icons/AntDesign';
+import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React, { useRef, useState } from 'react';
 import { observer } from 'mobx-react';
 import { CartDataStore, CategoryEnum, ProductDataStore } from '../../../api';
 import { TextUI } from '../../ui/TextUI';
-// @ts-ignore
-import Ionicons from 'react-native-vector-icons/AntDesign';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartBlockComponent } from '../../shared/CartBlock';
 import { NavBar } from '../../shared/NavBar';
@@ -22,7 +22,6 @@ export interface IScreenCategoryProps {
 }
 
 export const ScreenCategory = observer((props: { route: { params: IScreenCategoryProps }}) => {
-  const isDarkMode = useColorScheme() === 'dark';
   const productStore = ProductDataStore;
   const category = props.route.params.category;
   const navigation = useNavigationHook();
@@ -43,18 +42,44 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
     }
   };
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const renderProductItem = ({ item }: { item: any }) => (
+    <TouchableOpacity style={styles.item} onPress={()=> navigation.navigate('ProductCard', { id: item.id })}>
+      <Row style={{ flex: 1 }}>
+        <View style={{ flex: 1, flexDirection: 'column', marginRight: 16, backgroundColor: 'gray', borderRadius: 12 }}>
+          <Image src={item.image} resizeMode="cover" style={styles.image} />
+        </View>
+        <Col style={{ flex: 2 }}>
+          <View style={{ marginVertical: 6 }}>
+            <TextUI text={item.name} size={'large'} numberOfLines={1} />
+          </View>
+          <View style={{ marginVertical: 4 }}>
+            <TextUI text={item.description} size={'small'} numberOfLines={1} />
+          </View>
+          <View style={{ marginVertical: 4 }}>
+            <TextUI text={item.price + ' ₽'} size={'medium'} style={{ color: 'green' }} />
+          </View>
+          <Row style={{ marginVertical: 4, flexDirection: 'row', alignItems: 'center' }}>
+            <Ionicons name={'star'} size={20} color={'orange'} />
+            <TextUI text={` - ${item.productRating}`} size={'medium'} />
+          </Row>
+        </Col>
+      </Row>
+    </TouchableOpacity>
+  );
 
-  const viewStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    borderColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const renderPageButton = (item)=> {
+    const onPress = () => {
+      setSelectedPage(+item.item);
+      flatListRef.current?.scrollToOffset({ offset: 0, animated: false });
+    };
 
-  const itemStyle = {
-    backgroundColor: isDarkMode ? 'black' : 'white',
-    borderColor: isDarkMode ? 'black' : 'white',
+    return (
+      <Chip
+        style={styles.chip}
+        label={`${item.item}`}
+        isSelected={+item.item === selectedPage}
+        onPress={onPress} />
+    );
   };
 
   return (
@@ -63,66 +88,23 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
       isError={ProductDataStore.isError || CartDataStore.isError}
       onRefresh={onRefresh}>
       <NavBar title={productStore.getCategoryName(category)} />
-      <View style={[backgroundStyle, { flex: 1, position: 'relative' }]}>
-        <ScrollView style={[viewStyle, styles.scrollView]}>
-          <FlatList
-            ref={flatListRef}
-            data={formattedData[selectedPage]}
-            keyExtractor={(item) => `item_${item.id}`}
-            scrollEnabled={false}
-            numColumns={1}
-            contentContainerStyle={styles.container}
-            {... FlatListVars}
-            renderItem={({ item }) => {
-              return (
-                <TouchableOpacity style={[itemStyle, styles.item]} onPress={()=> navigation.navigate('ProductCard', { id: item.id })}>
-                  <Row style={{ flex: 1 }}>
-                    <View style={{ flex: 1, flexDirection: 'column', marginRight: 16, backgroundColor: 'gray', borderRadius: 12 }}>
-                      <Image src={item.image} resizeMode="cover" style={styles.image} />
-                    </View>
-                    <Col style={{ flex: 2 }}>
-                      <View style={{ marginVertical: 6 }}>
-                        <TextUI text={item.name} size={'large'} numberOfLines={1} />
-                      </View>
-                      <View style={{ marginVertical: 4 }}>
-                        <TextUI text={item.description} size={'small'} numberOfLines={1} />
-                      </View>
-                      <View style={{ marginVertical: 4 }}>
-                        <TextUI text={item.price + ' ₽'} size={'medium'} style={{ color: 'green' }} />
-                      </View>
-                      <Row style={{ marginVertical: 4, flexDirection: 'row', alignItems: 'center' }}>
-                        <Ionicons name={'star'} size={20} color={'orange'} />
-                        <TextUI text={` - ${item.productRating}`} size={'medium'} />
-                      </Row>
-                    </Col>
-                  </Row>
-                </TouchableOpacity>
-              );
-            }} />
-        </ScrollView>
+      <View style={[{ position: 'relative' }, styles.contentContainer]}>
+        <FlatList
+          ref={flatListRef}
+          data={formattedData[selectedPage]}
+          keyExtractor={(item) => `item_${item.id}`}
+          renderItem={renderProductItem}
+          showsVerticalScrollIndicator={false}
+          {...FlatListVars} />
         {isPaginationVisible && (
-          <View>
-            <FlatList
-              style={styles.list}
-              data={pageButtons}
-              horizontal={true}
-              renderItem={(item)=> {
-                const onPress = () => {
-                  setSelectedPage(+item.item);
-                  flatListRef.current?.scrollToOffset({ offset: 0, animated: false });
-                };
-
-                return (
-                  <Chip
-                    style={styles.chip}
-                    label={`${item.item}`}
-                    isSelected={+item.item === selectedPage}
-                    onPress={onPress} />
-                );
-              }} />
-          </View>
+          <FlatList
+            data={pageButtons}
+            renderItem={renderPageButton}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.paginationContainer} />
         )}
-        <View style={{ position: 'absolute', right: 16, bottom: isPaginationVisible ? 65 : 16 }}>
+        <View style={{ position: 'absolute', right: 16, bottom: isPaginationVisible ? 54 : 8 }}>
           <CartBlockComponent />
         </View>
       </View>
@@ -135,14 +117,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: ColorsVars.white,
   },
-  scrollView: {
+  contentContainer: {
+    backgroundColor: Colors.lighter,
     flex: 1,
-    borderWidth: 1,
-    borderRadius: 16,
-    paddingVertical: 8,
-  },
-  container: {
-    padding: 8,
+    paddingHorizontal: 8,
   },
   item: {
     flex: 1,
@@ -151,6 +129,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     margin: 8,
     padding: 6,
+    backgroundColor: ColorsVars.white,
+    borderColor: ColorsVars.white,
   },
   image: {
     flex: 1,
@@ -160,7 +140,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginRight: 12,
   },
-  list: {
+  paginationContainer: {
     paddingHorizontal: 16,
   },
 });
