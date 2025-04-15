@@ -47,10 +47,7 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
   };
 
   return (
-    <Screen
-      style={styles.screen}
-      isError={ProductDataStore.isError || CartDataStore.isError}
-      onRefresh={onRefresh}>
+    <Screen isError={ProductDataStore.isError || CartDataStore.isError} onRefresh={onRefresh}>
       <View style={[backgroundStyle, { flex: 1 }]}>
         <StatusBar
           barStyle={isDarkMode ? 'light-content' : 'dark-content'}
@@ -88,10 +85,6 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
 });
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: ColorsVars.white,
-  },
   scrollView: {
     flex: 1,
     borderWidth: 1,

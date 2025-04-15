@@ -56,7 +56,7 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
             size={'medium'}
             numberOfLines={1}
             style={{ maxWidth: '70%' }}
-            text={`${item.cart.reduce((acc, i) => acc + i.numberOfProducts, 0)} шт`} />
+            text={`${item.cart.reduce((acc: number, i: {numberOfProducts: number}) => acc + i.numberOfProducts, 0)} шт`} />
         </Row>
         <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'center' }]}>
           <TextUI size={'large'} text={'Стоимость'} />
@@ -71,10 +71,7 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
   );
 
   return (
-    <Screen
-      style={styles.screen}
-      isError={isError}
-      onRefresh={onRefresh}>
+    <Screen isError={isError} onRefresh={onRefresh}>
       <NavBar title={'Заказы'} />
       <View style={{ flex: 1, paddingTop: 8, backgroundColor: Colors.lighter }}>
         <First>
@@ -91,10 +88,6 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
 });
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: ColorsVars.white,
-  },
   item: {
     backgroundColor: ColorsVars.white,
     marginVertical: 4,

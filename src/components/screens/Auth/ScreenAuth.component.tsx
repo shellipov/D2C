@@ -1,4 +1,4 @@
-import { Keyboard, StyleSheet, TouchableWithoutFeedback, useColorScheme, ViewStyle } from 'react-native';
+import { Keyboard, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { TextUI } from '../../ui/TextUI';
@@ -16,7 +16,6 @@ export interface IScreenAuthProps {}
 
 export const ScreenAuth = observer((props: Props) => {
   const userStore = UserDataStore;
-  const isDarkMode = useColorScheme() === 'dark';
   const [name, setName] = React.useState<string>('');
   const navigation = useNavigationHook();
 
@@ -25,13 +24,6 @@ export const ScreenAuth = observer((props: Props) => {
       navigation.navigate('Main');
     }
   }, [userStore.isAuth]);
-
-  const blockStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  } as ViewStyle;
 
   const onChangeText = useCallback((text: string) => {
     setName(text);
@@ -45,8 +37,8 @@ export const ScreenAuth = observer((props: Props) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <Screen style={styles.screen} isError={UserDataStore.isError} onRefresh={UserDataStore.refresh}>
-        <Col style={blockStyle}>
+      <Screen isError={UserDataStore.isError} onRefresh={UserDataStore.refresh}>
+        <Col style={styles.block}>
           <TextUI text={'Введите Ваш ник'} size={'title'} />
           <TextUI text={'и постарайтесь не забыть его'} size={'small'} />
           <TextInputUI value={name} textSize={'large'} onChangeText={onChangeText} style={styles.input} />
@@ -58,9 +50,11 @@ export const ScreenAuth = observer((props: Props) => {
 });
 
 const styles = StyleSheet.create({
-  screen: {
+  block: {
+    backgroundColor: Colors.lighter,
     flex: 1,
-    backgroundColor: ColorsVars.white,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   input: { textAlign: 'center' },
 });

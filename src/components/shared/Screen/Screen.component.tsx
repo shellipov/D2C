@@ -15,13 +15,13 @@ interface IScreenProps extends ViewProps {
 }
 
 export const Screen = observer((props: IScreenProps) => {
-  const { children, isError, ...rest } = props;
+  const { children, isError, style, ...rest } = props;
   const route = useRoute();
   const isMain = route.name === Routes.Main;
 
   if (isError) {
     return (
-      <SafeAreaView {...rest}>
+      <SafeAreaView style={[styles.screen, style]} {...rest}>
         <DebugPanel />
         {!isMain && (
           <NavBar title={'Ошибка'} />
@@ -37,7 +37,7 @@ export const Screen = observer((props: IScreenProps) => {
   }
 
   return (
-    <SafeAreaView {...rest}>
+    <SafeAreaView style={[styles.screen, style]} {...rest}>
       <DebugPanel />
       {children}
     </SafeAreaView>
@@ -45,6 +45,10 @@ export const Screen = observer((props: IScreenProps) => {
 });
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: ColorsVars.white,
+  },
   errorView: {
     flex: 1,
     justifyContent: 'center',

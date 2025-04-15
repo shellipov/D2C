@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Keyboard, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
@@ -11,6 +11,7 @@ import { TextInputUI } from '../../ui/TextInputUI';
 import { Col } from '../../shared/Col';
 import { Screen } from '../../shared/Screen';
 import { ColorsVars } from '../../../settings';
+import { phoneFormatter } from '../../../helpers/phoneFormatter';
 
 export interface IScreenProfileProps {}
 
@@ -22,6 +23,7 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
   const [name, setName] = useState(userStore.user?.name);
   const [phone, setPhone] = useState(userStore.user?.phone);
   const [address, setAddress] = useState(userStore.user?.address);
+  const isValidPhone = useMemo(() => phoneFormatter(phone).isValid, [phone]);
 
   useEffect(() => {
     userStore.updateAuthUserFields({ name, phone, address }).then();
@@ -31,7 +33,8 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
     setName(text);
   }, [name]);
   const onChangePhone = useCallback((text: string) => {
-    setPhone(text);
+    const { formattedValue } = phoneFormatter(text);
+    setPhone(formattedValue);
   }, [name]);
   const onChangeAddress = useCallback((text: string) => {
     setAddress(text);
@@ -65,10 +68,7 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <Screen
-        style={styles.screen}
-        isError={UserDataStore.isError || CartDataStore.isError}
-        onRefresh={onRefresh}>
+      <Screen isError={UserDataStore.isError || CartDataStore.isError} onRefresh={onRefresh}>
 
         <View style={[{ paddingHorizontal: 16 }]}>
           <Row style={{ justifyContent: 'space-between' }}>
@@ -99,8 +99,9 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
                 <TextInputUI
                   textSize={'medium'}
                   keyboardType={'numeric'}
-                  style={[styles.inputCenter, { borderColor: !phone ? ColorsVars.red : ColorsVars.gray }]}
+                  style={[styles.inputCenter, { borderColor: !phone || !isValidPhone ? ColorsVars.red : ColorsVars.gray }]}
                   value={phone}
+                  maxLength={18}
                   onChangeText={onChangePhone} />
               </Col>
             </Row>
@@ -140,10 +141,6 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
 });
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: ColorsVars.white,
-  },
   userDataBlock: {
     flex: 1,
     alignItems: 'center',

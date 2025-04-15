@@ -36,8 +36,7 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
   };
 
   return (
-    <Screen
-      style={styles.screen}>
+    <Screen>
       <Row style={{ paddingHorizontal: 16 }}>
         <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
       </Row>
@@ -125,10 +124,6 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
 });
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: ColorsVars.white,
-  },
   scrollView: {
     flex: 1,
     borderWidth: 1,

@@ -85,10 +85,7 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
   }
 
   return (
-    <Screen
-      style={styles.screen}
-      isError={isError}
-      onRefresh={onRefresh}>
+    <Screen isError={isError} onRefresh={onRefresh}>
       <NavBar title={'Карточка товара'} />
       <ScrollView style={backgroundStyle}>
         <View style={{ flex: 1, flexDirection: 'column' }}>
@@ -140,10 +137,6 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
 });
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: ColorsVars.white,
-  },
   imageView: {
     flex: 1,
     flexDirection: 'row',

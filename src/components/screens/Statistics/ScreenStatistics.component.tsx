@@ -86,10 +86,7 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
   );
 
   return (
-    <Screen
-      style={styles.screen}
-      isError={EventDataStore.isError}
-      onRefresh={EventDataStore.refresh}>
+    <Screen isError={EventDataStore.isError} onRefresh={EventDataStore.refresh}>
       <NavBar title={'Статистика'} />
       <View style={{ flex: 1, paddingTop: 8, backgroundColor: Colors.lighter }}>
         <First>
@@ -106,10 +103,6 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
 });
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: ColorsVars.white,
-  },
   item: {
     backgroundColor: ColorsVars.white,
     marginVertical: 4,

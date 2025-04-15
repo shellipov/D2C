@@ -5,6 +5,6 @@ export const DebugVars = !__DEV__ ? undefined : {
 };
 
 if (DebugVars) {
-  // DebugVars.showScreenNames = true;
+  DebugVars.showScreenNames = true;
   // DebugVars.enableToggleThemeButton = true;
 }

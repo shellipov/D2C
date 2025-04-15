@@ -64,10 +64,7 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   );
 
   return (
-    <Screen
-      style={styles.screen}
-      isError={ProductDataStore.isError || CartDataStore.isError}
-      onRefresh={onRefresh}>
+    <Screen isError={ProductDataStore.isError || CartDataStore.isError} onRefresh={onRefresh}>
       <NavBar title={productStore.getCategoryName(category)} />
       <FlatListWithPagination data={data} renderItem={renderProductItem}>
         <View style={{ position: 'absolute', right: 16, bottom: isPaginationVisible ? 67 : 16 }}>
@@ -79,10 +76,6 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
 });
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: ColorsVars.white,
-  },
   item: {
     flex: 1,
     height: 130,

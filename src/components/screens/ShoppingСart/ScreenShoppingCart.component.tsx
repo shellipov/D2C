@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ScrollView, StyleSheet, useColorScheme, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
@@ -11,12 +11,11 @@ import { ColorsVars, SettingsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Screen } from '../../shared/Screen';
 import { CardItem } from './components';
-import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
+import { FlatListWithPagination, IListData } from '../../shared/FlatListWithPagination';
 
 export interface IScreenShoppingCartProps {}
 
 export const ScreenShoppingCart = observer((props: { route: { params: IScreenShoppingCartProps }}) => {
-  const isDarkMode = useColorScheme() === 'dark';
   const dataStore = CartDataStore;
   const navigation = useNavigationHook();
   const cart = dataStore.cart;
@@ -25,18 +24,8 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
     CartDataStore.refresh().then();
   }, []);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  const viewStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    borderColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
     <Screen
-      style={styles.screen}
       isError={CartDataStore.isError}
       onRefresh={CartDataStore.refresh}>
       <Row style={{ paddingHorizontal: 16 }}>
@@ -45,14 +34,14 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
         <TextUI size={'bigTitle'} text={'Корзина'} style={{ paddingVertical: 35 }} />
       </View>
-      <View style={[backgroundStyle, { flex: 1 }]}>
+      <View style={styles.block}>
         <First>
           {!cart?.length && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <TextUI size={'title'} text={'Корзина пуста'} />
             </View>
           )}
-          <FlatListWithPagination data={cart} renderItem={({ item }: { item: any }) => <CardItem key={item?.product?.id} item={item} />} />
+          <FlatListWithPagination data={cart as IListData} renderItem={({ item }: { item: any }) => <CardItem key={item?.product?.id} item={item} />} />
         </First>
       </View>
       <View style={{ alignItems: 'flex-end', padding: 12 }}>
@@ -75,17 +64,8 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
 });
 
 const styles = StyleSheet.create({
-  screen: {
+  block: {
     flex: 1,
-    backgroundColor: ColorsVars.white,
-  },
-  scrollView: {
-    flex: 1,
-    borderWidth: 1,
-    borderRadius: 16,
-    paddingVertical: 8,
-  },
-  container: {
-    padding: 8,
+    backgroundColor: Colors.lighter,
   },
 });
