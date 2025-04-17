@@ -14,6 +14,7 @@ import { Screen } from '../../shared/Screen';
 import { ColorsVars } from '../../../settings';
 import { paginationData } from '../../../helpers';
 import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
+import { Theme } from '../../../store';
 
 export interface IScreenCategoryProps {
     category: CategoryEnum
@@ -28,6 +29,11 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   const pageButtons = Object.keys(formattedData);
   const isPaginationVisible = pageButtons.length > 1;
 
+  const itemColors = {
+    backgroundColor: Theme.color.bgBasic,
+    borderColor: Theme.color.bgBasic,
+  };
+
   const onRefresh = () => {
     if (ProductDataStore.isError) {
       ProductDataStore.refresh().then();
@@ -38,9 +44,9 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   };
 
   const renderProductItem = ({ item }: { item: any }) => (
-    <TouchableOpacity style={styles.item} onPress={()=> navigation.navigate('ProductCard', { id: item.id })}>
+    <TouchableOpacity style={[styles.item, itemColors]} onPress={()=> navigation.navigate('ProductCard', { id: item.id })}>
       <Row style={{ flex: 1 }}>
-        <View style={{ flex: 1, flexDirection: 'column', marginRight: 16, backgroundColor: 'gray', borderRadius: 12 }}>
+        <View style={{ flex: 1, flexDirection: 'column', marginRight: 16, backgroundColor: Theme.color.bgGray, borderRadius: 12 }}>
           <Image src={item.image} resizeMode="cover" style={styles.image} />
         </View>
         <Col style={{ flex: 2 }}>
@@ -51,10 +57,10 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
             <TextUI text={item.description} size={'small'} numberOfLines={1} />
           </View>
           <View style={{ marginVertical: 4 }}>
-            <TextUI text={item.price + ' ₽'} size={'medium'} style={{ color: 'green' }} />
+            <TextUI text={item.price + ' ₽'} size={'medium'} style={{ color: Theme.color.textGreen }} />
           </View>
           <Row style={{ marginVertical: 4, flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons name={'star'} size={20} color={'orange'} />
+            <Ionicons name={'star'} size={20} color={Theme.color.elementPrimary} />
             <TextUI text={` - ${item.productRating}`} size={'medium'} />
           </Row>
         </Col>
@@ -82,8 +88,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     margin: 8,
     padding: 6,
-    backgroundColor: ColorsVars.white,
-    borderColor: ColorsVars.white,
   },
   image: {
     flex: 1,

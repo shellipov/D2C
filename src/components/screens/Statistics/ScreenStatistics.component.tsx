@@ -1,21 +1,20 @@
 import { StyleSheet, View } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { Row } from '../../shared/Row';
 import { NavBar } from '../../shared/NavBar';
 import { Screen } from '../../shared/Screen';
-import { ColorsVars } from '../../../settings';
 import { EventDataStore, EventTypeEnum, IEvent } from '../../../api/EventDataStore';
 import { Col } from '../../shared/Col';
 import { First } from '../../shared/Firts';
 import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
+import { Theme } from '../../../store';
 
 const COLORS : {[key in EventTypeEnum]? : string} = {
-  [EventTypeEnum.AddToCart] : ColorsVars.green,
-  [EventTypeEnum.DeleteFromCart] : ColorsVars.red,
-  [EventTypeEnum.CreateOrder] : ColorsVars.violet,
+  [EventTypeEnum.AddToCart] : Theme.color.textGreen,
+  [EventTypeEnum.DeleteFromCart] : Theme.color.textRed,
+  [EventTypeEnum.CreateOrder] : Theme.color.textViolet,
 };
 
 export interface IScreenStatisticsProps {}
@@ -29,7 +28,7 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
 
   const renderProductItem = ({ item }: { item: any }) => (
 
-    <Col style={styles.item}>
+    <Col style={[styles.item, { backgroundColor: Theme.color.bgBasic }]}>
       <View style={{ paddingBottom: 6 }}>
         <Row style={styles.row}>
           <TextUI size={'small'} text={`${item.eventType}`} style={{ color: COLORS[item.eventType as IEvent['eventType']] }} />
@@ -88,7 +87,7 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
   return (
     <Screen isError={EventDataStore.isError} onRefresh={EventDataStore.refresh}>
       <NavBar title={'Статистика'} />
-      <View style={{ flex: 1, paddingTop: 8, backgroundColor: Colors.lighter }}>
+      <View style={{ flex: 1, paddingTop: 8, backgroundColor: Theme.color.bgAdditional }}>
         <First>
           {!events?.length && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -104,7 +103,6 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
 
 const styles = StyleSheet.create({
   item: {
-    backgroundColor: ColorsVars.white,
     marginVertical: 4,
     marginHorizontal: 8,
     borderRadius: 8,

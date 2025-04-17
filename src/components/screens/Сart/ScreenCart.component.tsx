@@ -12,10 +12,11 @@ import { Row } from '../../shared/Row';
 import { Screen } from '../../shared/Screen';
 import { CardItem } from './components';
 import { FlatListWithPagination, IListData } from '../../shared/FlatListWithPagination';
+import { Theme } from '../../../store';
 
-export interface IScreenShoppingCartProps {}
+export interface IScreenCartProps {}
 
-export const ScreenShoppingCart = observer((props: { route: { params: IScreenShoppingCartProps }}) => {
+export const ScreenCart = observer((props: { route: { params: IScreenCartProps }}) => {
   const dataStore = CartDataStore;
   const navigation = useNavigationHook();
   const cart = dataStore.cart;
@@ -34,18 +35,21 @@ export const ScreenShoppingCart = observer((props: { route: { params: IScreenSho
       <View style={{ justifyContent: 'center', alignItems: 'center' }}>
         <TextUI size={'bigTitle'} text={'Корзина'} style={{ paddingVertical: 35 }} />
       </View>
-      <View style={styles.block}>
+      <View style={{ flex: 1 }}>
         <First>
           {!cart?.length && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <TextUI size={'title'} text={'Корзина пуста'} />
             </View>
           )}
-          <FlatListWithPagination data={cart as IListData} renderItem={({ item }: { item: any }) => <CardItem key={item?.product?.id} item={item} />} />
+          <FlatListWithPagination
+            data={cart as IListData}
+            style={{ backgroundColor: Theme.color.bgAdditional }}
+            renderItem={({ item }: { item: any }) => <CardItem key={item?.product?.id} item={item} />} />
         </First>
       </View>
       <View style={{ alignItems: 'flex-end', padding: 12 }}>
-        <TextUI size={'title'} style={{ color: 'green' }} text={`итого: ${CartDataStore.cartSum} ₽`} />
+        <TextUI size={'title'} style={{ color: Theme.color.textGreen }} text={`итого: ${CartDataStore.cartSum} ₽`} />
       </View>
       <View style={{ alignItems: 'center', height: 80, justifyContent: 'center' }}>
         <First>

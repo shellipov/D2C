@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { TextUI } from '../../ui/TextUI';
 import React from 'react';
-import { ColorsVars } from '../../../settings';
+import { Theme } from '../../../store';
 
 interface IChipProps extends TouchableOpacityProps {
     label: string,
@@ -13,8 +13,8 @@ export const Chip = (props: IChipProps) => {
   const { label, style, isSelected = false, onPress, ...rest } = props;
 
   return (
-    <TouchableOpacity style={[styles.chip, isSelected && styles.selectedChip, style]} onPress={onPress} {...rest}>
-      <TextUI size={'medium'} text={label} style={[styles.chipText, isSelected && styles.selectedChipText]} />
+    <TouchableOpacity style={[styles.chip, isSelected && { borderColor: Theme.color.basicInversion, borderWidth: 1 }, style]} onPress={onPress} {...rest}>
+      <TextUI size={'medium'} text={label} style={[{ color: Theme.color.textGray }, isSelected && { color: Theme.color.textPrimary }]} />
     </TouchableOpacity>
   );
 };
@@ -30,15 +30,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     minWidth: 45,
-  },
-  selectedChip: {
-    borderColor: ColorsVars.black,
-    borderWidth: 1,
-  },
-  chipText: {
-    color: ColorsVars.gray,
-  },
-  selectedChipText: {
-    color: 'black',
   },
 });

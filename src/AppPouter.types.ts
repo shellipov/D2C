@@ -1,4 +1,4 @@
-import { IScreenShoppingCartProps } from './components/screens/ShoppingСart';
+import { IScreenCartProps } from './components/screens/Сart';
 import { IScreenAuthProps } from './components/screens/Auth';
 import { IScreenCategoryProps } from './components/screens/Category';
 import { IScreenProductCardProps } from './components/screens/ProductCard';
@@ -8,11 +8,11 @@ import { IScreenOrderProps } from './components/screens/Order';
 import { IScreenOrderListProps } from './components/screens/OrderList';
 import { IScreenStatisticsProps } from './components/screens/Statistics';
 import { IScreenErrorsProps } from './components/screens/Errors';
-import {IScreenMainProps} from "./components/screens/Main";
+import { IScreenMainProps } from './components/screens/Main';
 
 export enum Routes {
     Main = 'Main',
-    ShoppingCart = 'ShoppingCart',
+    Cart = 'Cart',
     Auth = 'Auth',
     Category = 'Category',
     ProductCard = 'ProductCard',
@@ -25,7 +25,7 @@ export enum Routes {
 }
 export type RootStackParamList = {
     Main: IScreenMainProps | undefined;
-    ShoppingCart: IScreenShoppingCartProps | undefined;
+    Cart: IScreenCartProps | undefined;
     Auth: IScreenAuthProps | undefined;
     Category: IScreenCategoryProps;
     ProductCard: IScreenProductCardProps;

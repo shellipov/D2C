@@ -6,7 +6,7 @@ import { ScreenAuth } from './components/screens/Auth';
 import { UserDataStore } from './api/UserDataStore';
 import { observer } from 'mobx-react';
 import { ScreenCategory } from './components/screens/Category';
-import { ScreenShoppingCart } from './components/screens/ShoppingСart';
+import { ScreenCart } from './components/screens/Сart';
 import { ScreenProductCard } from './components/screens/ProductCard';
 import { ScreenCreateOrder } from './components/screens/CreateOrder';
 import { ScreenProfile } from './components/screens/Profile';
@@ -15,7 +15,7 @@ import { ScreenOrderList } from './components/screens/OrderList';
 import { ScreenStatistics } from './components/screens/Statistics';
 import { ScreenErrors } from './components/screens/Errors';
 import { ScreenMain } from './components/screens/Main';
-import { SafeAreaView, View, StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { TextUI } from './components/ui/TextUI';
 import { ButtonUI } from './components/ui/ButtonUI';
 import { ColorsVars } from './settings';
@@ -33,7 +33,7 @@ export const AppRouter = observer(() => {
 
   const AUTH_SCREENS: { [key in ScreenName]?: { screen: React.ComponentType<any>; navigationOptions?: any } } = {
     Main: { screen: ScreenMain },
-    ShoppingCart: { screen: ScreenShoppingCart },
+    Cart: { screen: ScreenCart },
     Category: { screen: ScreenCategory },
     ProductCard: { screen: ScreenProductCard },
     CreateOrder: { screen: ScreenCreateOrder },

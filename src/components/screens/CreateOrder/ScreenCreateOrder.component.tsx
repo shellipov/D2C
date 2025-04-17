@@ -18,6 +18,7 @@ import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../ap
 import { ProductDataStore } from '../../../api';
 import { phoneFormatter } from '../../../helpers/phoneFormatter';
 import { OrderCartItem } from '../Order/components';
+import {Theme} from "../../../store";
 
 export interface IScreenCreateOrderProps {}
 
@@ -178,7 +179,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
 
           <View style={styles.item}>
             <Row style={{ justifyContent: 'flex-end', padding: 12 }}>
-              <TextUI size={'title'} style={{ color: 'green' }} text={`итого: ${totalSum} ₽`} />
+              <TextUI size={'title'} style={{ color: Theme.color.textGreen }} text={`итого: ${totalSum} ₽`} />
             </Row>
             <Row style={{ justifyContent: 'center' }}>
               {isUserProfileError && (

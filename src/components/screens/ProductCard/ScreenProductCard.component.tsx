@@ -1,8 +1,7 @@
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/AntDesign';
 import { observer } from 'mobx-react';
-import { Image, ScrollView, StyleSheet, useColorScheme, View } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import React, { useCallback } from 'react';
 import { ProductDataStore } from '../../../api';
 import { TextUI } from '../../ui/TextUI';
@@ -14,14 +13,14 @@ import { NavBar } from '../../shared/NavBar';
 import { Screen } from '../../shared/Screen';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../api/EventDataStore';
 import { UserDataStore } from '../../../api/UserDataStore';
-import { eventCreator } from '../../../helpers/eventCreator';
+import { eventCreator } from '../../../helpers';
+import { Theme } from '../../../store';
 
 export interface IScreenProductCardProps {
     id: number;
 }
 
 export const ScreenProductCard = observer((props: { route: { params: IScreenProductCardProps }}) => {
-  const isDarkMode = useColorScheme() === 'dark';
   const cartStore = CartDataStore;
   const eventStore = EventDataStore;
   const userStore = UserDataStore;
@@ -54,10 +53,6 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
     cartInfo: cartStore.cartInfo,
   }) as ISimplifiedEventData;
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   const onAddToCart = useCallback(async ()=>{
     if (!!item) {
       await cartStore.addToCart(item);
@@ -85,9 +80,9 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
   return (
     <Screen isError={isError} onRefresh={onRefresh}>
       <NavBar title={'Карточка товара'} />
-      <ScrollView style={backgroundStyle}>
+      <ScrollView style={{ backgroundColor: Theme.color.bgAdditional }}>
         <View style={{ flex: 1, flexDirection: 'column' }}>
-          <View style={ styles.imageView}>
+          <View style={ [styles.imageView, { backgroundColor: Theme.color.bgGray }]}>
             <Image src={item?.image} resizeMode="cover" style={styles.image} />
           </View>
           <View style={{ flex: 2, flexDirection: 'column', paddingHorizontal: 24 }}>
@@ -98,11 +93,11 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
               <TextUI text={item?.description} size={'large'} numberOfLines={1} />
             </View>
             <View style={{ marginVertical: 6, flexDirection: 'row', alignItems: 'center' }}>
-              <Ionicons name={'star'} size={24} color={'orange'} />
+              <Ionicons name={'star'} size={24} color={Theme.color.elementPrimary} />
               <TextUI text={` - ${item?.productRating}`} size={'medium'} />
             </View>
             <View style={{ marginVertical: 6 }}>
-              <TextUI text={item?.price + ' ₽'} size={'title'} style={{ color:'green' }} />
+              <TextUI text={item?.price + ' ₽'} size={'title'} style={{ color:Theme.color.textGreen }} />
             </View>
             <View style={{ marginVertical: 6, flexDirection: 'row', alignItems: 'center' }}>
               <TextUI text={`осталось ${item?.quantityOfGoods} шт.`} size={'medium'} />
@@ -138,7 +133,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     marginBottom: 16,
-    backgroundColor: 'gray',
     borderBottomRightRadius: 12,
     borderBottomLeftRadius: 12,
     height: 350,

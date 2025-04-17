@@ -1,12 +1,14 @@
 import { observer } from 'mobx-react';
 import * as React from 'react';
 import { FC } from 'react';
-import { Col } from '../components/shared/Col';
 import { DebugVars } from './debug.vars';
 import { ViewProps } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { TextUI } from '../components/ui/TextUI';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ButtonUI, IButtonTypeEnum } from '../components/ui/ButtonUI';
+import { Theme } from '../store';
+import { Row } from '../components/shared/Row';
 
 type Props = ViewProps
 
@@ -15,11 +17,14 @@ const _DebugPanel: FC<Props> = (props: Props) => {
   const insets = useSafeAreaInsets();
 
   return (
-    <Col style={{ position: 'absolute', right: 16, top: insets.top, zIndex: 2000, backgroundColor: '#ffffff', borderRadius: 3 }} {...props}>
+    <Row style={{ position: 'absolute', right: 16, top: insets.top, zIndex: 2000, backgroundColor: Theme.color.bgAdditional, borderRadius: 3 }} {...props}>
+      { DebugVars?.enableToggleThemeButton && (
+        <ButtonUI title={Theme.name} type={ IButtonTypeEnum.Debug } onPress={Theme.changeTheme} />
+      )}
       { DebugVars?.showScreenNames && (
         <TextUI size={'small'} style={{ color: 'red' }} text={'Screen' + route.name} />
       )}
-    </Col>
+    </Row>
   );
 };
 

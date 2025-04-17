@@ -2,7 +2,7 @@ import { action, computed, makeObservable, observable, runInAction } from 'mobx'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, orderStorageTypeEnum, PaymentMethodsEnum } from './OrderData.types';
 import { errorService } from '../ErrorDataStore/errorService';
-import { errorStorageTypeEnum, ErrorTypeEnum } from '../ErrorDataStore';
+import { ErrorTypeEnum } from '../ErrorDataStore';
 import { suddenError } from '../../helpers';
 
 export interface IOrderDataStore {
@@ -60,7 +60,7 @@ class OrderDataStore implements IOrderDataStore {
         },
         {
           type: DeliveryOptionsEnum.Door,
-          title: 'Уставить у двери',
+          title: 'Оставить у двери',
         },
       ];
     };

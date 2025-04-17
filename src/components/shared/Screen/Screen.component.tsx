@@ -8,6 +8,7 @@ import { NavBar } from '../NavBar';
 import { useRoute } from '@react-navigation/native';
 import { Routes } from '../../../AppPouter.types';
 import { observer } from 'mobx-react';
+import { Theme } from '../../../store';
 
 interface IScreenProps extends ViewProps {
     isError?: boolean;
@@ -19,9 +20,11 @@ export const Screen = observer((props: IScreenProps) => {
   const route = useRoute();
   const isMain = route.name === Routes.Main;
 
+  const bgColor = { backgroundColor: Theme.color.bgBasic };
+
   if (isError) {
     return (
-      <SafeAreaView style={[styles.screen, style]} {...rest}>
+      <SafeAreaView style={[styles.screen, bgColor, style]} {...rest}>
         <DebugPanel />
         {!isMain && (
           <NavBar title={'Ошибка'} />
@@ -37,7 +40,7 @@ export const Screen = observer((props: IScreenProps) => {
   }
 
   return (
-    <SafeAreaView style={[styles.screen, style]} {...rest}>
+    <SafeAreaView style={[styles.screen, bgColor, style]} {...rest}>
       <DebugPanel />
       {children}
     </SafeAreaView>
@@ -47,7 +50,6 @@ export const Screen = observer((props: IScreenProps) => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: ColorsVars.white,
   },
   errorView: {
     flex: 1,

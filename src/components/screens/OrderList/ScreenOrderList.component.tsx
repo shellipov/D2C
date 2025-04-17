@@ -1,5 +1,4 @@
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
@@ -9,9 +8,9 @@ import { Row } from '../../shared/Row';
 import { NavBar } from '../../shared/NavBar';
 import { UserDataStore } from '../../../api/UserDataStore';
 import { Screen } from '../../shared/Screen';
-import { ColorsVars } from '../../../settings';
 import { First } from '../../shared/Firts';
 import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
+import { Theme } from '../../../store';
 
 export interface IScreenOrderListProps {}
 
@@ -37,10 +36,10 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
   };
 
   const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Order', { order: item })}>
+    <TouchableOpacity style={[styles.item, { backgroundColor: Theme.color.bgBasic }]} onPress={() => navigation.navigate('Order', { order: item })}>
       <View style={{ paddingBottom: 6 }}>
         <Row style={[styles.row]}>
-          <TextUI size={'large'} text={`Заказ № ${item.id}`} style={{ color: ColorsVars.green }} />
+          <TextUI size={'large'} text={`Заказ № ${item.id}`} style={{ color: Theme.color.textGreen }} />
         </Row>
         <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'center' }]}>
           <TextUI size={'large'} text={'Время'} />
@@ -73,7 +72,7 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
   return (
     <Screen isError={isError} onRefresh={onRefresh}>
       <NavBar title={'Заказы'} />
-      <View style={{ flex: 1, paddingTop: 8, backgroundColor: Colors.lighter }}>
+      <View style={{ flex: 1, paddingTop: 8, backgroundColor: Theme.color.bgAdditional }}>
         <First>
           {!orders?.length && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -89,7 +88,6 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
 
 const styles = StyleSheet.create({
   item: {
-    backgroundColor: ColorsVars.white,
     marginVertical: 4,
     marginHorizontal: 8,
     borderRadius: 8,

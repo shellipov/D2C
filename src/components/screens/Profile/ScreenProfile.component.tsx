@@ -12,6 +12,7 @@ import { Col } from '../../shared/Col';
 import { Screen } from '../../shared/Screen';
 import { ColorsVars } from '../../../settings';
 import { phoneFormatter } from '../../../helpers/phoneFormatter';
+import { Theme } from '../../../store';
 
 export interface IScreenProfileProps {}
 
@@ -118,6 +119,10 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
 
           <View>
             <Col style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
+              <ButtonUI
+                title={Theme.name}
+                style={[styles.button, { backgroundColor: Theme.color.bgBasic }]}
+                onPress={Theme.changeTheme} />
               <ButtonUI
                 title={'Заказы'}
                 style={styles.button}

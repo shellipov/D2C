@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { Row } from '../../../shared/Row';
 import { Col } from '../../../shared/Col';
-import { Image, StyleSheet, TouchableOpacity, useColorScheme, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { TextUI } from '../../../ui/TextUI';
 import { ButtonUI } from '../../../ui/ButtonUI';
 import { useNavigationHook } from '../../../../hooks/useNavigation';
@@ -11,6 +11,7 @@ import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../..
 import { UserDataStore } from '../../../../api/UserDataStore';
 import { observer } from 'mobx-react';
 import { ProductDataStore } from '../../../../api';
+import { Theme } from '../../../../store';
 
 export interface ICardItemProps{
     item: ICartItem
@@ -19,7 +20,6 @@ export interface ICardItemProps{
 export const CardItem = observer((props: ICardItemProps)=> {
   const item = props.item;
   const navigation = useNavigationHook();
-  const isDarkMode = useColorScheme() === 'dark';
   const cartStore = CartDataStore;
   const eventStore = EventDataStore;
   const userStore = UserDataStore;
@@ -32,8 +32,8 @@ export const CardItem = observer((props: ICardItemProps)=> {
   }) as ISimplifiedEventData;
 
   const itemStyle = {
-    backgroundColor: isDarkMode ? 'black' : 'white',
-    borderColor: isDarkMode ? 'black' : 'white',
+    backgroundColor: Theme.color.bgBasic,
+    borderColor: Theme.color.bgBasic,
   };
 
   const onAddToCart = useCallback(async ()=> {
@@ -63,7 +63,7 @@ export const CardItem = observer((props: ICardItemProps)=> {
   return (
     <TouchableOpacity style={[itemStyle, styles.item]} onPress={onPressCard}>
       <Row style={{ flex: 1 }}>
-        <Col style={{ flex: 1, marginRight: 16, backgroundColor: 'gray', borderRadius: 12 }}>
+        <Col style={{ flex: 1, marginRight: 16, backgroundColor: Theme.color.bgGray, borderRadius: 12 }}>
           <Image src={item.product.image} resizeMode="cover" style={styles.image} />
         </Col>
         <Col style={{ flex: 2 }}>
@@ -74,7 +74,7 @@ export const CardItem = observer((props: ICardItemProps)=> {
             <TextUI text={item.product.description} size={'small'} numberOfLines={1} />
           </View>
           <View style={{ marginVertical: 4 }}>
-            <TextUI text={item.product.price + ' ₽'} size={'medium'} style={{ color: 'green' }} />
+            <TextUI text={item.product.price + ' ₽'} size={'medium'} style={{ color: Theme.color.textGreen }} />
           </View>
           <Row style={{ marginVertical: 4, alignItems: 'flex-start', justifyContent: 'space-between' }}>
             <TextUI text={`в корзине - ${item.numberOfProducts} шт.`} size={'medium'} />
