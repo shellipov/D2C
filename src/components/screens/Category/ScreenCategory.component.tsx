@@ -1,20 +1,19 @@
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/AntDesign';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import { observer } from 'mobx-react';
-import { CartDataStore, CategoryEnum, ProductDataStore } from '../../../api';
-import { TextUI } from '../../ui/TextUI';
-import { useNavigationHook } from '../../../hooks/useNavigation';
-import { CartBlockComponent } from '../../shared/CartBlock';
-import { NavBar } from '../../shared/NavBar';
-import { Row } from '../../shared/Row';
-import { Col } from '../../shared/Col';
-import { Screen } from '../../shared/Screen';
-import { ColorsVars } from '../../../settings';
-import { paginationData } from '../../../helpers';
-import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
-import { Theme } from '../../../store';
+import {observer} from 'mobx-react';
+import {CartDataStore, CategoryEnum, ProductDataStore} from '../../../api';
+import {TextUI} from '../../ui/TextUI';
+import {useNavigationHook} from '../../../hooks/useNavigation';
+import {CartBlockComponent} from '../../shared/CartBlock';
+import {NavBar} from '../../shared/NavBar';
+import {Row} from '../../shared/Row';
+import {Col} from '../../shared/Col';
+import {Screen} from '../../shared/Screen';
+import {paginationData} from '../../../helpers';
+import {FlatListWithPagination} from '../../shared/FlatListWithPagination';
+import {Theme} from '../../../store';
 
 export interface IScreenCategoryProps {
     category: CategoryEnum

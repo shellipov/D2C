@@ -1,9 +1,8 @@
 import React from 'react';
-import { ColorValue, StyleSheet, TouchableOpacity, TouchableOpacityProps } from 'react-native';
-import { TextUI } from '../TextUI';
-import { Theme } from '../../../store';
-import { observer } from 'mobx-react';
-import { ColorsVars } from '../../../settings';
+import {ColorValue, StyleSheet, TouchableOpacity, TouchableOpacityProps} from 'react-native';
+import {TextUI} from '../TextUI';
+import {Theme} from '../../../store';
+import {observer} from 'mobx-react';
 
 export type ButtonType = 'debug' | 'white' | 'red' | 'redBorder'
 
