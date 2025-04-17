@@ -6,6 +6,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { TextUI } from '../../ui/TextUI';
 import { CartDataStore } from '../../../api/CartDataStore';
 import { useNavigationHook } from '../../../hooks/useNavigation';
+import { Theme } from '../../../store';
 
 export const CartBlockComponent = observer(()=> {
   const navigation = useNavigationHook();
@@ -16,12 +17,14 @@ export const CartBlockComponent = observer(()=> {
     }
   }, [CartDataStore.isEmpty]);
 
+  const backgroundColor = { backgroundColor: Theme.color.elementPrimary };
+
 
   return (
     <TouchableOpacity
-      style={[styles.cartBlock]} onPress={()=> navigation.navigate('ShoppingCart')}>
-      <Ionicons name={'shoppingcart'} size={28} color={'black'} />
-      <TextUI size={'small'} style={{ color: 'green' }} text={`${CartDataStore.cartSum} ₽`} />
+      style={[styles.cartBlock, backgroundColor]} onPress={()=> navigation.navigate('Cart')}>
+      <Ionicons name={'shoppingcart'} size={28} color={Theme.color.black} />
+      <TextUI size={'small'} style={{ color: Theme.color.textGreen }} text={`${CartDataStore.cartSum} ₽`} />
     </TouchableOpacity>
   );
 });
@@ -34,7 +37,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'orange',
     padding: 12,
     alignSelf: 'flex-start',
   },

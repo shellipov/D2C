@@ -4,6 +4,7 @@ import { FlatListVars } from '../../../settings/FlatList.vars';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { Chip } from '../Chip';
 import { paginationData } from '../../../helpers';
+import { Theme } from '../../../store';
 
 export interface IListItem {
   id: string | number | undefined;
@@ -54,7 +55,7 @@ export function FlatListWithPagination<T extends IListItem> ({
   };
 
   return (
-    <View style={[styles.contentContainer, viewProps.style]}>
+    <View style={[styles.contentContainer, { backgroundColor: Theme.color.bgAdditional }, viewProps.style]}>
       <FlatList<T>
         style={styles.list}
         ListHeaderComponent={header}
@@ -84,7 +85,6 @@ export function FlatListWithPagination<T extends IListItem> ({
 
 const styles = StyleSheet.create({
   contentContainer: {
-    backgroundColor: Colors.lighter,
     flex: 1,
     paddingHorizontal: 8,
   },

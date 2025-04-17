@@ -11,6 +11,7 @@ import { Col } from '../../shared/Col';
 import { IOrder } from '../../../api';
 import { Screen } from '../../shared/Screen';
 import { OrderCartItem } from './components';
+import {Theme} from "../../../store";
 
 export interface IScreenOrderProps {
     order: IOrder
@@ -26,7 +27,7 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
         <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
       </Row>
       <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <TextUI size={'bigTitle'} text={'Заказ успешно создан'} style={{ paddingVertical: 35, color: ColorsVars.green }} />
+        <TextUI size={'bigTitle'} text={'Заказ успешно создан'} style={{ paddingVertical: 35, color: Theme.color.textGreen }} />
       </Row>
       <View style={styles.block}>
         <ScrollView style={styles.scrollView}>
@@ -71,7 +72,7 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
 
           <View style={styles.item}>
             <Row style={{ justifyContent: 'flex-end', padding: 12 }}>
-              <TextUI size={'title'} style={{ color: 'green' }} text={`итого: ${totalSum} ₽`} />
+              <TextUI size={'title'} style={{ color: Theme.color.textGreen }} text={`итого: ${totalSum} ₽`} />
             </Row>
           </View>
 
