@@ -18,7 +18,7 @@ export const ColorsVars = {
   // element
   elementPrimary: ['#FFA500', '#f1880f'],
   secondaryPrimary: ['#858585', '#858585'],
-  elementDisabled: ['#d3d1d1', '#787878'],
+  elementDisabled: ['#d3d1d1', '#676767'],
   elementDanger: ['#ed3e3e', '#cd3b3b'],
 
   // text
