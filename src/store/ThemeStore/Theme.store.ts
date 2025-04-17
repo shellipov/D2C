@@ -75,6 +75,7 @@ class ThemeStore implements IThemeStore {
       black: ColorsVars.black,
       white: ColorsVars.white,
       violet: ColorsVars.violet,
+      transparent: ColorsVars.transparent,
       elementPrimary: ColorsVars.elementPrimary[index],
       secondaryPrimary: ColorsVars.secondaryPrimary[index],
       elementDisabled: ColorsVars.elementDisabled[index],

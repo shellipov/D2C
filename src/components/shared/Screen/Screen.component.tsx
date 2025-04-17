@@ -1,14 +1,13 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, View, ViewProps } from 'react-native';
-import { DebugPanel } from '../../../debug';
-import { ColorsVars } from '../../../settings';
-import { TextUI } from '../../ui/TextUI';
-import { ButtonUI } from '../../ui/ButtonUI';
-import { NavBar } from '../NavBar';
-import { useRoute } from '@react-navigation/native';
-import { Routes } from '../../../AppPouter.types';
-import { observer } from 'mobx-react';
-import { Theme } from '../../../store';
+import {SafeAreaView, StyleSheet, View, ViewProps} from 'react-native';
+import {DebugPanel} from '../../../debug';
+import {TextUI} from '../../ui/TextUI';
+import {ButtonUI} from '../../ui/ButtonUI';
+import {NavBar} from '../NavBar';
+import {useRoute} from '@react-navigation/native';
+import {Routes} from '../../../AppPouter.types';
+import {observer} from 'mobx-react';
+import {Theme} from '../../../store';
 
 interface IScreenProps extends ViewProps {
     isError?: boolean;
@@ -30,9 +29,9 @@ export const Screen = observer((props: IScreenProps) => {
           <NavBar title={'Ошибка'} />
         )}
         <View style={styles.errorView}>
-          <TextUI size={'bigTitle'} style={styles.errorText} text={'Ошибка обновления\nданных'} />
+          <TextUI size={'bigTitle'} style={[styles.errorText, { color: Theme.color.textRed }]} text={'Ошибка обновления\nданных'} />
           {!!props.onRefresh && (
-            <ButtonUI title={'Обновить'} style={styles.button} type={'redBorder'}  onPress={props.onRefresh} />
+            <ButtonUI title={'Обновить'} style={styles.button} type={'redBorder'} onPress={props.onRefresh} />
           )}
         </View>
       </SafeAreaView>
@@ -58,7 +57,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   errorText: {
-    color: ColorsVars.red,
     textAlign: 'center',
   },
   button: {

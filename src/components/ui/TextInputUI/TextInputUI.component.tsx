@@ -1,7 +1,6 @@
 import React from 'react';
-import { StyleSheet, TextInput, TextInputProps } from 'react-native';
-import { ColorsVars } from '../../../settings';
-import { Theme } from '../../../store';
+import {StyleSheet, TextInput, TextInputProps} from 'react-native';
+import {Theme} from '../../../store';
 
 type TextSize = 'small' | 'medium' | 'large';
 
@@ -46,7 +45,6 @@ export function TextInputUI (props: ITextInputUIProps) {
 
 const styles = StyleSheet.create({
   textInput: {
-    borderColor: ColorsVars.gray,
     borderWidth: 1,
     borderRadius: 8,
     padding: 4,

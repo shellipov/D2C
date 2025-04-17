@@ -3,6 +3,7 @@ export const ColorsVars = {
   black: '#000000',
   white: '#ffffff',
   violet: '#5d018e',
+  transparent: 'transparent',
   disabledText: '#acacac',
   gray: '#858585',
   red: '#ed3e3e',

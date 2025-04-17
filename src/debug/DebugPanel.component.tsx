@@ -22,7 +22,7 @@ const _DebugPanel: FC<Props> = (props: Props) => {
         <ButtonUI title={Theme.name} type={ 'debug' } onPress={Theme.changeTheme} />
       )}
       { DebugVars?.showScreenNames && (
-        <TextUI size={'small'} style={{ color: 'red' }} text={'Screen' + route.name} />
+        <TextUI size={'small'} style={{ color: Theme.color.textRed }} text={'Screen' + route.name} />
       )}
     </Row>
   );

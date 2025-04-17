@@ -6,7 +6,7 @@ import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartDataStore } from '../../../api/CartDataStore';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { First } from '../../shared/Firts';
-import { ColorsVars, SettingsVars } from '../../../settings';
+import { SettingsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Screen } from '../../shared/Screen';
 import { CardItem } from './components';
@@ -26,7 +26,7 @@ export const ScreenCart = observer((props: { route: { params: IScreenCartProps }
 
   return (
     <Screen
-      isError={CartDataStore.isError}
+      isError={CartDataStore.isError }
       onRefresh={CartDataStore.refresh}>
       <Row style={{ paddingHorizontal: 16 }}>
         <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
@@ -55,7 +55,7 @@ export const ScreenCart = observer((props: { route: { params: IScreenCartProps }
           {CartDataStore.isCreateOrderDisabled && (
             <ButtonUI title={`Минимальная сумма - ${SettingsVars.minCartSum} ₽`} disabled={true}>
               <TextUI
-                size={'small'} style={{ color: ColorsVars.disabledText }}
+                size={'small'} style={{ color: Theme.color.disabledPrimary }}
                 text={`еще ${SettingsVars.minCartSum - CartDataStore.cartSum} ₽`} />
             </ButtonUI>
           )}
