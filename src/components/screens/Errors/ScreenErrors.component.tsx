@@ -1,15 +1,14 @@
 import { StyleSheet, View } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { Row } from '../../shared/Row';
 import { NavBar } from '../../shared/NavBar';
 import { Screen } from '../../shared/Screen';
-import { ColorsVars } from '../../../settings';
 import { First } from '../../shared/Firts';
 import { ErrorDataStore } from '../../../api';
 import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
+import { Theme } from '../../../store';
 
 export interface IScreenErrorsProps {}
 
@@ -22,10 +21,10 @@ export const ScreenErrors = observer((props: { route: { params: IScreenErrorsPro
   }, []);
 
   const renderItem = ({ item }: { item: any }) => (
-    <View style={styles.item}>
+    <View style={[styles.item, { backgroundColor: Theme.color.bgAdditionalTwo }]}>
       <View style={{ paddingBottom: 6 }}>
         <Row style={[styles.row]}>
-          <TextUI size={'medium'} text={item.title} style={{ color: ColorsVars.red }} />
+          <TextUI size={'medium'} text={item.title} style={{ color: Theme.color.textRed }} />
         </Row>
         <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'center' }]}>
           <TextUI
@@ -46,7 +45,7 @@ export const ScreenErrors = observer((props: { route: { params: IScreenErrorsPro
   return (
     <Screen isError={ErrorDataStore.isError} onRefresh={ErrorDataStore.refresh}>
       <NavBar title={'Ошибки'} />
-      <View style={{ flex: 1, paddingTop: 8, backgroundColor: Colors.lighter }}>
+      <View style={{ flex: 1, paddingTop: 8, backgroundColor: Theme.color.bgAdditional }}>
         <First>
           {!errors?.length && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -62,7 +61,6 @@ export const ScreenErrors = observer((props: { route: { params: IScreenErrorsPro
 
 const styles = StyleSheet.create({
   item: {
-    backgroundColor: ColorsVars.white,
     marginVertical: 4,
     marginHorizontal: 8,
     borderRadius: 8,

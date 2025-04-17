@@ -6,7 +6,7 @@ import { ViewProps } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { TextUI } from '../components/ui/TextUI';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ButtonUI, IButtonTypeEnum } from '../components/ui/ButtonUI';
+import { ButtonUI } from '../components/ui/ButtonUI';
 import { Theme } from '../store';
 import { Row } from '../components/shared/Row';
 
@@ -19,7 +19,7 @@ const _DebugPanel: FC<Props> = (props: Props) => {
   return (
     <Row style={{ position: 'absolute', right: 16, top: insets.top, zIndex: 2000, backgroundColor: Theme.color.bgAdditional, borderRadius: 3 }} {...props}>
       { DebugVars?.enableToggleThemeButton && (
-        <ButtonUI title={Theme.name} type={ IButtonTypeEnum.Debug } onPress={Theme.changeTheme} />
+        <ButtonUI title={Theme.name} type={ 'debug' } onPress={Theme.changeTheme} />
       )}
       { DebugVars?.showScreenNames && (
         <TextUI size={'small'} style={{ color: 'red' }} text={'Screen' + route.name} />

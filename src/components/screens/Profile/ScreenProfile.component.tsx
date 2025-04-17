@@ -10,7 +10,6 @@ import { Row } from '../../shared/Row';
 import { TextInputUI } from '../../ui/TextInputUI';
 import { Col } from '../../shared/Col';
 import { Screen } from '../../shared/Screen';
-import { ColorsVars } from '../../../settings';
 import { phoneFormatter } from '../../../helpers/phoneFormatter';
 import { Theme } from '../../../store';
 
@@ -73,23 +72,23 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
         <View style={[{ paddingHorizontal: 16 }]}>
           <Row style={{ justifyContent: 'space-between' }}>
             <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20 }} onPress={navigation.goBack} />
-            <ButtonUI title={'Выйти'} textColor={'white'} style={{ backgroundColor: ColorsVars.red, borderColor: ColorsVars.red }} onPress={logout} />
+            <ButtonUI title={'Выйти'} type={'red'} onPress={logout} />
           </Row>
         </View>
-
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <TextUI size={'bigTitle'} text={'Профиль'} style={{ paddingVertical: 35 }} />
         </View>
-        <ScrollView>
 
+        <ScrollView>
           <View style={styles.userDataBlock}>
             <Row style={styles.row}>
               <Col>
                 <TextUI size={'large'} text={'Имя'} />
                 <TextInputUI
                   value={name}
+                  isError={!name}
                   textSize={'medium'}
-                  style={[styles.inputCenter, { borderColor: !name ? ColorsVars.red : ColorsVars.gray }]}
+                  style={styles.inputCenter}
                   onChangeText={onChangeName} />
               </Col>
             </Row>
@@ -99,8 +98,9 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
                 <TextInputUI
                   textSize={'medium'}
                   keyboardType={'numeric'}
-                  style={[styles.inputCenter, { borderColor: !phone || !isValidPhone ? ColorsVars.red : ColorsVars.gray }]}
+                  style={styles.inputCenter}
                   value={phone}
+                  isError={!isValidPhone }
                   maxLength={18}
                   onChangeText={onChangePhone} />
               </Col>
@@ -110,30 +110,35 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
                 <TextUI size={'large'} text={'Адрес'} />
                 <TextInputUI
                   value={address}
+                  isError={!address}
                   textSize={'small'}
-                  style={[styles.inputCenter, { borderColor: !address ? ColorsVars.red : ColorsVars.gray }, { minHeight: 50 }]}
+                  style={[styles.inputCenter, { minHeight: 50 }]}
                   onChangeText={onChangeAddress} multiline={true} />
               </Col>
             </Row>
           </View>
 
           <View>
-            <Col style={{ justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
+            <Col style={styles.buttonBlock}>
               <ButtonUI
                 title={Theme.name}
+                type={'white'}
                 style={[styles.button, { backgroundColor: Theme.color.bgBasic }]}
                 onPress={Theme.changeTheme} />
               <ButtonUI
                 title={'Заказы'}
+                type={'white'}
                 style={styles.button}
                 onPress={() => navigation.navigate('OrderList')} />
               <ButtonUI
                 title={'Статистика'}
+                type={'white'}
                 style={styles.button}
                 onPress={() => navigation.navigate('Statistics')} />
               <ButtonUI
-                title={'Bugs'} textColor={ColorsVars.red}
-                style={[styles.button, styles.redButton]}
+                title={'Bugs'}
+                type={'redBorder'}
+                style={styles.button}
                 onPress={() => navigation.navigate('Errors')} />
             </Col>
           </View>
@@ -156,13 +161,12 @@ const styles = StyleSheet.create({
   inputCenter: {
     textAlign: 'center',
   },
+  buttonBlock: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 50,
+  },
   button: {
     width: '35%',
-    marginHorizontal: 8,
-    backgroundColor: ColorsVars.white,
-    borderColor: ColorsVars.gray,
-  },
-  redButton: {
-    borderColor: ColorsVars.red,
   },
 });

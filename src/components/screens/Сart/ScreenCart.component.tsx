@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { View } from 'react-native';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
@@ -38,7 +37,7 @@ export const ScreenCart = observer((props: { route: { params: IScreenCartProps }
       <View style={{ flex: 1 }}>
         <First>
           {!cart?.length && (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Theme.color.bgAdditional }}>
               <TextUI size={'title'} text={'Корзина пуста'} />
             </View>
           )}
@@ -65,11 +64,4 @@ export const ScreenCart = observer((props: { route: { params: IScreenCartProps }
       </View>
     </Screen>
   );
-});
-
-const styles = StyleSheet.create({
-  block: {
-    flex: 1,
-    backgroundColor: Colors.lighter,
-  },
 });

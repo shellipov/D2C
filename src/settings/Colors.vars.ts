@@ -1,25 +1,31 @@
 export const ColorsVars = {
   // не зависят от темы
   black: '#000000',
+  white: '#ffffff',
   violet: '#5d018e',
   disabledText: '#acacac',
   gray: '#858585',
   red: '#ed3e3e',
-  white: '#ffffff',
 
   // background
   bgBasic : ['#ffffff', '#000000'],
   bgAdditional: ['#f5f5f5', '#151515'],
+  bgAdditionalTwo: ['#ffffff', '#090909'],
   bgGray: ['#808080', '#434343'],
+  bgTransparentImage: ['#ffffff', '#5c5c5c'],
 
   // element
   elementPrimary: ['#FFA500', '#f1880f'],
+  secondaryPrimary: ['#858585', '#858585'],
   elementDisabled: ['#d3d1d1', '#787878'],
+  elementDanger: ['#ed3e3e', '#cd3b3b'],
 
   // text
   textPrimary: ['#302F2D', '#e8e8e8'],
+  textWhite: ['#ffffff', '#ffffff'],
+  disabledPrimary: ['#acacac', '#979797'],
   textGreen: ['#008000', '#007800'],
-  textRed: ['#ed3e3e', '#a52c2c'],
+  textRed: ['#ed3e3e', '#cd3b3b'],
   textGray: ['#808080', '#434343'],
   textViolet: ['#5d018e', '#7f01c5'],
 
