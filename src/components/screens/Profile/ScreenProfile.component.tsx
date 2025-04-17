@@ -24,6 +24,12 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
   const [phone, setPhone] = useState(userStore.user?.phone);
   const [address, setAddress] = useState(userStore.user?.address);
   const isValidPhone = useMemo(() => phoneFormatter(phone).isValid, [phone]);
+  const themeButtonStyle = {
+    backgroundColor: Theme.color.bgBasic,
+    marginVertical: 0,
+    marginBottom: 12,
+    marginTop: 4,
+  };
 
   useEffect(() => {
     userStore.updateAuthUserFields({ name, phone, address }).then();
@@ -79,7 +85,7 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
           <TextUI size={'bigTitle'} text={'Профиль'} style={{ paddingVertical: 35 }} />
         </View>
 
-        <ScrollView>
+        <ScrollView style={{ backgroundColor: Theme.color.bgAdditionalTwo }}>
           <View style={styles.userDataBlock}>
             <Row style={styles.row}>
               <Col>
@@ -120,10 +126,11 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
 
           <View>
             <Col style={styles.buttonBlock}>
+              <TextUI size={'medium'} text={'Тема'} />
               <ButtonUI
                 title={Theme.name}
                 type={'white'}
-                style={[styles.button, { backgroundColor: Theme.color.bgBasic }]}
+                style={[styles.button, themeButtonStyle]}
                 onPress={Theme.changeTheme} />
               <ButtonUI
                 title={'Заказы'}

@@ -27,8 +27,7 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
   }, []);
 
   const renderProductItem = ({ item }: { item: any }) => (
-
-    <Col style={[styles.item, { backgroundColor: Theme.color.bgBasic }]}>
+    <Col style={[styles.item, { backgroundColor: Theme.color.bgAdditionalTwo }]}>
       <View style={{ paddingBottom: 6 }}>
         <Row style={styles.row}>
           <TextUI size={'small'} text={`${item.eventType}`} style={{ color: COLORS[item.eventType as IEvent['eventType']] }} />
