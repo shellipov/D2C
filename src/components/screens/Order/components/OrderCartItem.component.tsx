@@ -4,12 +4,17 @@ import { Row } from '../../../shared/Row';
 import { Col } from '../../../shared/Col';
 import { StyleSheet, View } from 'react-native';
 import { TextUI } from '../../../ui/TextUI';
-import { ColorsVars } from '../../../../settings';
+import { Theme } from '../../../../store';
 
 
-export function OrderCartItem (item: ICartItem) {
+export const OrderCartItem = (item: ICartItem) => {
+  const itemColor = {
+    backgroundColor: Theme.color.bgAdditionalTwo,
+    borderColor: Theme.color.bgAdditionalTwo,
+  };
+
   return (
-    <Row style={[styles.item, styles.row]} key={`cart_item_ ${item.product.id}`}>
+    <Row style={[itemColor, styles.row]} key={`cart_item_ ${item.product.id}`}>
       <Row style={{ flex: 1 }}>
         <Col style={{ flex: 2 }}>
           <View style={{ marginVertical: 4 }}>
@@ -24,13 +29,9 @@ export function OrderCartItem (item: ICartItem) {
       </Row>
     </Row>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  item: {
-    backgroundColor: ColorsVars.white,
-    borderColor: ColorsVars.white,
-  },
   row: {
     paddingVertical: 6,
     paddingHorizontal: 16,

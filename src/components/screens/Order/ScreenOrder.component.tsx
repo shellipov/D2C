@@ -1,17 +1,15 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { ButtonUI } from '../../ui/ButtonUI';
-import { ColorsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
 import { IOrder } from '../../../api';
 import { Screen } from '../../shared/Screen';
 import { OrderCartItem } from './components';
-import {Theme} from "../../../store";
+import { Theme } from '../../../store';
 
 export interface IScreenOrderProps {
     order: IOrder
@@ -20,6 +18,9 @@ export interface IScreenOrderProps {
 export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps }}) => {
   const navigation = useNavigationHook();
   const { user, cart, date, deliveryOption, paymentMethod, totalSum, shippingCost } = props.route.params.order;
+  const { color } = Theme;
+
+  const itemColor = { backgroundColor: color.bgAdditionalTwo, borderColor: color.bgAdditionalTwo };
 
   return (
     <Screen>
@@ -27,26 +28,26 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
         <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
       </Row>
       <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <TextUI size={'bigTitle'} text={'Заказ успешно создан'} style={{ paddingVertical: 35, color: Theme.color.textGreen }} />
+        <TextUI size={'bigTitle'} text={'Заказ успешно создан'} style={{ paddingVertical: 35, color: color.textGreen }} />
       </Row>
       <View style={styles.block}>
-        <ScrollView style={styles.scrollView}>
+        <ScrollView style={[styles.scrollView, { backgroundColor: color.bgAdditional, borderColor: color.bgAdditional }]}>
 
-          <View style={[styles.item, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
+          <View style={[itemColor, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
             <Row style={[styles.row, { justifyContent: 'space-between' }]}>
               <TextUI size={'large'} text={'Время'} />
               <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={`${date}`} />
             </Row>
             <Row style={[styles.row, { justifyContent: 'space-between' }]}>
-              <TextUI size={'large'} style={{ color: !user?.name ? ColorsVars.red : ColorsVars.black }} text={'Имя'} />
+              <TextUI size={'large'} text={'Имя'} />
               <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={user?.name} />
             </Row>
             <Row style={[styles.row, { justifyContent: 'space-between' }]}>
-              <TextUI size={'large'} style={{ color: !user?.phone ? ColorsVars.red : ColorsVars.black }} text={'Телефон'} />
+              <TextUI size={'large'} text={'Телефон'} />
               <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={user?.phone} />
             </Row>
             <Row style={[styles.row, { justifyContent: 'space-between' }]}>
-              <TextUI size={'large'} style={{ color: !user?.address ? ColorsVars.red : ColorsVars.black }} text={'Адрес'} />
+              <TextUI size={'large'} text={'Адрес'} />
               <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={user?.address} />
             </Row>
             <Row style={[styles.row, { justifyContent: 'space-between' }]}>
@@ -63,23 +64,23 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
             {cart.map(OrderCartItem)}
           </Col>
 
-          <View style={[styles.item, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
+          <View style={[itemColor, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
             <Row style={[styles.row, { justifyContent: 'space-between' }]}>
               <TextUI size={'large'} text={'Стоимость доставки'} />
               <TextUI size={'medium'} text={`${shippingCost} ₽`} />
             </Row>
           </View>
 
-          <View style={styles.item}>
+          <View style={itemColor}>
             <Row style={{ justifyContent: 'flex-end', padding: 12 }}>
-              <TextUI size={'title'} style={{ color: Theme.color.textGreen }} text={`итого: ${totalSum} ₽`} />
+              <TextUI size={'title'} style={{ color: color.textGreen }} text={`итого: ${totalSum} ₽`} />
             </Row>
           </View>
 
         </ScrollView>
         <Col>
           <Row style={{ paddingHorizontal: 16, paddingBottom: 40, justifyContent: 'center' }}>
-            <ButtonUI title={'Ok'} style={styles.button} onPress={()=> navigation.goBack()} />
+            <ButtonUI title={'Ok'} type={'white'} style={styles.button} onPress={()=> navigation.goBack()} />
           </Row>
         </Col>
       </View>
@@ -90,23 +91,15 @@ export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
-    borderWidth: 1,
-    borderRadius: 16,
     paddingVertical: 8,
     overflow: 'hidden',
-    backgroundColor: Colors.lighter,
-    borderColor: Colors.lighter,
   },
   block: {
     flex: 1,
-    backgroundColor: Colors.lighter,
+    // backgroundColor: Colors.lighter,
   },
   container: {
     marginBottom: 10,
-  },
-  item: {
-    backgroundColor: ColorsVars.white,
-    borderColor: ColorsVars.white,
   },
   row: {
     paddingVertical: 6,
@@ -115,7 +108,5 @@ const styles = StyleSheet.create({
   button: {
     width: '35%',
     marginHorizontal: 8,
-    backgroundColor: ColorsVars.white,
-    borderColor: ColorsVars.gray,
   },
 });

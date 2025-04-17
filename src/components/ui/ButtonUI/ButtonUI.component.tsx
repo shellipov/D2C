@@ -1,17 +1,16 @@
 import React from 'react';
 import { ColorValue, StyleSheet, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { TextUI } from '../TextUI';
-import { ColorsVars } from '../../../settings';
 import { Theme } from '../../../store';
 import { observer } from 'mobx-react';
+import { ColorsVars } from '../../../settings';
 
-export enum IButtonTypeEnum {
-  Debug = 'Debug',
-}
+export type ButtonType = 'debug' | 'white' | 'red' | 'redBorder'
+
 
 export interface IButtonUIProps extends TouchableOpacityProps{
     title: string;
-    type?: IButtonTypeEnum,
+    type?: ButtonType
     textColor?: ColorValue
     children?: React.ReactNode;
 }
@@ -30,17 +29,55 @@ export const ButtonUI = observer((props: IButtonUIProps) => {
     borderColor: color.elementDisabled,
   };
 
-  const colorStyle = props.disabled ? disabledButtonColor : activeButtonColor;
-  const debugButtonColor = Theme.isDark ? ColorsVars.gray : ColorsVars.disabledText;
-  const disabledTextColor = props.disabled ? ColorsVars.disabledText : !!textColor ? textColor : ColorsVars.black;
+  const whiteButtonColor = {
+    backgroundColor: color.bgBasic,
+    borderColor: color.secondaryPrimary,
+  };
 
+  const redButtonColor = {
+    backgroundColor: color.elementDanger,
+    borderColor: color.elementDanger,
+  };
+
+  const colorStyle = props.disabled ? disabledButtonColor : activeButtonColor;
+  const disabledTextColor = props.disabled ? color.disabledPrimary : !!textColor ? textColor : color.textPrimary;
+  const disabledInversionTextColor = props.disabled ? color.disabledPrimary : !!textColor ? textColor : color.textWhite;
+
+  // textColor={'white'} style={{ backgroundColor: ColorsVars.red, borderColor: ColorsVars.red }}
 
   switch (props.type) {
-    case IButtonTypeEnum.Debug:
+    case 'debug':
       return (
-        <TouchableOpacity style={[styles.debugButton, colorStyle, style, { borderColor: debugButtonColor }]} {...rest}>
+        <TouchableOpacity style={[styles.debugButton, colorStyle, style, { borderColor: color.bgGray }]} {...rest}>
           {!!title && (
-            <TextUI text={title} size={'small'} style={{ backgroundColor: debugButtonColor }} />
+            <TextUI text={title} size={'small'} style={{ backgroundColor: color.bgGray }} />
+          )}
+          {children}
+        </TouchableOpacity>
+      );
+    case 'white':
+      return (
+        <TouchableOpacity style={[styles.button, whiteButtonColor, style]} {...rest}>
+          {!!title && (
+            <TextUI text={title} size={'large'} style={{ color: disabledTextColor }} />
+          )}
+          {children}
+        </TouchableOpacity>
+      );
+    case 'red':
+      return (
+        <TouchableOpacity style={[styles.button, redButtonColor, style]} {...rest}>
+          {!!title && (
+            <TextUI text={title} size={'large'} style={{ color: disabledInversionTextColor }} />
+          )}
+          {children}
+        </TouchableOpacity>
+      );
+    case 'redBorder':
+      return (
+        <TouchableOpacity style={[styles.button, { backgroundColor: color.bgBasic, borderColor: color.elementDanger }, style]} {...rest}>
+          {!!title && (
+            <TextUI text={title} size={'large'} style={{ color: color.textRed }} />
           )}
           {children}
         </TouchableOpacity>
@@ -49,7 +86,7 @@ export const ButtonUI = observer((props: IButtonUIProps) => {
       return (
         <TouchableOpacity style={[styles.button, colorStyle, style]} {...rest}>
           {!!title && (
-            <TextUI text={title} size={'large'} style={{ color: disabledTextColor }} />
+            <TextUI text={title} size={'large'} style={{ color: disabledInversionTextColor }} />
           )}
           {children}
         </TouchableOpacity>

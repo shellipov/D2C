@@ -1,11 +1,13 @@
 import React from 'react';
-import { TextInput, TextInputProps, StyleSheet } from 'react-native';
+import { StyleSheet, TextInput, TextInputProps } from 'react-native';
 import { ColorsVars } from '../../../settings';
+import { Theme } from '../../../store';
 
 type TextSize = 'small' | 'medium' | 'large';
 
 export interface ITextInputUIProps extends TextInputProps{
-    textSize: TextSize
+    textSize: TextSize;
+    isError?: boolean;
     children?: React.ReactNode;
 }
 
@@ -25,10 +27,18 @@ const TEXT_SIZE = {
 };
 
 export function TextInputUI (props: ITextInputUIProps) {
-  const { children, textSize, style, ...rest } = props;
+  const { children, textSize, isError, style, ...rest } = props;
+  const { color } = Theme;
+  const borderColor = isError ? color.elementDanger : color.secondaryPrimary;
 
   return (
-    <TextInput style={[styles.textInput, TEXT_SIZE[textSize], style]} {...rest}>
+    <TextInput
+      cursorColor={color.textPrimary}
+      style={[
+        styles.textInput,
+        { color: color.textPrimary, borderColor },
+        TEXT_SIZE[textSize],
+        style]} {...rest}>
       {children}
     </TextInput>
   );

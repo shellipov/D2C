@@ -2,7 +2,6 @@
 import Ionicons from 'react-native-vector-icons/AntDesign';
 import React, { useEffect } from 'react';
 import { Image, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
@@ -10,9 +9,9 @@ import { CartDataStore, ProductDataStore } from '../../../api';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { CartBlockComponent } from '../../shared/CartBlock';
 import { Screen } from '../../shared/Screen';
-import { ColorsVars } from '../../../settings';
 import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
 import { Theme } from '../../../store';
+import { Col } from '../../shared/Col';
 
 export interface IScreenMainProps {}
 
@@ -52,7 +51,9 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
     return (
       <TouchableOpacity style={[styles.item, itemColor]} onPress={onPress}>
         <TextUI text={item.name} size={'medium'} style={{ marginBottom: 4 }} />
-        <Image src={item.image} resizeMode="contain" style={styles.image} />
+        <Col style={{ height: 70, padding: 2, borderRadius: 8, backgroundColor: Theme.color.bgTransparentImage }}>
+          <Image src={item.image} resizeMode="contain" style={styles.image} />
+        </Col>
       </TouchableOpacity>
     );
   };
@@ -95,6 +96,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     margin: 8,
     padding: 6,
+    justifyContent: 'space-between',
   },
   image: {
     flex: 1,

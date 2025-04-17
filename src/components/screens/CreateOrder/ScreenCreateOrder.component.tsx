@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { ButtonUI } from '../../ui/ButtonUI';
-import { ColorsVars, SettingsVars } from '../../../settings';
+import { SettingsVars } from '../../../settings';
 import { Row } from '../../shared/Row';
 import { Col } from '../../shared/Col';
 import { Chip } from '../../shared/Chip';
@@ -18,7 +17,7 @@ import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../ap
 import { ProductDataStore } from '../../../api';
 import { phoneFormatter } from '../../../helpers/phoneFormatter';
 import { OrderCartItem } from '../Order/components';
-import {Theme} from "../../../store";
+import { Theme } from '../../../store';
 
 export interface IScreenCreateOrderProps {}
 
@@ -29,11 +28,16 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
   const orderStore = OrderDataStore;
   const eventStore = EventDataStore;
   const cart = cartStore.cart;
+  const { color } = Theme;
   const totalSum = CartDataStore.cartSum + SettingsVars.shippingCost;
   const isValidPhone = useMemo(() => phoneFormatter(user?.phone).isValid, [user?.phone]);
   const isUserProfileError = !user?.name || !user?.phone || !user?.address || !isValidPhone;
   const isUserProfileErrorText = [user?.name, user?.phone, user?.address].join('').length ? 'Исправьте данные профиля' : 'Заполните данные профиля';
-
+  const userNameColor = !user?.name ? color.textRed : color.textPrimary;
+  const userPhoneColor = !user?.phone ? color.textRed : color.textPrimary;
+  const userPhoneValueColor = !isValidPhone ? color.textRed : color.textPrimary;
+  const userAddressColor = !user?.address ? color.textRed : color.textPrimary;
+  const itemColor = { backgroundColor: color.bgAdditionalTwo, borderColor: color.bgAdditionalTwo };
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsEnum>(PaymentMethodsEnum.Card);
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOptionsEnum>(DeliveryOptionsEnum.Hand);
 
@@ -109,28 +113,24 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
       <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
         <TextUI size={'bigTitle'} text={'Создать заказ'} style={{ paddingVertical: 35 }} />
       </Row>
-      <View style={styles.block}>
-        <ScrollView style={styles.scrollView}>
-
+      <View style={{ flex: 1 }}>
+        <ScrollView style={[styles.scrollView, { backgroundColor: color.bgAdditional, borderColor: color.bgAdditional }]}>
           <TouchableOpacity onPress={()=> navigation.navigate('Profile')}>
-            <View style={[styles.item, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
+            <View style={[itemColor, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
               <Row style={[styles.row, { justifyContent: 'space-between' }]}>
-                <TextUI size={'large'} style={{ color: !user?.name ? ColorsVars.red : ColorsVars.black }} text={'Имя'} />
+                <TextUI size={'large'} style={{ color: userNameColor }} text={'Имя'} />
                 <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={user?.name} />
               </Row>
               <Row style={[styles.row, { justifyContent: 'space-between' }]}>
-                <TextUI size={'large'} style={{ color: !user?.phone || !isValidPhone ? ColorsVars.red : ColorsVars.black }} text={'Телефон'} />
+                <TextUI size={'large'} style={{ color: userPhoneColor }} text={'Телефон'} />
                 <TextUI
                   size={'medium'}
                   numberOfLines={1}
-                  style={{
-                    maxWidth: '70%',
-                    alignSelf: 'flex-end',
-                    color: !isValidPhone ? ColorsVars.red : ColorsVars.black }}
+                  style={{ maxWidth: '70%', alignSelf: 'flex-end', color: userPhoneValueColor }}
                   text={user?.phone} />
               </Row>
               <Row style={[styles.row, { justifyContent: 'space-between' }]}>
-                <TextUI size={'large'} style={{ color: !user?.address ? ColorsVars.red : ColorsVars.black }} text={'Адрес'} />
+                <TextUI size={'large'} style={{ color: userAddressColor }} text={'Адрес'} />
                 <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={user?.address} />
               </Row>
             </View>
@@ -140,14 +140,14 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
             {cart?.map(OrderCartItem)}
           </Col>
 
-          <View style={[styles.item, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
+          <View style={[itemColor, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
             <Row style={[styles.row, { justifyContent: 'space-between' }]}>
               <TextUI size={'large'} text={'Стоимость доставки'} />
               <TextUI size={'medium'} text={`${SettingsVars.shippingCost} ₽`} />
             </Row>
           </View>
 
-          <View style={[styles.item, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
+          <View style={[itemColor, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
             <Row style={[styles.row, { justifyContent: 'center', marginBottom: 12 }]}>
               <TextUI size={'large'} text={'Доставка'} />
             </Row>
@@ -162,7 +162,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
             </Row>
           </View>
 
-          <View style={[styles.item, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
+          <View style={[itemColor, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
             <Row style={[styles.row, { justifyContent: 'center', marginBottom: 12 }]}>
               <TextUI size={'large'} text={'Оплата'} />
             </Row>
@@ -177,13 +177,13 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
             </Row>
           </View>
 
-          <View style={styles.item}>
+          <View style={itemColor}>
             <Row style={{ justifyContent: 'flex-end', padding: 12 }}>
-              <TextUI size={'title'} style={{ color: Theme.color.textGreen }} text={`итого: ${totalSum} ₽`} />
+              <TextUI size={'title'} style={{ color: color.textGreen }} text={`итого: ${totalSum} ₽`} />
             </Row>
             <Row style={{ justifyContent: 'center' }}>
               {isUserProfileError && (
-                <TextUI size={'medium'} text={isUserProfileErrorText} style={{ color: ColorsVars.red }} />
+                <TextUI size={'medium'} text={isUserProfileErrorText} style={{ color: color.textRed }} />
               )}
             </Row>
             <Row style={{ alignItems: 'center', height: 80, justifyContent: 'center' }}>
@@ -202,24 +202,13 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
 });
 
 const styles = StyleSheet.create({
-  block: {
-    flex: 1,
-    backgroundColor: Colors.lighter,
-  },
   scrollView: {
     flex: 1,
-    borderWidth: 1,
     paddingVertical: 8,
     overflow: 'hidden',
-    backgroundColor: Colors.lighter,
-    borderColor: Colors.lighter,
   },
   container: {
     marginBottom: 10,
-  },
-  item: {
-    backgroundColor: ColorsVars.white,
-    borderColor: ColorsVars.white,
   },
   row: {
     paddingVertical: 6,

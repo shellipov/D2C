@@ -36,7 +36,7 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
   };
 
   const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity style={[styles.item, { backgroundColor: Theme.color.bgBasic }]} onPress={() => navigation.navigate('Order', { order: item })}>
+    <TouchableOpacity style={[styles.item, { backgroundColor: Theme.color.bgAdditionalTwo }]} onPress={() => navigation.navigate('Order', { order: item })}>
       <View style={{ paddingBottom: 6 }}>
         <Row style={[styles.row]}>
           <TextUI size={'large'} text={`Заказ № ${item.id}`} style={{ color: Theme.color.textGreen }} />
