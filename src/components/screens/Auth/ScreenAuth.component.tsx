@@ -5,10 +5,10 @@ import { TextUI } from '../../ui/TextUI';
 import { TextInputUI } from '../../ui/TextInputUI';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { UserDataStore } from '../../../api/UserDataStore';
-import { useNavigationHook } from '../../../hooks/useNavigation';
+import { useNavigationHook } from '@/hooks/useNavigation';
 import { observer } from 'mobx-react';
-import { Col } from '../../shared/Col';
-import { Screen } from '../../shared/Screen';
+import { Col } from '@shared/Col';
+import { Screen } from '@shared/Screen';
 
 export interface IScreenAuthProps {}
  type Props = IScreenAuthProps | undefined

@@ -1,15 +1,16 @@
-import { StyleSheet, View } from 'react-native';
 import React, { useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { observer } from 'mobx-react';
-import { TextUI } from '../../ui/TextUI';
-import { Row } from '../../shared/Row';
-import { NavBar } from '../../shared/NavBar';
-import { Screen } from '../../shared/Screen';
-import { EventDataStore, EventTypeEnum, IEvent } from '../../../api/EventDataStore';
-import { Col } from '../../shared/Col';
-import { First } from '../../shared/Firts';
-import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
-import { Theme } from '../../../store';
+import { Theme } from '@/store';
+import { EventDataStore, EventTypeEnum, IEvent } from '@/api/EventDataStore';
+import { TextUI } from '@/components/ui/TextUI';
+import { FlatListWithPagination } from '@shared/FlatListWithPagination';
+import { First } from '@shared/Firts';
+import { NavBar } from '@shared/NavBar';
+import { Row } from '@shared/Row';
+import { Col } from '@shared/Col';
+import { Screen } from '@shared/Screen';
+
 
 const COLORS : {[key in EventTypeEnum]? : string} = {
   [EventTypeEnum.AddToCart] : Theme.color.textGreen,

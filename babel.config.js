@@ -8,5 +8,16 @@ module.exports = {
     [
       '@babel/plugin-proposal-class-properties',
       { loose: true }, // Optional but recommended
-    ]],
+    ],
+    [
+      'module-resolver',
+      {
+        alias: {
+          '@': './src',
+          '@components': './src/components',
+          '@shared': './src/components/shared',
+        },
+      },
+    ],
+  ],
 };
