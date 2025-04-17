@@ -3,18 +3,16 @@ import Ionicons from 'react-native-vector-icons/AntDesign';
 import { observer } from 'mobx-react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import React, { useCallback } from 'react';
-import { ProductDataStore } from '../../../api';
-import { TextUI } from '../../ui/TextUI';
-import { ButtonUI } from '../../ui/ButtonUI';
-import { CartDataStore } from '../../../api/CartDataStore';
-import { First } from '../../shared/Firts';
-import { CartBlockComponent } from '../../shared/CartBlock';
-import { NavBar } from '../../shared/NavBar';
-import { Screen } from '../../shared/Screen';
-import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../api/EventDataStore';
-import { UserDataStore } from '../../../api/UserDataStore';
-import { eventCreator } from '../../../helpers';
-import { Theme } from '../../../store';
+import { First } from '@shared/Firts';
+import { CartBlockComponent } from '@shared/CartBlock';
+import { NavBar } from '@shared/NavBar';
+import { Screen } from '@shared/Screen';
+import { eventCreator } from '@/helpers';
+import { Theme } from '@/store';
+import { CartDataStore, ProductDataStore, UserDataStore } from '@/api';
+import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '@/api/EventDataStore';
+import { TextUI } from '@components/ui/TextUI';
+import { ButtonUI } from '@components/ui/ButtonUI';
 
 export interface IScreenProductCardProps {
     id: number;

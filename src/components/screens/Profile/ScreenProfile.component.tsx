@@ -1,17 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Keyboard, ScrollView, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 import { observer } from 'mobx-react';
-import { TextUI } from '../../ui/TextUI';
-import { useNavigationHook } from '../../../hooks/useNavigation';
-import { CartDataStore } from '../../../api/CartDataStore';
-import { ButtonUI } from '../../ui/ButtonUI';
-import { UserDataStore } from '../../../api/UserDataStore';
-import { Row } from '../../shared/Row';
-import { TextInputUI } from '../../ui/TextInputUI';
-import { Col } from '../../shared/Col';
-import { Screen } from '../../shared/Screen';
-import { phoneFormatter } from '../../../helpers/phoneFormatter';
-import { Theme } from '../../../store';
+import { useNavigationHook } from '@/hooks/useNavigation';
+import { Row } from '@shared/Row';
+import { Col } from '@shared/Col';
+import { Screen } from '@shared/Screen';
+import { phoneFormatter } from '@/helpers/phoneFormatter';
+import { Theme } from '@/store';
+import { CartDataStore, UserDataStore } from '@/api';
+import { ButtonUI } from '@components/ui/ButtonUI';
+import { TextUI } from '@components/ui/TextUI';
+import { TextInputUI } from '@components/ui/TextInputUI';
 
 export interface IScreenProfileProps {}
 
