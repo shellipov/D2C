@@ -28,7 +28,7 @@ export const ColorsVars = {
   textGreen: ['#008000', '#007800'],
   textRed: ['#ed3e3e', '#cd3b3b'],
   textGray: ['#808080', '#434343'],
-  textViolet: ['#5d018e', '#7f01c5'],
+  textViolet: ['#5d018e', '#9a00ef'],
 
   // other
   basicInversion : ['#000000', '#ffffff'],

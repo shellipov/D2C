@@ -10,87 +10,74 @@ import { NavBar } from '@shared/NavBar';
 import { Row } from '@shared/Row';
 import { Col } from '@shared/Col';
 import { Screen } from '@shared/Screen';
-
-
-const COLORS : {[key in EventTypeEnum]? : string} = {
-  [EventTypeEnum.AddToCart] : Theme.color.textGreen,
-  [EventTypeEnum.DeleteFromCart] : Theme.color.textRed,
-  [EventTypeEnum.CreateOrder] : Theme.color.textViolet,
-};
+import { InfoRow } from '@shared/InfoRow';
 
 export interface IScreenStatisticsProps {}
 
 export const ScreenStatistics = observer((props: { route: { params: IScreenStatisticsProps } }) => {
   const events = EventDataStore.events;
+  const contentStyles = { flex: 1, paddingTop: 8, backgroundColor: Theme.color.bgAdditional };
+  const colors : {[key in EventTypeEnum]? : string} = {
+    [EventTypeEnum.AddToCart] : Theme.color.textGreen,
+    [EventTypeEnum.DeleteFromCart] : Theme.color.textRed,
+    [EventTypeEnum.CreateOrder] : Theme.color.textViolet,
+  };
 
   useEffect(() => {
     EventDataStore.refresh().then();
   }, []);
 
-  const renderProductItem = ({ item }: { item: any }) => (
-    <Col style={[styles.item, { backgroundColor: Theme.color.bgAdditionalTwo }]}>
-      <View style={{ paddingBottom: 6 }}>
+  const renderProductItem = ({ item }: { item: any }) => {
+    const userValue = `${JSON.stringify(item.user)}` ;
+    const productValue = `${JSON.stringify(item.product, null, 2)}`;
+    const orderOptionsValue = `${JSON.stringify(item.orderOptions, null, 2)}`;
+    const cartInfoValue = `${JSON.stringify({ positions: item?.cartInfo?.positions, sum: item?.cartInfo?.sum })}`;
+    const cartValue = `${JSON.stringify(item?.cartInfo?.cart, null, 2)}`;
+
+    return (
+      <Col style={[styles.item, { backgroundColor: Theme.color.bgAdditionalTwo }]}>
         <Row style={styles.row}>
-          <TextUI size={'small'} text={`${item.eventType}`} style={{ color: COLORS[item.eventType as IEvent['eventType']] }} />
+          <TextUI size={'small'} text={`${item.eventType}`} style={{ color: colors[item.eventType as IEvent['eventType']] }} />
         </Row>
-        <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'center' }]}>
-          <TextUI size={'small'} text={'time'} />
-          <TextUI
-            size={'small'}
-            numberOfLines={1}
-            style={{ maxWidth: '70%' }}
-            text={`${item.date}`} />
-        </Row>
-        <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
-          <TextUI size={'small'} text={'user'} />
-          <TextUI
-            size={'small'}
-            style={{ maxWidth: '70%' }}
-            text={`${JSON.stringify(item.user)}`} />
-        </Row>
+        <InfoRow>
+          <InfoRow.Label text={'time'} size={'small'} />
+          <InfoRow.Value text={item.date} size={'small'} />
+        </InfoRow>
+        <InfoRow>
+          <InfoRow.Label text={'user'} size={'small'} />
+          <InfoRow.Value text={userValue} size={'small'} />
+        </InfoRow>
         {item.product && (
-          <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
-            <TextUI size={'small'} text={'product'} />
-            <TextUI
-              size={'small'}
-              style={{ maxWidth: '70%' }}
-              text={`${JSON.stringify(item.product, null, 2)}`} />
-          </Row>
+          <InfoRow multilineValue>
+            <InfoRow.Label text={'product'} size={'small'} />
+            <InfoRow.Value text={productValue} size={'small'} />
+          </InfoRow>
         )}
         {item.orderOptions && (
-          <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
-            <TextUI size={'small'} text={'order options'} />
-            <TextUI
-              size={'small'}
-              style={{ maxWidth: '70%' }}
-              text={`${JSON.stringify(item.orderOptions, null, 2)}`} />
-          </Row>
+          <InfoRow multilineValue>
+            <InfoRow.Label text={'order options'} size={'small'} />
+            <InfoRow.Value text={orderOptionsValue} size={'small'} />
+          </InfoRow>
         )}
-        <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
-          <TextUI size={'small'} text={'cart info'} />
-          <TextUI
-            size={'small'}
-            style={{ maxWidth: '70%' }}
-            text={`${JSON.stringify({ positions: item?.cartInfo?.positions, sum: item?.cartInfo?.sum })}`} />
-        </Row>
-        <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'flex-start' }]}>
-          <TextUI size={'small'} text={'cart'} />
-          <TextUI
-            size={'small'}
-            style={{ maxWidth: '70%' }}
-            text={`${JSON.stringify(item?.cartInfo?.cart, null, 2)}`} />
-        </Row>
-      </View>
-    </Col>
-  );
+        <InfoRow multilineValue>
+          <InfoRow.Label text={'cart info'} size={'small'} />
+          <InfoRow.Value text={cartInfoValue} size={'small'} />
+        </InfoRow>
+        <InfoRow multilineValue>
+          <InfoRow.Label text={'cart'} size={'small'} />
+          <InfoRow.Value text={cartValue} size={'small'} />
+        </InfoRow>
+      </Col>
+    );
+  };
 
   return (
     <Screen isError={EventDataStore.isError} onRefresh={EventDataStore.refresh}>
       <NavBar title={'Статистика'} />
-      <View style={{ flex: 1, paddingTop: 8, backgroundColor: Theme.color.bgAdditional }}>
+      <View style={contentStyles}>
         <First>
           {!events?.length && (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={styles.emptyView}>
               <TextUI size={'title'} text={'Tут пока ничего нет'} />
             </View>
           )}
@@ -102,12 +89,18 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
 });
 
 const styles = StyleSheet.create({
+  emptyView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   item: {
     marginVertical: 4,
     marginHorizontal: 8,
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingTop: 8,
+    paddingBottom: 6,
   },
   row: {
     paddingVertical: 4,
