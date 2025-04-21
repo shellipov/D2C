@@ -46,11 +46,9 @@ export function FlatListWithPagination<T extends IListItem> ({
     };
 
     return (
-      <Chip
-        style={styles.chip}
-        label={item}
-        isSelected={+item === selectedPage}
-        onPress={onPress} />
+      <Chip style={styles.chip} isSelected={+item === selectedPage} onPress={onPress}>
+        <Chip.Text text={item} />
+      </Chip>
     );
   };
 

@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react';
 import React from 'react';
-import { getCompoundProps } from '@components/utils/CompoundUtils';
+import { getCompoundProps } from '@/utils/CompoundUtils';
 import { computed } from 'mobx';
 import { Row } from '@shared/Row';
 import { ITextUIProps, TextUI } from '@components/ui/TextUI';
