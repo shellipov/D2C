@@ -156,6 +156,7 @@ export default tseslint.config(
       'radix': 'error',
       'use-isnan': 'error',
       'valid-typeof': 'off',
+      'react/display-name': 'off',
       'padded-blocks': ['error', 'never'],
       'space-in-parens': ['error'],
       'keyword-spacing': ['error', { 'before': true, 'after': true }],
