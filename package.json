@@ -69,6 +69,7 @@
     "postinstall-postinstall": "^2.1.0",
     "prettier": "2.8.8",
     "react-test-renderer": "19.0.0",
+    "reactotron-react-native": "^5.1.13",
     "typescript": "^5.0.4"
   },
   "engines": {
