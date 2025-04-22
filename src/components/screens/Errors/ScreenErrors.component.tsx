@@ -22,11 +22,10 @@ export const ScreenErrors = observer((props: { route: { params: IScreenErrorsPro
   const contentStyles = { flex: 1, paddingTop: 8, backgroundColor: Theme.color.bgAdditional };
 
   useEffect(() => {
-    console.log('>>>>', vm.errorDataStore.data.length);
     vm.initialize(() => ({ ...props.route.params, isActive }));
 
     return () => {
-      // vm.dispose();
+      vm.dispose();
     };
   }, [isActive]);
 
