@@ -1,57 +1,54 @@
 import { action, makeObservable, observable, runInAction } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { errorStorageTypeEnum, ErrorTypeEnum, IError } from './ErrorData.types';
+import { errorStorageTypeEnum, ErrorTypeEnum, IError } from '@/api';
 import { errorService } from './errorService';
-import { suddenError } from '../../helpers';
+import { suddenError } from '@/helpers';
+import { injectable } from 'inversify';
 
 export interface IErrorDataStore {
-    readonly errors: IError[];
+    readonly data: IError[];
     readonly isError: boolean;
     refresh(): Promise<void>;
+    dispose(): void;
 }
 
-class ErrorDataStore implements IErrorDataStore {
-  private static _instance: ErrorDataStore | null = null;
-    @observable public errors: IError[] = [];
+@injectable()
+export class ErrorDataStore implements IErrorDataStore {
+    @observable public data: IError[] = [];
     @observable public isError = false;
+    private _disposers: (() => void)[] = [];
 
     public constructor () {
       makeObservable(this);
     }
 
-    public static get instance (): ErrorDataStore {
-      if (!ErrorDataStore._instance) {
-        ErrorDataStore._instance = new ErrorDataStore();
-      }
-
-      return ErrorDataStore._instance;
-    };
-
   @action.bound
     public async clear (): Promise<void> {
       await AsyncStorage.removeItem(errorStorageTypeEnum.Errors);
-      this.refresh().then();
+      await this.refresh();
     }
 
-    @action.bound
+  @action.bound
   public async refresh (): Promise<void> {
     try {
       await suddenError('ErrorDataStore: refresh');
       const jsonErrors = await AsyncStorage.getItem(errorStorageTypeEnum.Errors);
       if (!!jsonErrors) {
         runInAction(() => {
-          this.errors = JSON.parse(jsonErrors);
-          ErrorStore.isError = false;
+          this.data = JSON.parse(jsonErrors);
+          this.isError = false;
         });
       }
     } catch (error: any) {
       runInAction(() => {
-        ErrorStore.isError = true;
+        this.isError = true;
       });
       await errorService({ type:ErrorTypeEnum.LoadData, error, withoutAlerts: true });
     }
   }
+
+  public dispose (): void {
+    this._disposers.forEach(dispose => dispose());
+    this._disposers = [];
+  }
 }
-
-export const ErrorStore = ErrorDataStore.instance;
-
