@@ -1,13 +1,13 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, View, ViewProps} from 'react-native';
-import {DebugPanel} from '../../../debug';
-import {TextUI} from '../../ui/TextUI';
-import {ButtonUI} from '../../ui/ButtonUI';
-import {NavBar} from '../NavBar';
-import {useRoute} from '@react-navigation/native';
-import {Routes} from '../../../AppPouter.types';
-import {observer} from 'mobx-react';
-import {Theme} from '../../../store';
+import { SafeAreaView, StyleSheet, View, ViewProps } from 'react-native';
+import { DebugPanel } from '@/debug';
+import { TextUI } from '../../ui/TextUI';
+import { ButtonUI } from '../../ui/ButtonUI';
+import { NavBar } from '../NavBar';
+import { useRoute } from '@react-navigation/native';
+import { Routes } from '@/AppPouter.types';
+import { observer } from 'mobx-react';
+import { Theme } from '@/store';
 
 interface IScreenProps extends ViewProps {
     isError?: boolean;

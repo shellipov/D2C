@@ -1,24 +1,24 @@
-import React, {useEffect} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {RootStackParamList, ScreenName} from './AppPouter.types';
-import {ScreenAuth} from './components/screens/Auth';
-import {UserDataStore} from './api/UserDataStore';
-import {observer} from 'mobx-react';
-import {ScreenCategory} from './components/screens/Category';
-import {ScreenCart} from './components/screens/Сart';
-import {ScreenProductCard} from './components/screens/ProductCard';
-import {ScreenCreateOrder} from './components/screens/CreateOrder';
-import {ScreenProfile} from './components/screens/Profile';
-import {ScreenOrder} from './components/screens/Order';
-import {ScreenOrderList} from './components/screens/OrderList';
-import {ScreenStatistics} from './components/screens/Statistics';
-import {ScreenErrors} from './components/screens/Errors';
-import {ScreenMain} from './components/screens/Main';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
-import {TextUI} from './components/ui/TextUI';
-import {ButtonUI} from './components/ui/ButtonUI';
-import {Theme} from './store';
+import React, { useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { RootStackParamList, ScreenName } from './AppPouter.types';
+import { ScreenAuth } from '@components/screens/Auth';
+import { UserDataStore } from './api/UserDataStore';
+import { observer } from 'mobx-react';
+import { ScreenCategory } from '@components/screens/Category';
+import { ScreenCart } from '@components/screens/Сart';
+import { ScreenProductCard } from '@components/screens/ProductCard';
+import { ScreenCreateOrder } from '@components/screens/CreateOrder';
+import { ScreenProfile } from '@components/screens/Profile';
+import { ScreenOrder } from '@components/screens/Order';
+import { ScreenOrderList } from '@components/screens/OrderList';
+import { ScreenStatistics } from '@components/screens/Statistics';
+import { ScreenErrors } from '@components/screens/Errors';
+import { ScreenMain } from '@components/screens/Main';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { TextUI } from '@components/ui/TextUI';
+import { ButtonUI } from '@components/ui/ButtonUI';
+import { Theme } from './store';
 
 export const AppRouter = observer(() => {
   const { isError, isEmpty, isAuth } = UserDataStore;
@@ -48,8 +48,10 @@ export const AppRouter = observer(() => {
   const Stack = createNativeStackNavigator<RootStackParamList>();
 
   if (isError && isEmpty) {
+    const errorViewStyle = { flex: 1, backgroundColor: color.bgBasic };
+
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: color.bgBasic }}>
+      <SafeAreaView style={errorViewStyle}>
         <View style={styles.errorView}>
           <TextUI size={'bigTitle'} style={[styles.errorText, { color: color.textRed }]} text={'Ошибка обновления\nданных'} />
           <ButtonUI title={'Обновить'} style={styles.button} type={'redBorder'} onPress={UserDataStore.refresh} />

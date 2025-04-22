@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AppRouter } from './src/AppRouter';
-import { Theme } from './src/store';
-import { useAppState } from './src/hooks/useAppState';
-
+import { AppRouter } from '@/AppRouter';
+import { Theme } from '@/store';
+import { useAppState } from '@/hooks/useAppState';
+import { InversifyReactProvider } from '@/boot/IoC/provider';
 
 function App (): React.JSX.Element {
   const { isActive } = useAppState();
@@ -16,11 +15,11 @@ function App (): React.JSX.Element {
 
 
   return (
-    <ThemeProvider value={Theme.isDark ? DarkTheme : DefaultTheme}>
-      <SafeAreaProvider style={{ backgroundColor: Theme.isDark ? 'black' : 'white' }}>
+    <InversifyReactProvider>
+      <SafeAreaProvider style={{ backgroundColor: Theme.color.bgBasic }}>
         <AppRouter />
       </SafeAreaProvider>
-    </ThemeProvider>
+    </InversifyReactProvider>
   );
 }
 

@@ -2,57 +2,65 @@ import { StyleSheet, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
-import { Row } from '../../shared/Row';
-import { NavBar } from '../../shared/NavBar';
-import { Screen } from '../../shared/Screen';
-import { First } from '../../shared/Firts';
-import { ErrorDataStore } from '../../../api';
-import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
-import { Theme } from '../../../store';
+import { Row } from '@shared/Row';
+import { NavBar } from '@shared/NavBar';
+import { Screen } from '@shared/Screen';
+import { First } from '@shared/Firts';
+import { FlatListWithPagination } from '@shared/FlatListWithPagination';
+import { Theme } from '@/store';
+import { useInjection } from 'inversify-react';
+import { TYPES } from '@/boot/IoC/types';
+import { IScreenErrorsVM } from './ScreenErrors.types';
+import { useAppState } from '@/hooks/useAppState';
 
 export interface IScreenErrorsProps {}
+export interface IScreenErrorsVMProps extends IScreenErrorsProps {isActive : boolean}
 
 export const ScreenErrors = observer((props: { route: { params: IScreenErrorsProps } }) => {
-  const errorStore = ErrorDataStore;
-  const errors = errorStore.errors;
+  const { isActive } = useAppState();
+  const vm = useInjection<IScreenErrorsVM>(TYPES.ScreenErrorsVM);
+  const contentStyles = { flex: 1, paddingTop: 8, backgroundColor: Theme.color.bgAdditional };
 
   useEffect(() => {
-    errorStore.refresh().then();
-  }, []);
+    console.log('>>>>', vm.errorDataStore.data.length);
+    vm.initialize(() => ({ ...props.route.params, isActive }));
+
+    return () => {
+      // vm.dispose();
+    };
+  }, [isActive]);
 
   const renderItem = ({ item }: { item: any }) => (
     <View style={[styles.item, { backgroundColor: Theme.color.bgAdditionalTwo }]}>
-      <View style={{ paddingBottom: 6 }}>
-        <Row style={[styles.row]}>
-          <TextUI size={'medium'} text={item.title} style={{ color: Theme.color.textRed }} />
-        </Row>
-        <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'center' }]}>
-          <TextUI
-            size={'small'}
-            numberOfLines={1}
-            text={item.date} />
-        </Row>
-        <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'center' }]}>
-          <TextUI size={'small'} text={item.description} />
-        </Row>
-        <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'center' }]}>
-          <TextUI size={'small'} text={item.message} />
-        </Row>
-      </View>
+      <Row style={[styles.row]}>
+        <TextUI size={'medium'} text={item.title} style={{ color: Theme.color.textRed }} />
+      </Row>
+      <Row style={styles.row}>
+        <TextUI
+          size={'small'}
+          numberOfLines={1}
+          text={item.date} />
+      </Row>
+      <Row style={styles.row}>
+        <TextUI size={'small'} text={item.description} />
+      </Row>
+      <Row style={styles.row}>
+        <TextUI size={'small'} text={item.message} />
+      </Row>
     </View>
   );
 
   return (
-    <Screen isError={ErrorDataStore.isError} onRefresh={ErrorDataStore.refresh}>
+    <Screen isError={vm.errorDataStore?.isError} onRefresh={vm.errorDataStore?.refresh}>
       <NavBar title={'Ошибки'} />
-      <View style={{ flex: 1, paddingTop: 8, backgroundColor: Theme.color.bgAdditional }}>
+      <View style={contentStyles}>
         <First>
-          {!errors?.length && (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          {!vm.errorDataStore?.data?.length && (
+            <View style={styles.errorView}>
               <TextUI size={'title'} text={'Tут пока ничего нет'} />
             </View>
           )}
-          <FlatListWithPagination data={errors} renderItem={renderItem} />
+          <FlatListWithPagination data={vm.errorDataStore?.data} renderItem={renderItem} />
         </First>
       </View>
     </Screen>
@@ -60,12 +68,18 @@ export const ScreenErrors = observer((props: { route: { params: IScreenErrorsPro
 });
 
 const styles = StyleSheet.create({
+  errorView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   item: {
     marginVertical: 4,
     marginHorizontal: 8,
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingTop: 8,
+    paddingBottom: 6,
   },
   row: {
     paddingVertical: 4,
