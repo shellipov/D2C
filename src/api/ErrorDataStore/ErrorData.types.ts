@@ -23,3 +23,9 @@ export enum ErrorCreateStatusEnum {
     Success = 'Success',
     Error = 'Error',
 }
+
+export interface IGetFakeErrorResponse {
+    data?: IError[];
+    status?: ErrorCreateStatusEnum;
+    message?: string;
+}

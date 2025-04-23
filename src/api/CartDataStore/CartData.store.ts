@@ -1,26 +1,26 @@
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
-import { IProduct } from '../ProductDataStore';
-import { SettingsVars } from '../../settings';
-import { ICart, ICartInfo, ICartItem, ISimplifiedCart } from './CartData.types';
+import * as api from '@/api';
+import { SettingsVars } from '@/settings';
+import * as CartDataTypes from './CartData.types';
 import { errorService } from '../ErrorDataStore/errorService';
-import { ErrorTypeEnum } from '../ErrorDataStore';
-import { suddenError } from '../../helpers';
+import { ErrorTypeEnum } from '@/api';
+import { suddenError } from '@/helpers';
 
 export interface ICartDataStore {
   readonly isEmpty: boolean;
   readonly isError: boolean;
-  readonly cart: ICart | undefined;
+  readonly cart: CartDataTypes.ICart | undefined;
   readonly cartSum: number;
-  readonly simplifiedCart: ISimplifiedCart;
+  readonly simplifiedCart: CartDataTypes.ISimplifiedCart;
   readonly totalPositions: number;
-  readonly cartInfo: ICartInfo,
+  readonly cartInfo: CartDataTypes.ICartInfo,
   readonly isCreateOrderDisabled: boolean;
-  totalCount (product: IProduct): number;
-  isInCart(product: IProduct): boolean;
-  addToCart (product: IProduct): Promise<void>
-  deleteCart (): Promise<void>
+  totalCount(product: api.IProduct): number;
+  isInCart(product: api.IProduct): boolean;
+  addToCart(product: api.IProduct): Promise<void>
+  deleteCart(): Promise<void>
   refresh(): Promise<void>;
 }
 
@@ -28,7 +28,7 @@ class CartDataStore implements ICartDataStore {
   private static _instance: CartDataStore | null = null;
   @observable public isEmpty: boolean = true;
   @observable public isError: boolean = false;
-  @observable public cart: ICart | undefined = undefined;
+  @observable public cart: CartDataTypes.ICart | undefined = undefined;
 
   private constructor () {
     makeObservable(this);
@@ -58,11 +58,11 @@ class CartDataStore implements ICartDataStore {
   }
 
   @computed
-  public get cartInfo (): ICartInfo {
+  public get cartInfo (): CartDataTypes.ICartInfo {
     return {
       positions: this.totalPositions,
       sum: this.cartSum + ' ₽',
-      cart : this.simplifiedCart,
+      cart: this.simplifiedCart,
     };
   }
 
@@ -71,13 +71,13 @@ class CartDataStore implements ICartDataStore {
     return SettingsVars.minCartSum > this.cartSum;
   }
 
-  public totalCount (product?: IProduct) : number {
+  public totalCount (product?: api.IProduct): number {
     const item = this.cart?.find(e => e.product.id === product?.id);
 
     return item?.numberOfProducts || 0;
   }
 
-  public isInCart (product?: IProduct) {
+  public isInCart (product?: api.IProduct) {
     return !!this.cart?.find(e => e.product.id === product?.id);
   }
 
@@ -91,16 +91,16 @@ class CartDataStore implements ICartDataStore {
 
       await this.refresh();
     } catch (error: any) {
-      await errorService({ type:ErrorTypeEnum.LoadData, error });
+      await errorService({ type: ErrorTypeEnum.LoadData, error });
     }
   }
 
   @action.bound
-  public async addToCart (product: IProduct): Promise<void> {
+  public async addToCart (product: api.IProduct): Promise<void> {
     try {
       await suddenError('CartDataStore: addToCart');
       const jsonCart = await AsyncStorage.getItem('cart');
-      const cart: ICart = jsonCart ? JSON.parse(jsonCart) : [];
+      const cart: CartDataTypes.ICart = jsonCart ? JSON.parse(jsonCart) : [];
       const isExistingProduct = cart.find(i => i.product.id === product.id);
 
       if (isExistingProduct) {
@@ -118,22 +118,22 @@ class CartDataStore implements ICartDataStore {
         cart.push({
           numberOfProducts: 1,
           product,
-        } as ICartItem);
+        } as CartDataTypes.ICartItem);
       }
       await AsyncStorage.setItem('cart', JSON.stringify(cart));
 
       await this.refresh();
     } catch (error: any) {
-      await errorService({ type:ErrorTypeEnum.AddToCart, error });
+      await errorService({ type: ErrorTypeEnum.AddToCart, error });
     }
   }
 
   @action.bound
-  public async deleteFromCart (product: IProduct): Promise<void> {
+  public async deleteFromCart (product: api.IProduct): Promise<void> {
     try {
       await suddenError('CartDataStore: deleteFromCart');
       const jsonCart = await AsyncStorage.getItem('cart');
-      const cart: ICart = jsonCart ? JSON.parse(jsonCart) : [];
+      const cart: CartDataTypes.ICart = jsonCart ? JSON.parse(jsonCart) : [];
       const cartProduct = cart.find(i => i.product.id === product.id);
       if (cartProduct) {
         const isOnlyOne = cartProduct?.numberOfProducts === 1;
@@ -145,11 +145,11 @@ class CartDataStore implements ICartDataStore {
         }
         await AsyncStorage.setItem('cart', JSON.stringify(cart));
       } else {
-        await errorService({ type:ErrorTypeEnum.DeleteFromCart });
+        await errorService({ type: ErrorTypeEnum.DeleteFromCart });
       }
       await this.refresh();
     } catch (error: any) {
-      await errorService({ type:ErrorTypeEnum.DeleteFromCart, error });
+      await errorService({ type: ErrorTypeEnum.DeleteFromCart, error });
     }
   }
 
@@ -159,7 +159,7 @@ class CartDataStore implements ICartDataStore {
       await suddenError('CartDataStore: refresh');
       const jsonCart = await AsyncStorage.getItem('cart');
       if (!jsonCart) {
-        const newCart = [] as ICart;
+        const newCart = [] as CartDataTypes.ICart;
         await AsyncStorage.setItem('cart', JSON.stringify(newCart));
       } else {
         runInAction(() => {

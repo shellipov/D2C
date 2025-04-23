@@ -54,12 +54,12 @@ export const ScreenErrors = observer((props: { route: { params: IScreenErrorsPro
       <NavBar title={'Ошибки'} />
       <View style={contentStyles}>
         <First>
-          {!vm.errorDataStore?.data?.length && (
+          {!vm.errorDataStore?.model.data?.length && (
             <View style={styles.errorView}>
               <TextUI size={'title'} text={'Tут пока ничего нет'} />
             </View>
           )}
-          <FlatListWithPagination data={vm.errorDataStore?.data} renderItem={renderItem} />
+          <FlatListWithPagination data={vm.errorDataStore?.model.data} renderItem={renderItem} />
         </First>
       </View>
     </Screen>

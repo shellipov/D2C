@@ -1,4 +1,4 @@
-import { IProduct, ISimplifiedProduct } from '../ProductDataStore';
+import { IProduct, ISimplifiedProduct } from '@/api';
 
 export interface ICartItem {
     product: IProduct,

@@ -11,8 +11,8 @@ import { TYPES } from '@/boot/IoC/types';
 @injectable()
 export class ScreenErrorsVM implements IScreenErrorsVM {
   @inject(TYPES.ErrorDataStore) public errorDataStore!: api.IErrorDataStore;
-  private readonly _propsHolder = new ValueHolder<Maybe<IScreenErrorsVMProps>>(undefined);
   @observable private _isActive: boolean = false;
+  private readonly _propsHolder = new ValueHolder<Maybe<IScreenErrorsVMProps>>(undefined);
   private _disposers: IReactionDisposer[] = [];
 
   constructor () {
