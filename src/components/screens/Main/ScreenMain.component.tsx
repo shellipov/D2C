@@ -5,26 +5,30 @@ import { Image, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-nati
 import { ButtonUI } from '../../ui/ButtonUI';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
-import { CartDataStore, ProductDataStore } from '../../../api';
+import { ICartDataStore, ProductDataStore } from '../../../api';
 import { useNavigationHook } from '@/hooks/useNavigation';
 import { CartBlockComponent } from '@shared/CartBlock';
 import { Screen } from '@shared/Screen';
 import { FlatListWithPagination } from '@shared/FlatListWithPagination';
 import { Col } from '@shared/Col';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useInjection } from 'inversify-react';
+import { TYPES } from '@/boot/IoC/types';
 
 export interface IScreenMainProps {}
 
 export const ScreenMain = observer((props: IScreenMainProps) => {
   const navigation = useNavigationHook();
   const theme = useAppTheme();
+  const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
+
 
   const onRefresh = () => {
     if (ProductDataStore.isError) {
       ProductDataStore.refresh().then();
     }
-    if (CartDataStore.isError) {
-      CartDataStore.refresh().then();
+    if (cartStore.isError) {
+      cartStore.refresh().then();
     }
   };
 
@@ -60,7 +64,7 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
   };
 
   return (
-    <Screen isError={ProductDataStore.isError || CartDataStore.isError} onRefresh={onRefresh}>
+    <Screen isError={ProductDataStore.isError || cartStore.isError} onRefresh={onRefresh}>
       <View style={styles.block}>
         <StatusBar barStyle={theme.isDark ? 'light-content' : 'dark-content'} />
         <View style={[styles.header, backgroundColor]}>

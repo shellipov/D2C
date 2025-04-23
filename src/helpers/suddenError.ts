@@ -1,4 +1,4 @@
-import { SettingsVars } from '../settings';
+import { SettingsVars } from '@/settings';
 
 export async function suddenError (errorMessage?: string): Promise<void> {
   return new Promise((resolve, reject) => {

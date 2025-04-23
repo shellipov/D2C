@@ -11,9 +11,8 @@ import { Chip } from '@shared/Chip';
 import { dateFormatter, eventCreator } from '@/helpers';
 import { Screen } from '@shared/Screen';
 import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, OrderDataStore, PaymentMethodsEnum } from '../../../api/OrderDataStore';
-import { CartDataStore } from '../../../api/CartDataStore';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../api/EventDataStore';
-import { IUserDataStore, ProductDataStore } from '../../../api';
+import { ICartDataStore, IUserDataStore, ProductDataStore } from '../../../api';
 import { phoneFormatter } from '@/helpers/phoneFormatter';
 import { OrderCartItem } from '../Order/components';
 import { useAppTheme } from '@/hooks/useAppTheme';
@@ -24,15 +23,15 @@ export interface IScreenCreateOrderProps {}
 
 export const ScreenCreateOrder = observer((props: { route: { params: IScreenCreateOrderProps }}) => {
   const navigation = useNavigationHook();
-  const cartStore = CartDataStore;
+  const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
   const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
   const user = userStore.model.data;
   const orderStore = OrderDataStore;
   const eventStore = EventDataStore;
-  const cart = cartStore.cart;
+  const cart = cartStore.model.data;
   const theme = useAppTheme();
   const { color } = theme;
-  const totalSum = CartDataStore.cartSum + SettingsVars.shippingCost;
+  const totalSum = cartStore.model.cartSum + SettingsVars.shippingCost;
   const isValidPhone = useMemo(() => phoneFormatter(user?.phone).isValid, [user?.phone]);
   const isUserProfileError = !user?.name || !user?.phone || !user?.address || !isValidPhone;
   const isUserProfileErrorText = [user?.name, user?.phone, user?.address].join('').length ? 'Исправьте данные профиля' : 'Заполните данные профиля';
@@ -44,11 +43,11 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsEnum>(PaymentMethodsEnum.Card);
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOptionsEnum>(DeliveryOptionsEnum.Hand);
 
-  const isError = CartDataStore.isError || EventDataStore.isError || userStore.isError || ProductDataStore.isError || OrderDataStore.isError;
+  const isError = cartStore.isError || EventDataStore.isError || userStore.isError || ProductDataStore.isError || OrderDataStore.isError;
 
   const onRefresh = () => {
-    if (CartDataStore.isError) {
-      CartDataStore.refresh().then();
+    if (cartStore.isError) {
+      cartStore.refresh().then();
     }
     if (EventDataStore.isError) {
       EventDataStore.refresh().then();
@@ -69,7 +68,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
     orderOptions: {
       paymentMethod, deliveryOption,
     },
-    cartInfo: cartStore.cartInfo,
+    cartInfo: cartStore.model.cartInfo,
   }) as ISimplifiedEventData;
 
   useEffect(() => {
@@ -91,7 +90,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
 
     const status = await orderStore.addOrder(order);
     if (status === OrderCreateStatusEnum.Success) {
-      CartDataStore.deleteCart().then();
+      cartStore.deleteCart().then();
       navigation.reset({
         index: 1,
         routes: [

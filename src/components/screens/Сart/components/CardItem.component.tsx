@@ -5,7 +5,7 @@ import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { TextUI } from '../../../ui/TextUI';
 import { ButtonUI } from '../../../ui/ButtonUI';
 import { useNavigationHook } from '@/hooks/useNavigation';
-import { CartDataStore, ICartItem } from '../../../../api/CartDataStore';
+import { ICartDataStore, ICartItem } from '@/api';
 import { eventCreator } from '@/helpers';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../../api/EventDataStore';
 import { observer } from 'mobx-react';
@@ -21,7 +21,7 @@ export interface ICardItemProps{
 export const CardItem = observer((props: ICardItemProps)=> {
   const item = props.item;
   const navigation = useNavigationHook();
-  const cartStore = CartDataStore;
+  const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
   const eventStore = EventDataStore;
   const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
   const productStore = ProductDataStore;
@@ -29,7 +29,7 @@ export const CardItem = observer((props: ICardItemProps)=> {
   const getEventData = () => ({
     user: userStore.model.simplifiedUser,
     product: productStore.getSimplifiedProduct(item.product.id),
-    cartInfo: cartStore.cartInfo,
+    cartInfo: cartStore.model.cartInfo,
   }) as ISimplifiedEventData;
   const theme = useAppTheme();
 
@@ -46,7 +46,7 @@ export const CardItem = observer((props: ICardItemProps)=> {
         eventStore.addEvent(newEvent).then();
       }
     }
-  }, [item, cartStore.cart?.length]);
+  }, [item, cartStore.model.data?.length]);
 
   const onDeleteFromCart = useCallback(async ()=> {
     if (!!item) {
@@ -56,7 +56,7 @@ export const CardItem = observer((props: ICardItemProps)=> {
         eventStore.addEvent(newEvent).then();
       }
     }
-  }, [item, cartStore.cart?.length]);
+  }, [item, cartStore.model.data?.length]);
 
   const onPressCard = useCallback(()=> {
     navigation.navigate('ProductCard', { id: item.product.id });

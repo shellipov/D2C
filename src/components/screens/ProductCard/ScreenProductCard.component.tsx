@@ -8,7 +8,7 @@ import { CartBlockComponent } from '@shared/CartBlock';
 import { NavBar } from '@shared/NavBar';
 import { Screen } from '@shared/Screen';
 import { eventCreator } from '@/helpers';
-import { CartDataStore, IUserDataStore, ProductDataStore } from '@/api';
+import { ICartDataStore, IUserDataStore, ProductDataStore } from '@/api';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '@/api/EventDataStore';
 import { TextUI } from '@components/ui/TextUI';
 import { ButtonUI } from '@components/ui/ButtonUI';
@@ -21,21 +21,21 @@ export interface IScreenProductCardProps {
 }
 
 export const ScreenProductCard = observer((props: { route: { params: IScreenProductCardProps }}) => {
-  const cartStore = CartDataStore;
+  const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
   const eventStore = EventDataStore;
   const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
   const productStore = ProductDataStore;
   const id = props.route.params.id;
   const item = productStore.getProduct(id);
-  const isInCart = cartStore.isInCart(item);
-  const totalCount = cartStore.totalCount(item);
+  const isInCart = cartStore.model.isInCart(item);
+  const totalCount = cartStore.model.totalCount(item);
   const theme = useAppTheme();
 
-  const isError = CartDataStore.isError || EventDataStore.isError || userStore.isError || ProductDataStore.isError;
+  const isError = cartStore.isError || EventDataStore.isError || userStore.isError || ProductDataStore.isError;
 
   const onRefresh = () => {
-    if (CartDataStore.isError) {
-      CartDataStore.refresh().then();
+    if (cartStore.isError) {
+      cartStore.refresh().then();
     }
     if (EventDataStore.isError) {
       EventDataStore.refresh().then();
@@ -51,7 +51,7 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
   const getEventData = () => ({
     user: userStore.model.simplifiedUser,
     product: productStore.getSimplifiedProduct(id),
-    cartInfo: cartStore.cartInfo,
+    cartInfo: cartStore.model.cartInfo,
   }) as ISimplifiedEventData;
 
   const onAddToCart = useCallback(async ()=>{
@@ -62,7 +62,7 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
         eventStore.addEvent(newEvent).then();
       }
     }
-  }, [item, cartStore.cart?.length]);
+  }, [item, cartStore.model.data?.length]);
 
   const onDeleteFromCart = useCallback(async ()=> {
     if (!!item) {
@@ -72,7 +72,7 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
         eventStore.addEvent(newEvent).then();
       }
     }
-  }, [item, cartStore.cart?.length]);
+  }, [item, cartStore.model.data?.length]);
 
   if (!item) {
     return null;

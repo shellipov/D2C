@@ -1,4 +1,3 @@
-
 interface IPhoneFormatterData {
     cleanedValue: string,
     formattedValue: string,
