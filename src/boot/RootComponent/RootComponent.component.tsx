@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppRouter } from '@/AppRouter';
 import { useAppState } from '@/hooks/useAppState';
-import { reactotronInit } from '@/debug/reactotron';
-import { DebugVars } from '@/debug';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { observer } from 'mobx-react';
+import { DebugVars } from '@/debug';
+import { reactotronInit } from '@/debug/reactotron';
 
 export const RootComponent = observer((): React.JSX.Element => {
   const { isActive } = useAppState();
@@ -17,11 +17,9 @@ export const RootComponent = observer((): React.JSX.Element => {
     }
   }, [isActive]);
 
-  useEffect(() => {
-    if (DebugVars?.enableReactotron) {
-      reactotronInit();
-    }
-  }, []);
+  if (DebugVars?.enableReactotron) {
+    reactotronInit();
+  }
 
 
   return (

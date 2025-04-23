@@ -1,7 +1,7 @@
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/AntDesign';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { useNavigationHook } from '@/hooks/useNavigation';
 import { CartBlockComponent } from '@shared/CartBlock';
@@ -12,7 +12,7 @@ import { Screen } from '@shared/Screen';
 import { paginationData } from '@/helpers';
 import { FlatListWithPagination } from '@shared/FlatListWithPagination';
 import { TextUI } from '@components/ui/TextUI';
-import { CategoryEnum, ICartDataStore, ProductDataStore } from '@/api';
+import { CategoryEnum, ICartDataStore, IProductDataStore } from '@/api';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '@/boot/IoC/types';
@@ -22,15 +22,19 @@ export interface IScreenCategoryProps {
 }
 
 export const ScreenCategory = observer((props: { route: { params: IScreenCategoryProps }}) => {
-  const productStore = ProductDataStore;
   const category = props.route.params.category;
   const navigation = useNavigationHook();
   const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
+  const productStore = useInjection<IProductDataStore>(TYPES.ProductDataStore);
   const data = productStore.getCategory(category);
   const formattedData = paginationData(data);
   const pageButtons = Object.keys(formattedData);
   const isPaginationVisible = pageButtons.length > 1;
   const theme = useAppTheme();
+
+  useEffect(() => {
+    productStore.refresh().then();
+  }, []);
 
   const itemColors = {
     backgroundColor: theme.color.bgBasic,
@@ -38,8 +42,8 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   };
 
   const onRefresh = () => {
-    if (ProductDataStore.isError) {
-      ProductDataStore.refresh().then();
+    if (productStore.isError) {
+      productStore.refresh().then();
     }
     if (cartStore.isError) {
       cartStore.refresh().then();
@@ -72,7 +76,7 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   );
 
   return (
-    <Screen isError={ProductDataStore.isError || cartStore.isError} onRefresh={onRefresh}>
+    <Screen isError={productStore.isError || cartStore.isError} onRefresh={onRefresh}>
       <NavBar title={productStore.getCategoryName(category)} />
       <FlatListWithPagination data={data} renderItem={renderProductItem}>
         <View style={{ position: 'absolute', right: 16, bottom: isPaginationVisible ? 67 : 16 }}>

@@ -1,15 +1,15 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Row } from '@shared/Row';
 import { Col } from '@shared/Col';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { TextUI } from '../../../ui/TextUI';
 import { ButtonUI } from '../../../ui/ButtonUI';
 import { useNavigationHook } from '@/hooks/useNavigation';
-import { ICartDataStore, ICartItem, IEventDataStore } from '@/api';
+import { ICartDataStore, ICartItem, IEventDataStore, IProductDataStore } from '@/api';
 import { eventCreator } from '@/helpers';
-import { EventTypeEnum, ISimplifiedEventData } from '../../../../api/EventDataStore';
+import { EventTypeEnum, ISimplifiedEventData } from '@/api';
 import { observer } from 'mobx-react';
-import { IUserDataStore, ProductDataStore } from '../../../../api';
+import { IUserDataStore } from '@/api';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '@/boot/IoC/types';
@@ -20,18 +20,22 @@ export interface ICardItemProps{
 
 export const CardItem = observer((props: ICardItemProps)=> {
   const item = props.item;
+  const theme = useAppTheme();
   const navigation = useNavigationHook();
   const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
   const eventStore = useInjection<IEventDataStore>(TYPES.EventDataStore);
   const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
-  const productStore = ProductDataStore;
+  const productStore = useInjection<IProductDataStore>(TYPES.ProductDataStore);
+
+  useEffect(() => {
+    productStore.refresh().then();
+  }, []);
 
   const getEventData = () => ({
     user: userStore.model.simplifiedUser,
     product: productStore.getSimplifiedProduct(item.product.id),
     cartInfo: cartStore.model.cartInfo,
   }) as ISimplifiedEventData;
-  const theme = useAppTheme();
 
   const itemStyle = {
     backgroundColor: theme.color.bgBasic,
