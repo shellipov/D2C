@@ -3,7 +3,6 @@ import { View } from 'react-native';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '@/hooks/useNavigation';
-import { CartDataStore } from '../../../api/CartDataStore';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { First } from '@shared/Firts';
 import { SettingsVars } from '@/settings';
@@ -12,23 +11,26 @@ import { Screen } from '@shared/Screen';
 import { CardItem } from './components';
 import { FlatListWithPagination, IListData } from '@shared/FlatListWithPagination';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useInjection } from 'inversify-react';
+import { ICartDataStore } from '@/api';
+import { TYPES } from '@/boot/IoC/types';
 
 export interface IScreenCartProps {}
 
 export const ScreenCart = observer((props: { route: { params: IScreenCartProps }}) => {
-  const dataStore = CartDataStore;
+  const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
   const navigation = useNavigationHook();
-  const cart = dataStore.cart;
+  const cart = cartStore.model.data;
   const Theme = useAppTheme();
 
   useEffect(() => {
-    CartDataStore.refresh().then();
+    cartStore.refresh().then();
   }, []);
 
   return (
     <Screen
-      isError={CartDataStore.isError }
-      onRefresh={CartDataStore.refresh}>
+      isError={cartStore.isError }
+      onRefresh={cartStore.refresh}>
       <Row style={{ paddingHorizontal: 16 }}>
         <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
       </Row>
@@ -49,15 +51,15 @@ export const ScreenCart = observer((props: { route: { params: IScreenCartProps }
         </First>
       </View>
       <View style={{ alignItems: 'flex-end', padding: 12 }}>
-        <TextUI size={'title'} style={{ color: Theme.color.textGreen }} text={`итого: ${CartDataStore.cartSum} ₽`} />
+        <TextUI size={'title'} style={{ color: Theme.color.textGreen }} text={`итого: ${cartStore.model.cartSum} ₽`} />
       </View>
       <View style={{ alignItems: 'center', height: 80, justifyContent: 'center' }}>
         <First>
-          {CartDataStore.isCreateOrderDisabled && (
+          {cartStore.model.isCreateOrderDisabled && (
             <ButtonUI title={`Минимальная сумма - ${SettingsVars.minCartSum} ₽`} disabled={true}>
               <TextUI
                 size={'small'} style={{ color: Theme.color.disabledPrimary }}
-                text={`еще ${SettingsVars.minCartSum - CartDataStore.cartSum} ₽`} />
+                text={`еще ${SettingsVars.minCartSum - cartStore.model.cartSum} ₽`} />
             </ButtonUI>
           )}
           <ButtonUI title={'Оформить заказ'} style={{ width: '50%' }} onPress={() => navigation.navigate('CreateOrder')} />

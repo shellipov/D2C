@@ -1,4 +1,4 @@
-import { SettingsVars } from '../settings';
+import { SettingsVars } from '@/settings';
 
 export function paginationData<T> (arr: T[]): Record<number, T[]> {
   const pageSize = SettingsVars.pageSize;

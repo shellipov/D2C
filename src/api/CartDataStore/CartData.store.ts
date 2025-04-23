@@ -1,84 +1,43 @@
-import { action, computed, makeObservable, observable, runInAction } from 'mobx';
+import { action, computed, makeObservable, runInAction } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 import * as api from '@/api';
-import { SettingsVars } from '@/settings';
+import { ErrorTypeEnum, IGetFakeCartResponse } from '@/api';
 import * as CartDataTypes from './CartData.types';
 import { errorService } from '../ErrorDataStore/errorService';
-import { ErrorTypeEnum } from '@/api';
 import { suddenError } from '@/helpers';
+import { injectable } from 'inversify/lib/esm';
+import { AsyncDataHolder } from '@/utils/AsyncDataHolder';
+import { ApiStatusEnum } from '@/api/ApiTypes.types';
+import { CartDataModel } from '@/api/CartDataStore/CartData.model';
 
 export interface ICartDataStore {
+  readonly model: CartDataModel
   readonly isEmpty: boolean;
   readonly isError: boolean;
-  readonly cart: CartDataTypes.ICart | undefined;
-  readonly cartSum: number;
-  readonly simplifiedCart: CartDataTypes.ISimplifiedCart;
-  readonly totalPositions: number;
-  readonly cartInfo: CartDataTypes.ICartInfo,
-  readonly isCreateOrderDisabled: boolean;
-  totalCount(product: api.IProduct): number;
-  isInCart(product: api.IProduct): boolean;
+  deleteFromCart (product: api.IProduct): Promise<void>
   addToCart(product: api.IProduct): Promise<void>
   deleteCart(): Promise<void>
   refresh(): Promise<void>;
 }
 
-class CartDataStore implements ICartDataStore {
-  private static _instance: CartDataStore | null = null;
-  @observable public isEmpty: boolean = true;
-  @observable public isError: boolean = false;
-  @observable public cart: CartDataTypes.ICart | undefined = undefined;
+@injectable()
+export class CartDataStore implements ICartDataStore {
+  private _holder = new AsyncDataHolder<IGetFakeCartResponse>();
+  public model = new CartDataModel(() => this._holder?.data?.data);
 
-  private constructor () {
+  public constructor () {
     makeObservable(this);
   }
 
-  public static get instance (): CartDataStore {
-    if (!CartDataStore._instance) {
-      CartDataStore._instance = new CartDataStore();
-    }
-
-    return CartDataStore._instance;
+  @computed
+  public get isEmpty () {
+    return !this._holder.isFilled;
   }
 
   @computed
-  public get cartSum () {
-    return this.cart?.reduce((acc, i) => acc + (i.product.price * i.numberOfProducts), 0) || 0;
-  }
-
-  @computed
-  public get simplifiedCart () {
-    return this.cart?.map(i => ({ product: { id: i.product.id, name: i.product.name, price: i.product.price }, numberOfProducts: i.numberOfProducts })) || [];
-  }
-
-  @computed
-  public get totalPositions () {
-    return this.cart?.reduce((acc, i) => acc + i.numberOfProducts, 0) || 0;
-  }
-
-  @computed
-  public get cartInfo (): CartDataTypes.ICartInfo {
-    return {
-      positions: this.totalPositions,
-      sum: this.cartSum + ' ₽',
-      cart: this.simplifiedCart,
-    };
-  }
-
-  @computed
-  public get isCreateOrderDisabled () {
-    return SettingsVars.minCartSum > this.cartSum;
-  }
-
-  public totalCount (product?: api.IProduct): number {
-    const item = this.cart?.find(e => e.product.id === product?.id);
-
-    return item?.numberOfProducts || 0;
-  }
-
-  public isInCart (product?: api.IProduct) {
-    return !!this.cart?.find(e => e.product.id === product?.id);
+  public get isError () {
+    return this._holder.isError;
   }
 
   @action.bound
@@ -86,7 +45,7 @@ class CartDataStore implements ICartDataStore {
     try {
       await AsyncStorage.removeItem('cart');
       runInAction(() => {
-        this.cart = undefined;
+        this._holder.setEmpty();
       });
 
       await this.refresh();
@@ -105,7 +64,7 @@ class CartDataStore implements ICartDataStore {
 
       if (isExistingProduct) {
         if (product.quantityOfGoods === isExistingProduct.numberOfProducts) {
-          Alert.alert('Максимальное колличество товаров', 'К сожалению у нас больше нет');
+          Alert.alert('Максимальное количество товаров', 'К сожалению у нас больше нет');
 
           return;
         }
@@ -162,19 +121,14 @@ class CartDataStore implements ICartDataStore {
         const newCart = [] as CartDataTypes.ICart;
         await AsyncStorage.setItem('cart', JSON.stringify(newCart));
       } else {
-        runInAction(() => {
-          CartStore.cart = !!jsonCart ? JSON.parse(jsonCart) : undefined;
-          CartStore.isError = false;
+        this._holder.setData({
+          data: !!jsonCart ? JSON.parse(jsonCart) : undefined,
+          status: ApiStatusEnum.Success,
         });
       }
-      runInAction(()=> this.isEmpty = false);
     } catch (error: any) {
-      runInAction(() => {
-        CartStore.isError = true;
-      });
+      this._holder.setError(error);
       await errorService({ type:ErrorTypeEnum.LoadData, error, withoutAlerts: true });
     }
   }
 }
-
-export const CartStore = CartDataStore.instance;

@@ -6,7 +6,7 @@ import { Row } from '@shared/Row';
 import { Col } from '@shared/Col';
 import { Screen } from '@shared/Screen';
 import { phoneFormatter } from '@/helpers/phoneFormatter';
-import { CartDataStore, IUserDataStore } from '@/api';
+import { ICartDataStore, IUserDataStore } from '@/api';
 import { ButtonUI } from '@components/ui/ButtonUI';
 import { TextUI } from '@components/ui/TextUI';
 import { TextInputUI } from '@components/ui/TextInputUI';
@@ -18,7 +18,7 @@ export interface IScreenProfileProps {}
 
 export const ScreenProfile = observer((props: { route: { params: IScreenProfileProps }}) => {
   const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
-  const cartStore = CartDataStore;
+  const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
   const navigation = useNavigationHook();
   const theme = useAppTheme();
 
@@ -53,8 +53,8 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
       userStore.refresh().then();
       userStore.refresh().then();
     }
-    if (CartDataStore.isError) {
-      CartDataStore.refresh().then();
+    if (cartStore.isError) {
+      cartStore.refresh().then();
     }
   };
 
@@ -75,7 +75,7 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <Screen isError={userStore.isError || CartDataStore.isError} onRefresh={onRefresh}>
+      <Screen isError={userStore.isError || cartStore.isError} onRefresh={onRefresh}>
 
         <View style={[{ paddingHorizontal: 16 }]}>
           <Row style={{ justifyContent: 'space-between' }}>

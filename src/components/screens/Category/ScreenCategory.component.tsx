@@ -12,8 +12,10 @@ import { Screen } from '@shared/Screen';
 import { paginationData } from '@/helpers';
 import { FlatListWithPagination } from '@shared/FlatListWithPagination';
 import { TextUI } from '@components/ui/TextUI';
-import { CartDataStore, CategoryEnum, ProductDataStore } from '@/api';
+import { CategoryEnum, ICartDataStore, ProductDataStore } from '@/api';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useInjection } from 'inversify-react';
+import { TYPES } from '@/boot/IoC/types';
 
 export interface IScreenCategoryProps {
     category: CategoryEnum
@@ -23,6 +25,7 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   const productStore = ProductDataStore;
   const category = props.route.params.category;
   const navigation = useNavigationHook();
+  const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
   const data = productStore.getCategory(category);
   const formattedData = paginationData(data);
   const pageButtons = Object.keys(formattedData);
@@ -38,8 +41,8 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
     if (ProductDataStore.isError) {
       ProductDataStore.refresh().then();
     }
-    if (CartDataStore.isError) {
-      CartDataStore.refresh().then();
+    if (cartStore.isError) {
+      cartStore.refresh().then();
     }
   };
 
@@ -69,7 +72,7 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   );
 
   return (
-    <Screen isError={ProductDataStore.isError || CartDataStore.isError} onRefresh={onRefresh}>
+    <Screen isError={ProductDataStore.isError || cartStore.isError} onRefresh={onRefresh}>
       <NavBar title={productStore.getCategoryName(category)} />
       <FlatListWithPagination data={data} renderItem={renderProductItem}>
         <View style={{ position: 'absolute', right: 16, bottom: isPaginationVisible ? 67 : 16 }}>

@@ -1,4 +1,5 @@
 import { IProduct, ISimplifiedProduct } from '@/api';
+import { ApiStatusEnum } from '@/api/ApiTypes.types';
 
 export interface ICartItem {
     product: IProduct,
@@ -18,4 +19,10 @@ export interface ICartInfo {
     positions: number,
     sum: string,
     cart: ISimplifiedCart;
+}
+
+export interface IGetFakeCartResponse {
+    data?: ICart;
+    status?: ApiStatusEnum;
+    message?: string;
 }
