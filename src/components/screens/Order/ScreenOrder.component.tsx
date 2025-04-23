@@ -2,14 +2,14 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
-import { useNavigationHook } from '../../../hooks/useNavigation';
+import { useNavigationHook } from '@/hooks/useNavigation';
 import { ButtonUI } from '../../ui/ButtonUI';
-import { Row } from '../../shared/Row';
-import { Col } from '../../shared/Col';
-import { IOrder } from '../../../api';
-import { Screen } from '../../shared/Screen';
+import { Row } from '@shared/Row';
+import { Col } from '@shared/Col';
+import { IOrder } from '@/api';
+import { Screen } from '@shared/Screen';
 import { OrderCartItem } from './components';
-import { Theme } from '../../../store';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export interface IScreenOrderProps {
     order: IOrder
@@ -18,7 +18,8 @@ export interface IScreenOrderProps {
 export const ScreenOrder = observer((props: { route: { params: IScreenOrderProps }}) => {
   const navigation = useNavigationHook();
   const { user, cart, date, deliveryOption, paymentMethod, totalSum, shippingCost } = props.route.params.order;
-  const { color } = Theme;
+  const theme = useAppTheme();
+  const { color } = theme;
 
   const itemColor = { backgroundColor: color.bgAdditionalTwo, borderColor: color.bgAdditionalTwo };
 

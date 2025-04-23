@@ -6,17 +6,18 @@ import { ButtonUI } from '../../ui/ButtonUI';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { CartDataStore, ProductDataStore } from '../../../api';
-import { useNavigationHook } from '../../../hooks/useNavigation';
-import { CartBlockComponent } from '../../shared/CartBlock';
-import { Screen } from '../../shared/Screen';
-import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
-import { Theme } from '../../../store';
-import { Col } from '../../shared/Col';
+import { useNavigationHook } from '@/hooks/useNavigation';
+import { CartBlockComponent } from '@shared/CartBlock';
+import { Screen } from '@shared/Screen';
+import { FlatListWithPagination } from '@shared/FlatListWithPagination';
+import { Col } from '@shared/Col';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export interface IScreenMainProps {}
 
 export const ScreenMain = observer((props: IScreenMainProps) => {
   const navigation = useNavigationHook();
+  const theme = useAppTheme();
 
   const onRefresh = () => {
     if (ProductDataStore.isError) {
@@ -32,13 +33,13 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
   }, []);
 
   const backgroundColor = {
-    backgroundColor: Theme.color.bgAdditional,
-    borderColor: Theme.color.bgAdditional,
+    backgroundColor: theme.color.bgAdditional,
+    borderColor: theme.color.bgAdditional,
   };
 
   const itemColor = {
-    backgroundColor: Theme.color.bgBasic,
-    borderColor: Theme.color.bgBasic,
+    backgroundColor: theme.color.bgBasic,
+    borderColor: theme.color.bgBasic,
   };
 
   const renderHeader = () => {
@@ -51,7 +52,7 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
     return (
       <TouchableOpacity style={[styles.item, itemColor]} onPress={onPress}>
         <TextUI text={item.name} size={'medium'} style={{ marginBottom: 4 }} />
-        <Col style={{ height: 70, padding: 2, borderRadius: 8, backgroundColor: Theme.color.bgTransparentImage }}>
+        <Col style={{ height: 70, padding: 2, borderRadius: 8, backgroundColor: theme.color.bgTransparentImage }}>
           <Image src={item.image} resizeMode="contain" style={styles.image} />
         </Col>
       </TouchableOpacity>
@@ -61,7 +62,7 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
   return (
     <Screen isError={ProductDataStore.isError || CartDataStore.isError} onRefresh={onRefresh}>
       <View style={styles.block}>
-        <StatusBar barStyle={Theme.isDark ? 'light-content' : 'dark-content'} />
+        <StatusBar barStyle={theme.isDark ? 'light-content' : 'dark-content'} />
         <View style={[styles.header, backgroundColor]}>
           <ButtonUI title={''} onPress={() =>navigation.navigate('Profile')} style={styles.profileButton}>
             <Ionicons name={'user'} size={28} color={'black'} />

@@ -6,11 +6,11 @@ import { Row } from '@shared/Row';
 import { Col } from '@shared/Col';
 import { Screen } from '@shared/Screen';
 import { phoneFormatter } from '@/helpers/phoneFormatter';
-import { Theme } from '@/store';
 import { CartDataStore, UserDataStore } from '@/api';
 import { ButtonUI } from '@components/ui/ButtonUI';
 import { TextUI } from '@components/ui/TextUI';
 import { TextInputUI } from '@components/ui/TextInputUI';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export interface IScreenProfileProps {}
 
@@ -18,13 +18,14 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
   const userStore = UserDataStore;
   const cartStore = CartDataStore;
   const navigation = useNavigationHook();
+  const theme = useAppTheme();
 
   const [name, setName] = useState(userStore.user?.name);
   const [phone, setPhone] = useState(userStore.user?.phone);
   const [address, setAddress] = useState(userStore.user?.address);
   const isValidPhone = useMemo(() => phoneFormatter(phone).isValid, [phone]);
   const themeButtonStyle = {
-    backgroundColor: Theme.color.bgBasic,
+    backgroundColor: theme.color.bgBasic,
     marginVertical: 0,
     marginBottom: 12,
     marginTop: 4,
@@ -84,7 +85,7 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
           <TextUI size={'bigTitle'} text={'Профиль'} style={{ paddingVertical: 35 }} />
         </View>
 
-        <ScrollView style={{ backgroundColor: Theme.color.bgAdditionalTwo }}>
+        <ScrollView style={{ backgroundColor: theme.color.bgAdditionalTwo }}>
           <View style={styles.userDataBlock}>
             <Row style={styles.row}>
               <Col>
@@ -127,10 +128,10 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
             <Col style={styles.buttonBlock}>
               <TextUI size={'medium'} text={'Тема'} />
               <ButtonUI
-                title={Theme.name}
+                title={theme.name}
                 type={'white'}
                 style={[styles.button, themeButtonStyle]}
-                onPress={Theme.changeTheme} />
+                onPress={theme.changeTheme} />
               <ButtonUI
                 title={'Заказы'}
                 type={'white'}
@@ -160,6 +161,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
+    marginTop: 16,
   },
   row: {
     paddingVertical: 4,

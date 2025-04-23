@@ -1,8 +1,8 @@
 import React from 'react';
-import {ColorValue, StyleSheet, TouchableOpacity, TouchableOpacityProps} from 'react-native';
-import {TextUI} from '../TextUI';
-import {Theme} from '../../../store';
-import {observer} from 'mobx-react';
+import { ColorValue, StyleSheet, TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { TextUI } from '../TextUI';
+import { observer } from 'mobx-react';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export type ButtonType = 'debug' | 'white' | 'red' | 'redBorder'
 
@@ -16,7 +16,8 @@ export interface IButtonUIProps extends TouchableOpacityProps{
 
 export const ButtonUI = observer((props: IButtonUIProps) => {
   const { children, title, textColor, style, ...rest } = props;
-  const { color } = Theme;
+  const theme = useAppTheme();
+  const { color } = theme;
 
   const activeButtonColor = {
     backgroundColor: color.elementPrimary,

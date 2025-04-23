@@ -7,7 +7,7 @@ import { NavBar } from '../NavBar';
 import { useRoute } from '@react-navigation/native';
 import { Routes } from '@/AppPouter.types';
 import { observer } from 'mobx-react';
-import { Theme } from '@/store';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface IScreenProps extends ViewProps {
     isError?: boolean;
@@ -17,9 +17,9 @@ interface IScreenProps extends ViewProps {
 export const Screen = observer((props: IScreenProps) => {
   const { children, isError, style, ...rest } = props;
   const route = useRoute();
+  const theme = useAppTheme();
   const isMain = route.name === Routes.Main;
-
-  const bgColor = { backgroundColor: Theme.color.bgBasic };
+  const bgColor = { backgroundColor: theme.color.bgBasic };
 
   if (isError) {
     return (
@@ -29,7 +29,7 @@ export const Screen = observer((props: IScreenProps) => {
           <NavBar title={'Ошибка'} />
         )}
         <View style={styles.errorView}>
-          <TextUI size={'bigTitle'} style={[styles.errorText, { color: Theme.color.textRed }]} text={'Ошибка обновления\nданных'} />
+          <TextUI size={'bigTitle'} style={[styles.errorText, { color: theme.color.textRed }]} text={'Ошибка обновления\nданных'} />
           {!!props.onRefresh && (
             <ButtonUI title={'Обновить'} style={styles.button} type={'redBorder'} onPress={props.onRefresh} />
           )}

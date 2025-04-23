@@ -2,16 +2,16 @@ import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
-import { useNavigationHook } from '../../../hooks/useNavigation';
+import { useNavigationHook } from '@/hooks/useNavigation';
 import { CartDataStore } from '../../../api/CartDataStore';
 import { ButtonUI } from '../../ui/ButtonUI';
-import { First } from '../../shared/Firts';
-import { SettingsVars } from '../../../settings';
-import { Row } from '../../shared/Row';
-import { Screen } from '../../shared/Screen';
+import { First } from '@shared/Firts';
+import { SettingsVars } from '@/settings';
+import { Row } from '@shared/Row';
+import { Screen } from '@shared/Screen';
 import { CardItem } from './components';
-import { FlatListWithPagination, IListData } from '../../shared/FlatListWithPagination';
-import { Theme } from '../../../store';
+import { FlatListWithPagination, IListData } from '@shared/FlatListWithPagination';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export interface IScreenCartProps {}
 
@@ -19,6 +19,7 @@ export const ScreenCart = observer((props: { route: { params: IScreenCartProps }
   const dataStore = CartDataStore;
   const navigation = useNavigationHook();
   const cart = dataStore.cart;
+  const Theme = useAppTheme();
 
   useEffect(() => {
     CartDataStore.refresh().then();

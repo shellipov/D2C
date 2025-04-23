@@ -7,11 +7,11 @@ import { NavBar } from '@shared/NavBar';
 import { Screen } from '@shared/Screen';
 import { First } from '@shared/Firts';
 import { FlatListWithPagination } from '@shared/FlatListWithPagination';
-import { Theme } from '@/store';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '@/boot/IoC/types';
 import { IScreenErrorsVM } from './ScreenErrors.types';
 import { useAppState } from '@/hooks/useAppState';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export interface IScreenErrorsProps {}
 export interface IScreenErrorsVMProps extends IScreenErrorsProps {isActive : boolean}
@@ -19,7 +19,8 @@ export interface IScreenErrorsVMProps extends IScreenErrorsProps {isActive : boo
 export const ScreenErrors = observer((props: { route: { params: IScreenErrorsProps } }) => {
   const { isActive } = useAppState();
   const vm = useInjection<IScreenErrorsVM>(TYPES.ScreenErrorsVM);
-  const contentStyles = { flex: 1, paddingTop: 8, backgroundColor: Theme.color.bgAdditional };
+  const theme = useAppTheme();
+  const contentStyles = { flex: 1, paddingTop: 8, backgroundColor: theme.color.bgAdditional };
 
   useEffect(() => {
     vm.initialize(() => ({ ...props.route.params, isActive }));
@@ -30,9 +31,9 @@ export const ScreenErrors = observer((props: { route: { params: IScreenErrorsPro
   }, [isActive]);
 
   const renderItem = ({ item }: { item: any }) => (
-    <View style={[styles.item, { backgroundColor: Theme.color.bgAdditionalTwo }]}>
+    <View style={[styles.item, { backgroundColor: theme.color.bgAdditionalTwo }]}>
       <Row style={[styles.row]}>
-        <TextUI size={'medium'} text={item.title} style={{ color: Theme.color.textRed }} />
+        <TextUI size={'medium'} text={item.title} style={{ color: theme.color.textRed }} />
       </Row>
       <Row style={styles.row}>
         <TextUI

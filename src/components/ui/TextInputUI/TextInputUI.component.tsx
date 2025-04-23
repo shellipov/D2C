@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet, TextInput, TextInputProps} from 'react-native';
-import {Theme} from '../../../store';
+import { StyleSheet, TextInput, TextInputProps } from 'react-native';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 type TextSize = 'small' | 'medium' | 'large';
 
@@ -27,7 +27,8 @@ const TEXT_SIZE = {
 
 export function TextInputUI (props: ITextInputUIProps) {
   const { children, textSize, isError, style, ...rest } = props;
-  const { color } = Theme;
+  const theme = useAppTheme();
+  const { color } = theme;
   const borderColor = isError ? color.elementDanger : color.secondaryPrimary;
 
   return (

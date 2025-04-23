@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { observer } from 'mobx-react';
-import { Theme } from '@/store';
 import { EventDataStore, EventTypeEnum, IEvent } from '@/api/EventDataStore';
 import { TextUI } from '@/components/ui/TextUI';
 import { FlatListWithPagination } from '@shared/FlatListWithPagination';
@@ -11,16 +10,18 @@ import { Row } from '@shared/Row';
 import { Col } from '@shared/Col';
 import { Screen } from '@shared/Screen';
 import { InfoRow } from '@shared/InfoRow';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export interface IScreenStatisticsProps {}
 
 export const ScreenStatistics = observer((props: { route: { params: IScreenStatisticsProps } }) => {
+  const theme = useAppTheme();
   const events = EventDataStore.events;
-  const contentStyles = { flex: 1, paddingTop: 8, backgroundColor: Theme.color.bgAdditional };
+  const contentStyles = { flex: 1, paddingTop: 8, backgroundColor: theme.color.bgAdditional };
   const colors : {[key in EventTypeEnum]? : string} = {
-    [EventTypeEnum.AddToCart] : Theme.color.textGreen,
-    [EventTypeEnum.DeleteFromCart] : Theme.color.textRed,
-    [EventTypeEnum.CreateOrder] : Theme.color.textViolet,
+    [EventTypeEnum.AddToCart] : theme.color.textGreen,
+    [EventTypeEnum.DeleteFromCart] : theme.color.textRed,
+    [EventTypeEnum.CreateOrder] : theme.color.textViolet,
   };
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
     const cartValue = `${JSON.stringify(item?.cartInfo?.cart, null, 2)}`;
 
     return (
-      <Col style={[styles.item, { backgroundColor: Theme.color.bgAdditionalTwo }]}>
+      <Col style={[styles.item, { backgroundColor: theme.color.bgAdditionalTwo }]}>
         <Row style={styles.row}>
           <TextUI size={'small'} text={`${item.eventType}`} style={{ color: colors[item.eventType as IEvent['eventType']] }} />
         </Row>

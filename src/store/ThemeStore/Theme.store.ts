@@ -1,10 +1,12 @@
-import { action, computed, makeObservable, observable, runInAction } from 'mobx';
+import { action, computed, makeObservable } from 'mobx';
 import { Appearance } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppThemeEnum, ThemeEnum, ThemeStorageTypeEnum } from './Theme.types';
-import { errorService } from '../../api/ErrorDataStore/errorService';
-import { ErrorTypeEnum } from '../../api';
-import { ColorsVars } from '../../settings';
+import { errorService } from '@/api/ErrorDataStore/errorService';
+import { ErrorTypeEnum } from '@/api';
+import { ColorsVars } from '@/settings';
+import { injectable } from 'inversify/lib/esm';
+import { AsyncDataHolder } from '@/utils/AsyncDataHolder';
 
 const THEME_LIST = {
   [AppThemeEnum.System]: 'Системная',
@@ -12,35 +14,37 @@ const THEME_LIST = {
   [AppThemeEnum.Black]: 'Темная',
 };
 
-const THEMES = Object.values(AppThemeEnum); // Используем значения enum напрямую
+const THEMES = Object.values(AppThemeEnum);
 
 export interface IThemeStore {
   readonly appTheme: AppThemeEnum; // Выбранная тема в приложении (системная/светлая/темная)
-  readonly deviceTheme: ThemeEnum | null; // Текущая тема устройства (светлая/темная)
+  readonly deviceTheme: ThemeEnum | undefined; // Текущая тема устройства (светлая/темная)
   readonly theme: ThemeEnum; // Активная тема (светлая/темная) с учетом всех настроек
   readonly name: string;
+  readonly color: {[key in keyof typeof ColorsVars]? : string};
   readonly isDark: boolean;
   readonly isError: boolean;
   changeTheme(): Promise<void>;
   refresh(): Promise<void>;
 }
 
-class ThemeStore implements IThemeStore {
-  @observable public appTheme = AppThemeEnum.Light;
-  @observable public deviceTheme: ThemeEnum | null = null;
-  @observable public isError = false;
-  private static _instance: ThemeStore | null = null;
+@injectable()
+export class ThemeStore implements IThemeStore {
+  private _appThemeHolder = new AsyncDataHolder<AppThemeEnum>();
+  private _deviceThemeHolder = new AsyncDataHolder<ThemeEnum>();
 
   public constructor () {
     makeObservable(this);
   }
 
-  public static get instance (): ThemeStore {
-    if (!ThemeStore._instance) {
-      ThemeStore._instance = new ThemeStore();
-    }
+  @computed
+  public get appTheme () {
+    return this._appThemeHolder.data || AppThemeEnum.Light;
+  }
 
-    return ThemeStore._instance;
+  @computed
+  public get deviceTheme () {
+    return this._deviceThemeHolder.data;
   }
 
   @computed
@@ -65,6 +69,11 @@ class ThemeStore implements IThemeStore {
   @computed
   public get isLight () {
     return this.theme === ThemeEnum.Light;
+  }
+
+  @computed
+  public get isError () {
+    return this._appThemeHolder.isError || this._deviceThemeHolder.isError;
   }
 
   @computed
@@ -104,16 +113,11 @@ class ThemeStore implements IThemeStore {
       const newTheme = THEMES[nextIndex];
 
       await AsyncStorage.setItem(ThemeStorageTypeEnum.Theme, newTheme);
-
-      runInAction(() => {
-        this.appTheme = newTheme;
-      });
+      this._appThemeHolder.setData(newTheme);
 
       await this.refresh();
     } catch (error: any) {
-      runInAction(() => {
-        this.isError = true;
-      });
+      this._appThemeHolder.setError({ name: 'Системная ошибка', message: 'Попробуйте еще раз' });
       await errorService({
         type: ErrorTypeEnum.LoadData,
         error,
@@ -126,25 +130,17 @@ class ThemeStore implements IThemeStore {
   public async refresh (): Promise<void> {
     try {
       const deviceTheme = Appearance.getColorScheme();
-      runInAction(() => {
-        this.deviceTheme = deviceTheme === 'dark' ? ThemeEnum.Black : ThemeEnum.Light;
-      });
+      this._deviceThemeHolder.setData(deviceTheme === 'dark' ? ThemeEnum.Black : ThemeEnum.Light);
 
       const savedTheme = await AsyncStorage.getItem(ThemeStorageTypeEnum.Theme) as AppThemeEnum | null;
-
-      runInAction(() => {
-        this.appTheme = savedTheme ||
-            (deviceTheme ? AppThemeEnum.System : AppThemeEnum.Light);
-      });
+      this._appThemeHolder.setData(savedTheme || (deviceTheme ? AppThemeEnum.System : AppThemeEnum.Light));
 
       if (!savedTheme) {
         const defaultTheme = deviceTheme ? AppThemeEnum.System : AppThemeEnum.Light;
         await AsyncStorage.setItem(ThemeStorageTypeEnum.Theme, defaultTheme);
       }
     } catch (error: any) {
-      runInAction(() => {
-        this.isError = true;
-      });
+      this._appThemeHolder.setError({ name: 'Системная ошибка', message: 'Попробуйте еще раз' });
       await errorService({
         type: ErrorTypeEnum.LoadData,
         error,
@@ -153,5 +149,3 @@ class ThemeStore implements IThemeStore {
     }
   }
 }
-
-export const Theme = ThemeStore.instance;
