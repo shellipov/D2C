@@ -1,22 +1,24 @@
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, orderStorageTypeEnum, PaymentMethodsEnum } from './OrderData.types';
+import * as OrderDataTypes from './OrderData.types';
 import { errorService } from '../ErrorDataStore/errorService';
-import { ErrorTypeEnum } from '../ErrorDataStore';
-import { suddenError } from '../../helpers';
+import { ErrorTypeEnum } from '@/api';
+import { suddenError } from '@/helpers';
 
 export interface IOrderDataStore {
-    readonly orders: IOrder[];
-    readonly isError: boolean;
-    readonly paymentMethods: { type: PaymentMethodsEnum, title: string }[];
-    readonly deliveryOptions: { type: DeliveryOptionsEnum, title: string }[];
-    addOrder (order: IOrder): Promise<OrderCreateStatusEnum>
-    refresh(): Promise<void>;
+  readonly orders: OrderDataTypes.IOrder[];
+  readonly isError: boolean;
+  readonly paymentMethods: { type: OrderDataTypes.PaymentMethodsEnum, title: string }[];
+  readonly deliveryOptions: { type: OrderDataTypes.DeliveryOptionsEnum, title: string }[];
+
+  addOrder(order: OrderDataTypes.IOrder): Promise<OrderDataTypes.OrderCreateStatusEnum>
+
+  refresh(): Promise<void>;
 }
 
 class OrderDataStore implements IOrderDataStore {
   private static _instance: OrderDataStore | null = null;
-    @observable public orders: IOrder[] = [];
+  @observable public orders: OrderDataTypes.IOrder[] = [];
   @observable public isError = false;
 
   private constructor () {
@@ -31,76 +33,76 @@ class OrderDataStore implements IOrderDataStore {
     return OrderDataStore._instance;
   };
 
-    @computed
+  @computed
   public get lastOrder () {
     return this.orders[0];
   };
 
-    @computed
-    public get paymentMethods () {
-      return [
-        {
-          type: PaymentMethodsEnum.Card,
-          title: 'Картой',
-        },
-        {
-          type: PaymentMethodsEnum.Cash,
-          title: 'Наличными',
-        },
-      ];
-    };
+  @computed
+  public get paymentMethods () {
+    return [
+      {
+        type: OrderDataTypes.PaymentMethodsEnum.Card,
+        title: 'Картой',
+      },
+      {
+        type: OrderDataTypes.PaymentMethodsEnum.Cash,
+        title: 'Наличными',
+      },
+    ];
+  };
 
 
-    @computed
-    public get deliveryOptions () {
-      return [
-        {
-          type: DeliveryOptionsEnum.Hand,
-          title: 'Отдать в руки',
-        },
-        {
-          type: DeliveryOptionsEnum.Door,
-          title: 'Оставить у двери',
-        },
-      ];
-    };
-
-    @action.bound
-    public async addOrder (order: IOrder): Promise<OrderCreateStatusEnum> {
-      try {
-        await suddenError('OrderDataStore: addOrder');
-        const jsonOrders = await AsyncStorage.getItem(orderStorageTypeEnum.Orders);
-        const orders = jsonOrders ? JSON.parse(jsonOrders) : [];
-        if (orders) {
-          const newOrders = [order, ...orders];
-          await AsyncStorage.setItem(orderStorageTypeEnum.Orders, JSON.stringify(newOrders));
-        } else {
-          await errorService({ type:ErrorTypeEnum.CreateOrder });
-
-          return OrderCreateStatusEnum.Error;
-        }
-
-        await this.refresh();
-
-        return OrderCreateStatusEnum.Success;
-      } catch (error: any) {
-        await errorService({ type:ErrorTypeEnum.CreateOrder, error });
-
-        return OrderCreateStatusEnum.Error;
-      }
-    }
+  @computed
+  public get deliveryOptions () {
+    return [
+      {
+        type: OrderDataTypes.DeliveryOptionsEnum.Hand,
+        title: 'Отдать в руки',
+      },
+      {
+        type: OrderDataTypes.DeliveryOptionsEnum.Door,
+        title: 'Оставить у двери',
+      },
+    ];
+  };
 
   @action.bound
-    public async clear (): Promise<void> {
-      await AsyncStorage.removeItem(orderStorageTypeEnum.Orders);
-      this.refresh().then();
-    }
+  public async addOrder (order: OrderDataTypes.IOrder): Promise<OrderDataTypes.OrderCreateStatusEnum> {
+    try {
+      await suddenError('OrderDataStore: addOrder');
+      const jsonOrders = await AsyncStorage.getItem(OrderDataTypes.OrderStorageTypeEnum.Orders);
+      const orders = jsonOrders ? JSON.parse(jsonOrders) : [];
+      if (orders) {
+        const newOrders = [order, ...orders];
+        await AsyncStorage.setItem(OrderDataTypes.OrderStorageTypeEnum.Orders, JSON.stringify(newOrders));
+      } else {
+        await errorService({ type: ErrorTypeEnum.CreateOrder });
 
-    @action.bound
+        return OrderDataTypes.OrderCreateStatusEnum.Error;
+      }
+
+      await this.refresh();
+
+      return OrderDataTypes.OrderCreateStatusEnum.Success;
+    } catch (error: any) {
+      await errorService({ type: ErrorTypeEnum.CreateOrder, error });
+
+      return OrderDataTypes.OrderCreateStatusEnum.Error;
+    }
+  }
+
+  @action.bound
+  public async clear (): Promise<void> {
+    await AsyncStorage.removeItem(OrderDataTypes.OrderStorageTypeEnum.Orders);
+    this.refresh().then();
+  }
+
+  @action.bound
   public async refresh (): Promise<void> {
     try {
       await suddenError('OrderDataStore: refresh');
-      const jsonOrders = await AsyncStorage.getItem(orderStorageTypeEnum.Orders);
+      const jsonOrders = await AsyncStorage.getItem(OrderDataTypes.OrderStorageTypeEnum.Orders);
       if (!!jsonOrders) {
         runInAction(() => {
           OrderStore.orders = JSON.parse(jsonOrders);

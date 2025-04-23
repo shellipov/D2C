@@ -26,3 +26,7 @@ export interface IGetFakeCartResponse {
     status?: ApiStatusEnum;
     message?: string;
 }
+
+export enum CartStorageTypeEnum {
+    Cart = 'Cart',
+}

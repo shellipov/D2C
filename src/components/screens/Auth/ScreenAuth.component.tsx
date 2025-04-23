@@ -11,6 +11,7 @@ import { Screen } from '@shared/Screen';
 import { useInjection } from 'inversify-react';
 import { IUserDataStore } from '@/api';
 import { TYPES } from '@/boot/IoC/types';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export interface IScreenAuthProps {}
  type Props = IScreenAuthProps | undefined
@@ -19,6 +20,7 @@ export const ScreenAuth = observer((props: Props) => {
   const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
   const [name, setName] = React.useState<string>('');
   const navigation = useNavigationHook();
+  const theme = useAppTheme();
   const isButtonDisabled = useMemo(()=> name.length < 4, [name]);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export const ScreenAuth = observer((props: Props) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <Screen isError={userStore.isError} onRefresh={userStore.refresh}>
-        <Col style={styles.block}>
+        <Col style={[styles.block, { backgroundColor: theme.color.bgAdditionalTwo }]}>
           <TextUI text={'Введите Ваш ник'} size={'title'} />
           <TextUI text={'и постарайтесь не забыть его'} size={'small'} />
           <TextInputUI value={name} textSize={'large'} onChangeText={onChangeText} style={styles.input} />
@@ -52,7 +54,6 @@ export const ScreenAuth = observer((props: Props) => {
 
 const styles = StyleSheet.create({
   block: {
-    backgroundColor: Colors.lighter,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

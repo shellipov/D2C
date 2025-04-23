@@ -2,7 +2,7 @@ import { action, computed, makeObservable, runInAction } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 import * as api from '@/api';
-import { ErrorTypeEnum, IGetFakeCartResponse } from '@/api';
+import { CartStorageTypeEnum, ErrorTypeEnum, IGetFakeCartResponse } from '@/api';
 import * as CartDataTypes from './CartData.types';
 import { errorService } from '../ErrorDataStore/errorService';
 import { suddenError } from '@/helpers';
@@ -43,7 +43,7 @@ export class CartDataStore implements ICartDataStore {
   @action.bound
   public async deleteCart (): Promise<void> {
     try {
-      await AsyncStorage.removeItem('cart');
+      await AsyncStorage.removeItem(CartStorageTypeEnum.Cart);
       runInAction(() => {
         this._holder.setEmpty();
       });
@@ -58,7 +58,7 @@ export class CartDataStore implements ICartDataStore {
   public async addToCart (product: api.IProduct): Promise<void> {
     try {
       await suddenError('CartDataStore: addToCart');
-      const jsonCart = await AsyncStorage.getItem('cart');
+      const jsonCart = await AsyncStorage.getItem(CartStorageTypeEnum.Cart);
       const cart: CartDataTypes.ICart = jsonCart ? JSON.parse(jsonCart) : [];
       const isExistingProduct = cart.find(i => i.product.id === product.id);
 
@@ -79,7 +79,7 @@ export class CartDataStore implements ICartDataStore {
           product,
         } as CartDataTypes.ICartItem);
       }
-      await AsyncStorage.setItem('cart', JSON.stringify(cart));
+      await AsyncStorage.setItem(CartStorageTypeEnum.Cart, JSON.stringify(cart));
 
       await this.refresh();
     } catch (error: any) {
@@ -91,7 +91,7 @@ export class CartDataStore implements ICartDataStore {
   public async deleteFromCart (product: api.IProduct): Promise<void> {
     try {
       await suddenError('CartDataStore: deleteFromCart');
-      const jsonCart = await AsyncStorage.getItem('cart');
+      const jsonCart = await AsyncStorage.getItem(CartStorageTypeEnum.Cart);
       const cart: CartDataTypes.ICart = jsonCart ? JSON.parse(jsonCart) : [];
       const cartProduct = cart.find(i => i.product.id === product.id);
       if (cartProduct) {
@@ -102,7 +102,7 @@ export class CartDataStore implements ICartDataStore {
         } else {
           cart.splice(index, 1, { ...cartProduct, numberOfProducts: cartProduct?.numberOfProducts - 1 });
         }
-        await AsyncStorage.setItem('cart', JSON.stringify(cart));
+        await AsyncStorage.setItem(CartStorageTypeEnum.Cart, JSON.stringify(cart));
       } else {
         await errorService({ type: ErrorTypeEnum.DeleteFromCart });
       }
@@ -115,11 +115,12 @@ export class CartDataStore implements ICartDataStore {
   @action.bound
   public async refresh (): Promise<void> {
     try {
+      this._holder.setLoading();
       await suddenError('CartDataStore: refresh');
-      const jsonCart = await AsyncStorage.getItem('cart');
+      const jsonCart = await AsyncStorage.getItem(CartStorageTypeEnum.Cart);
       if (!jsonCart) {
         const newCart = [] as CartDataTypes.ICart;
-        await AsyncStorage.setItem('cart', JSON.stringify(newCart));
+        await AsyncStorage.setItem(CartStorageTypeEnum.Cart, JSON.stringify(newCart));
       } else {
         this._holder.setData({
           data: !!jsonCart ? JSON.parse(jsonCart) : undefined,

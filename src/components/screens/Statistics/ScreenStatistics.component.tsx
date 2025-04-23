@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { observer } from 'mobx-react';
-import { EventDataStore, EventTypeEnum, IEvent } from '@/api/EventDataStore';
+import { EventTypeEnum, IEvent, IEventDataStore } from '@/api/EventDataStore';
 import { TextUI } from '@/components/ui/TextUI';
 import { FlatListWithPagination } from '@shared/FlatListWithPagination';
 import { First } from '@shared/Firts';
@@ -11,12 +11,14 @@ import { Col } from '@shared/Col';
 import { Screen } from '@shared/Screen';
 import { InfoRow } from '@shared/InfoRow';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useInjection } from 'inversify-react';
+import { TYPES } from '@/boot/IoC/types';
 
 export interface IScreenStatisticsProps {}
 
 export const ScreenStatistics = observer((props: { route: { params: IScreenStatisticsProps } }) => {
   const theme = useAppTheme();
-  const events = EventDataStore.events;
+  const eventStore = useInjection<IEventDataStore>(TYPES.EventDataStore);
   const contentStyles = { flex: 1, paddingTop: 8, backgroundColor: theme.color.bgAdditional };
   const colors : {[key in EventTypeEnum]? : string} = {
     [EventTypeEnum.AddToCart] : theme.color.textGreen,
@@ -25,7 +27,7 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
   };
 
   useEffect(() => {
-    EventDataStore.refresh().then();
+    eventStore.refresh().then();
   }, []);
 
   const renderProductItem = ({ item }: { item: any }) => {
@@ -73,16 +75,16 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
   };
 
   return (
-    <Screen isError={EventDataStore.isError} onRefresh={EventDataStore.refresh}>
+    <Screen isError={eventStore.isError} onRefresh={eventStore.refresh}>
       <NavBar title={'Статистика'} />
       <View style={contentStyles}>
         <First>
-          {!events?.length && (
+          {!eventStore.events?.length && (
             <View style={styles.emptyView}>
               <TextUI size={'title'} text={'Tут пока ничего нет'} />
             </View>
           )}
-          <FlatListWithPagination data={events} renderItem={renderProductItem} />
+          <FlatListWithPagination data={eventStore.events} renderItem={renderProductItem} />
         </First>
       </View>
     </Screen>

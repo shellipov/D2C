@@ -16,3 +16,8 @@ export interface IGetFakeUserResponse {
 }
 
 export interface ISimplifiedUser extends Pick<IUser, 'id' | 'userName'> {}
+
+export enum UserStorageTypeEnum {
+    Users = 'Users',
+    AuthUser = 'AuthUser',
+}

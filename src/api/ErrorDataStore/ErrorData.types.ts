@@ -17,7 +17,7 @@ export interface IError {
 
 export interface ISimplifiedError extends Omit<IError, 'type' | 'date'> {}
 
-export enum errorStorageTypeEnum {
+export enum ErrorStorageTypeEnum {
     Errors = 'Errors',
 }
 
