@@ -1,52 +1,47 @@
-import { ISimplifiedUser, IUser } from './UserData.types';
-import { action, computed, makeObservable, observable, runInAction } from 'mobx';
+import { ErrorTypeEnum, IGetFakeUserResponse, IUser } from '@/api';
+import { action, computed, makeObservable } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 import { errorService } from '../ErrorDataStore/errorService';
-import { ErrorTypeEnum } from '../ErrorDataStore';
-import { suddenError } from '../../helpers';
+import { suddenError } from '@/helpers';
+import { injectable } from 'inversify';
+import { AsyncDataHolder } from '@/utils/AsyncDataHolder';
+import { ApiStatusEnum } from '@/api/ApiTypes.types';
+import { UserDataModel } from '@/api/UserDataStore/UserData.model';
 
-export interface IAuthDataStore {
+export interface IUserDataStore {
+  readonly model: UserDataModel;
   readonly isAuth: boolean;
-  readonly user?: IUser;
-  readonly isEmpty: boolean;
   readonly isError: boolean;
-  readonly simplifiedUser?: ISimplifiedUser;
+  readonly isEmpty: boolean;
+  updateAuthUserFields(fields: Partial<{ name: string; phone: string; address: string }>): Promise<void>;
   login(user: string): Promise<void>;
   logout(): Promise<void>;
   refresh(): Promise<void>;
 }
 
-class UserDataStore implements IAuthDataStore {
-  private static _instance: UserDataStore | null = null;
-  @observable public isAuth: boolean = false;
-  @observable public isEmpty: boolean = true;
-  @observable public isError = false;
-  @observable private _user: IUser | undefined = undefined;
+@injectable()
+export class UserDataStore implements IUserDataStore {
+  public model = new UserDataModel(()=> this._holder.data?.data);
+  private _holder = new AsyncDataHolder<IGetFakeUserResponse>();
 
-  private constructor () {
+  public constructor () {
     makeObservable(this);
   }
 
-  public static get instance (): UserDataStore {
-    if (!UserDataStore._instance) {
-      UserDataStore._instance = new UserDataStore();
-    }
-
-    return UserDataStore._instance;
+  @computed
+  public get isAuth () {
+    return !!this._holder.data?.data;
   }
 
   @computed
-  public get user (): IUser | undefined {
-    return this._user;
+  public get isError () {
+    return this._holder.isError;
   }
 
   @computed
-  public get simplifiedUser (): ISimplifiedUser | undefined {
-    return !!this._user ? {
-      id: this._user?.id,
-      userName: this._user?.userName,
-    } : undefined;
+  public get isEmpty () {
+    return !this._holder.isFilled;
   }
 
   @action.bound
@@ -101,6 +96,7 @@ class UserDataStore implements IAuthDataStore {
       const allUsers: IUser[] = jsonUsers ? JSON.parse(jsonUsers) : [];
       const jsonUser = await AsyncStorage.getItem('authUser');
       const user = jsonUser ? JSON.parse(jsonUser) : undefined;
+
       // Если пользователь уже был авторизован, то перезаписывает его с новыми данными или просто добавляем его
       const index = allUsers.findIndex(item => item.id === user.id);
       if (index !== -1) {
@@ -122,19 +118,14 @@ class UserDataStore implements IAuthDataStore {
     try {
       await suddenError('UserDataStore: refresh');
       const jsonUser = await AsyncStorage.getItem('authUser');
-      runInAction(() => {
-        UserStore._user = jsonUser ? JSON.parse(jsonUser) : undefined;
-        UserStore.isAuth = !!this._user;
-        UserStore.isEmpty = false;
-        UserStore.isError = false;
+
+      this._holder.setData({
+        data: jsonUser ? JSON.parse(jsonUser) : undefined,
+        status: ApiStatusEnum.Success,
       });
     } catch (error: any) {
-      runInAction(() => {
-        this.isError = true;
-      });
+      this._holder.setError(error);
       await errorService({ type:ErrorTypeEnum.LoadData, error, withoutAlerts: true });
     }
   }
 }
-
-export const UserStore = UserDataStore.instance;

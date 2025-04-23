@@ -8,10 +8,11 @@ import { useNavigationHook } from '@/hooks/useNavigation';
 import { CartDataStore, ICartItem } from '../../../../api/CartDataStore';
 import { eventCreator } from '@/helpers';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../../api/EventDataStore';
-import { UserDataStore } from '../../../../api/UserDataStore';
 import { observer } from 'mobx-react';
-import { ProductDataStore } from '../../../../api';
-import {useAppTheme} from "@/hooks/useAppTheme";
+import { IUserDataStore, ProductDataStore } from '../../../../api';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import { useInjection } from 'inversify-react';
+import { TYPES } from '@/boot/IoC/types';
 
 export interface ICardItemProps{
     item: ICartItem
@@ -22,11 +23,11 @@ export const CardItem = observer((props: ICardItemProps)=> {
   const navigation = useNavigationHook();
   const cartStore = CartDataStore;
   const eventStore = EventDataStore;
-  const userStore = UserDataStore;
+  const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
   const productStore = ProductDataStore;
 
   const getEventData = () => ({
-    user: userStore.simplifiedUser,
+    user: userStore.model.simplifiedUser,
     product: productStore.getSimplifiedProduct(item.product.id),
     cartInfo: cartStore.cartInfo,
   }) as ISimplifiedEventData;

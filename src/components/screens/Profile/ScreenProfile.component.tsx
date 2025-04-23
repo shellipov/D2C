@@ -6,23 +6,25 @@ import { Row } from '@shared/Row';
 import { Col } from '@shared/Col';
 import { Screen } from '@shared/Screen';
 import { phoneFormatter } from '@/helpers/phoneFormatter';
-import { CartDataStore, UserDataStore } from '@/api';
+import { CartDataStore, IUserDataStore } from '@/api';
 import { ButtonUI } from '@components/ui/ButtonUI';
 import { TextUI } from '@components/ui/TextUI';
 import { TextInputUI } from '@components/ui/TextInputUI';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useInjection } from 'inversify-react';
+import { TYPES } from '@/boot/IoC/types';
 
 export interface IScreenProfileProps {}
 
 export const ScreenProfile = observer((props: { route: { params: IScreenProfileProps }}) => {
-  const userStore = UserDataStore;
+  const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
   const cartStore = CartDataStore;
   const navigation = useNavigationHook();
   const theme = useAppTheme();
 
-  const [name, setName] = useState(userStore.user?.name);
-  const [phone, setPhone] = useState(userStore.user?.phone);
-  const [address, setAddress] = useState(userStore.user?.address);
+  const [name, setName] = useState(userStore.model.data?.name);
+  const [phone, setPhone] = useState(userStore.model.data?.phone);
+  const [address, setAddress] = useState(userStore.model.data?.address);
   const isValidPhone = useMemo(() => phoneFormatter(phone).isValid, [phone]);
   const themeButtonStyle = {
     backgroundColor: theme.color.bgBasic,
@@ -47,9 +49,9 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
   }, [name]);
 
   const onRefresh = () => {
-    if (UserDataStore.isError) {
-      UserDataStore.refresh().then();
-      UserDataStore.refresh().then();
+    if (userStore.isError) {
+      userStore.refresh().then();
+      userStore.refresh().then();
     }
     if (CartDataStore.isError) {
       CartDataStore.refresh().then();
@@ -63,7 +65,7 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
       [
         { text: 'Да', onPress: async () => {
           await userStore.logout();
-          if (!userStore.user) {
+          if (!userStore.model.data) {
             cartStore.deleteCart().then();
           }
         } },
@@ -73,7 +75,7 @@ export const ScreenProfile = observer((props: { route: { params: IScreenProfileP
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <Screen isError={UserDataStore.isError || CartDataStore.isError} onRefresh={onRefresh}>
+      <Screen isError={userStore.isError || CartDataStore.isError} onRefresh={onRefresh}>
 
         <View style={[{ paddingHorizontal: 16 }]}>
           <Row style={{ justifyContent: 'space-between' }}>

@@ -8,11 +8,13 @@ import { CartBlockComponent } from '@shared/CartBlock';
 import { NavBar } from '@shared/NavBar';
 import { Screen } from '@shared/Screen';
 import { eventCreator } from '@/helpers';
-import { CartDataStore, ProductDataStore, UserDataStore } from '@/api';
+import { CartDataStore, IUserDataStore, ProductDataStore } from '@/api';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '@/api/EventDataStore';
 import { TextUI } from '@components/ui/TextUI';
 import { ButtonUI } from '@components/ui/ButtonUI';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useInjection } from 'inversify-react';
+import { TYPES } from '@/boot/IoC/types';
 
 export interface IScreenProductCardProps {
     id: number;
@@ -21,7 +23,7 @@ export interface IScreenProductCardProps {
 export const ScreenProductCard = observer((props: { route: { params: IScreenProductCardProps }}) => {
   const cartStore = CartDataStore;
   const eventStore = EventDataStore;
-  const userStore = UserDataStore;
+  const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
   const productStore = ProductDataStore;
   const id = props.route.params.id;
   const item = productStore.getProduct(id);
@@ -29,7 +31,7 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
   const totalCount = cartStore.totalCount(item);
   const theme = useAppTheme();
 
-  const isError = CartDataStore.isError || EventDataStore.isError || UserDataStore.isError || ProductDataStore.isError;
+  const isError = CartDataStore.isError || EventDataStore.isError || userStore.isError || ProductDataStore.isError;
 
   const onRefresh = () => {
     if (CartDataStore.isError) {
@@ -38,8 +40,8 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
     if (EventDataStore.isError) {
       EventDataStore.refresh().then();
     }
-    if (UserDataStore.isError) {
-      UserDataStore.refresh().then();
+    if (userStore.isError) {
+      userStore.refresh().then();
     }
     if (ProductDataStore.isError) {
       ProductDataStore.refresh().then();
@@ -47,7 +49,7 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
   };
 
   const getEventData = () => ({
-    user: userStore.simplifiedUser,
+    user: userStore.model.simplifiedUser,
     product: productStore.getSimplifiedProduct(id),
     cartInfo: cartStore.cartInfo,
   }) as ISimplifiedEventData;

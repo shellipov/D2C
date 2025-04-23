@@ -1,3 +1,5 @@
+import { ApiStatusEnum } from '@/api/ApiTypes.types';
+
 export enum ErrorTypeEnum {
     AddToCart = 'AddToCart',
     DeleteFromCart = 'DeleteFromCart',
@@ -19,13 +21,8 @@ export enum errorStorageTypeEnum {
     Errors = 'Errors',
 }
 
-export enum ErrorCreateStatusEnum {
-    Success = 'Success',
-    Error = 'Error',
-}
-
 export interface IGetFakeErrorResponse {
     data?: IError[];
-    status?: ErrorCreateStatusEnum;
+    status?: ApiStatusEnum;
     message?: string;
 }

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
-import { useNavigationHook } from '../../../hooks/useNavigation';
+import { useNavigationHook } from '@/hooks/useNavigation';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { SettingsVars } from '@/settings';
 import { Row } from '@shared/Row';
@@ -12,19 +12,21 @@ import { dateFormatter, eventCreator } from '@/helpers';
 import { Screen } from '@shared/Screen';
 import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, OrderDataStore, PaymentMethodsEnum } from '../../../api/OrderDataStore';
 import { CartDataStore } from '../../../api/CartDataStore';
-import { UserDataStore } from '../../../api/UserDataStore';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../api/EventDataStore';
-import { ProductDataStore } from '../../../api';
+import { IUserDataStore, ProductDataStore } from '../../../api';
 import { phoneFormatter } from '@/helpers/phoneFormatter';
 import { OrderCartItem } from '../Order/components';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useInjection } from 'inversify-react';
+import { TYPES } from '@/boot/IoC/types';
 
 export interface IScreenCreateOrderProps {}
 
 export const ScreenCreateOrder = observer((props: { route: { params: IScreenCreateOrderProps }}) => {
   const navigation = useNavigationHook();
   const cartStore = CartDataStore;
-  const user = UserDataStore.user;
+  const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
+  const user = userStore.model.data;
   const orderStore = OrderDataStore;
   const eventStore = EventDataStore;
   const cart = cartStore.cart;
@@ -42,7 +44,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsEnum>(PaymentMethodsEnum.Card);
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOptionsEnum>(DeliveryOptionsEnum.Hand);
 
-  const isError = CartDataStore.isError || EventDataStore.isError || UserDataStore.isError || ProductDataStore.isError || OrderDataStore.isError;
+  const isError = CartDataStore.isError || EventDataStore.isError || userStore.isError || ProductDataStore.isError || OrderDataStore.isError;
 
   const onRefresh = () => {
     if (CartDataStore.isError) {
@@ -51,8 +53,8 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
     if (EventDataStore.isError) {
       EventDataStore.refresh().then();
     }
-    if (UserDataStore.isError) {
-      UserDataStore.refresh().then();
+    if (userStore.isError) {
+      userStore.refresh().then();
     }
     if (ProductDataStore.isError) {
       ProductDataStore.refresh().then();
@@ -63,7 +65,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
   };
 
   const getEventData = () => ({
-    user: UserDataStore.simplifiedUser,
+    user: userStore.model.simplifiedUser,
     orderOptions: {
       paymentMethod, deliveryOption,
     },
