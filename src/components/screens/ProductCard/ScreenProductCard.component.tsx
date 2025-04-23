@@ -2,13 +2,13 @@
 import Ionicons from 'react-native-vector-icons/AntDesign';
 import { observer } from 'mobx-react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { First } from '@shared/Firts';
 import { CartBlockComponent } from '@shared/CartBlock';
 import { NavBar } from '@shared/NavBar';
 import { Screen } from '@shared/Screen';
 import { eventCreator } from '@/helpers';
-import { ICartDataStore, IEventDataStore, IUserDataStore, ProductDataStore } from '@/api';
+import { ICartDataStore, IEventDataStore, IProductDataStore, IUserDataStore } from '@/api';
 import { EventTypeEnum, ISimplifiedEventData } from '@/api/EventDataStore';
 import { TextUI } from '@components/ui/TextUI';
 import { ButtonUI } from '@components/ui/ButtonUI';
@@ -24,14 +24,14 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
   const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
   const eventStore = useInjection<IEventDataStore>(TYPES.EventDataStore);
   const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
-  const productStore = ProductDataStore;
+  const productStore = useInjection<IProductDataStore>(TYPES.ProductDataStore);
   const id = props.route.params.id;
   const item = productStore.getProduct(id);
   const isInCart = cartStore.model.isInCart(item);
   const totalCount = cartStore.model.totalCount(item);
   const theme = useAppTheme();
 
-  const isError = cartStore.isError || eventStore.isError || userStore.isError || ProductDataStore.isError;
+  const isError = cartStore.isError || eventStore.isError || userStore.isError || productStore.isError;
 
   const onRefresh = () => {
     if (cartStore.isError) {
@@ -43,10 +43,14 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
     if (userStore.isError) {
       userStore.refresh().then();
     }
-    if (ProductDataStore.isError) {
-      ProductDataStore.refresh().then();
+    if (productStore.isError) {
+      productStore.refresh().then();
     }
   };
+
+  useEffect(() => {
+    productStore.refresh().then();
+  }, []);
 
   const getEventData = () => ({
     user: userStore.model.simplifiedUser,

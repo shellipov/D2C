@@ -10,9 +10,9 @@ import { Col } from '@shared/Col';
 import { Chip } from '@shared/Chip';
 import { dateFormatter, eventCreator } from '@/helpers';
 import { Screen } from '@shared/Screen';
-import { DeliveryOptionsEnum, IOrder, IOrderDataStore, OrderCreateStatusEnum, PaymentMethodsEnum } from '@/api';
+import { DeliveryOptionsEnum, IOrder, IOrderDataStore, IProductDataStore, OrderCreateStatusEnum, PaymentMethodsEnum } from '@/api';
 import { EventTypeEnum, IEventDataStore, ISimplifiedEventData } from '@/api/EventDataStore';
-import { ICartDataStore, IUserDataStore, ProductDataStore } from '../../../api';
+import { ICartDataStore, IUserDataStore } from '@/api';
 import { phoneFormatter } from '@/helpers/phoneFormatter';
 import { OrderCartItem } from '../Order/components';
 import { useAppTheme } from '@/hooks/useAppTheme';
@@ -26,6 +26,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
   const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
   const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
   const orderStore = useInjection<IOrderDataStore>(TYPES.OrderDataStore);
+  const productStore = useInjection<IProductDataStore>(TYPES.ProductDataStore);
   const user = userStore.model.data;
   const eventStore = useInjection<IEventDataStore>(TYPES.EventDataStore);
   const cart = cartStore.model.data;
@@ -43,7 +44,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsEnum>(PaymentMethodsEnum.Card);
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOptionsEnum>(DeliveryOptionsEnum.Hand);
 
-  const isError = cartStore.isError || eventStore.isError || userStore.isError || ProductDataStore.isError || orderStore.isError;
+  const isError = cartStore.isError || eventStore.isError || userStore.isError || productStore.isError || orderStore.isError;
 
   const onRefresh = () => {
     if (cartStore.isError) {
@@ -55,8 +56,8 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
     if (userStore.isError) {
       userStore.refresh().then();
     }
-    if (ProductDataStore.isError) {
-      ProductDataStore.refresh().then();
+    if (productStore.isError) {
+      productStore.refresh().then();
     }
     if (orderStore.isError) {
       orderStore.refresh().then();
@@ -73,6 +74,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
 
   useEffect(() => {
     orderStore.refresh().then();
+    productStore.refresh().then();
   }, []);
 
   const onPressConfirm = useCallback(async ()=>{

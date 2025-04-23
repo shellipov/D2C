@@ -1,14 +1,14 @@
-import { IScreenCartProps } from './components/screens/Сart';
-import { IScreenAuthProps } from './components/screens/Auth';
-import { IScreenCategoryProps } from './components/screens/Category';
-import { IScreenProductCardProps } from './components/screens/ProductCard';
-import { IScreenCreateOrderProps } from './components/screens/CreateOrder';
-import { IScreenProfileProps } from './components/screens/Profile';
-import { IScreenOrderProps } from './components/screens/Order';
-import { IScreenOrderListProps } from './components/screens/OrderList';
-import { IScreenStatisticsProps } from './components/screens/Statistics';
-import { IScreenErrorsProps } from './components/screens/Errors';
-import { IScreenMainProps } from './components/screens/Main';
+import { IScreenCartProps } from '@components/screens/Сart';
+import { IScreenAuthProps } from '@components/screens/Auth';
+import { IScreenCategoryProps } from '@components/screens/Category';
+import { IScreenProductCardProps } from '@components/screens/ProductCard';
+import { IScreenCreateOrderProps } from '@components/screens/CreateOrder';
+import { IScreenProfileProps } from '@components/screens/Profile';
+import { IScreenOrderProps } from '@components/screens/Order';
+import { IScreenOrderListProps } from '@components/screens/OrderList';
+import { IScreenStatisticsProps } from '@components/screens/Statistics';
+import { IScreenErrorsProps } from '@components/screens/Errors';
+import { IScreenMainProps } from '@components/screens/Main';
 
 export enum Routes {
     Main = 'Main',

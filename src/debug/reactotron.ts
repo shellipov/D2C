@@ -10,7 +10,9 @@ export function reactotronInit () {
       host: reactotronHost,
     })
     .useReactNative({
-      asyncStorage: true,
+      asyncStorage: {
+        ignore: ['secret'], // Игнорируемые ключи
+      },
       networking: {
         ignoreUrls: /symbolicate/, // Игнорировать определенные URL
       },

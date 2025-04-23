@@ -5,7 +5,7 @@ import { Image, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-nati
 import { ButtonUI } from '../../ui/ButtonUI';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
-import { ICartDataStore, ProductDataStore } from '../../../api';
+import { ICartDataStore, IProductDataStore } from '@/api';
 import { useNavigationHook } from '@/hooks/useNavigation';
 import { CartBlockComponent } from '@shared/CartBlock';
 import { Screen } from '@shared/Screen';
@@ -21,11 +21,11 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
   const navigation = useNavigationHook();
   const theme = useAppTheme();
   const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
-
+  const productStore = useInjection<IProductDataStore>(TYPES.ProductDataStore);
 
   const onRefresh = () => {
-    if (ProductDataStore.isError) {
-      ProductDataStore.refresh().then();
+    if (productStore.isError) {
+      productStore.refresh().then();
     }
     if (cartStore.isError) {
       cartStore.refresh().then();
@@ -33,7 +33,7 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
   };
 
   useEffect(() => {
-    ProductDataStore.refresh().then();
+    productStore.refresh().then();
   }, []);
 
   const backgroundColor = {
@@ -64,7 +64,7 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
   };
 
   return (
-    <Screen isError={ProductDataStore.isError || cartStore.isError} onRefresh={onRefresh}>
+    <Screen isError={productStore.isError || cartStore.isError} onRefresh={onRefresh}>
       <View style={styles.block}>
         <StatusBar barStyle={theme.isDark ? 'light-content' : 'dark-content'} />
         <View style={[styles.header, backgroundColor]}>
@@ -73,7 +73,7 @@ export const ScreenMain = observer((props: IScreenMainProps) => {
           </ButtonUI>
         </View>
         <FlatListWithPagination
-          data={ProductDataStore.categories}
+          data={productStore.categories}
           style={[backgroundColor]}
           renderItem={renderItem}
           header={renderHeader}

@@ -1,3 +1,5 @@
+import { ApiStatusEnum } from '@/api/ApiTypes.types';
+
 export enum CategoryEnum {
     clothesAndShoes= 'clothesAndShoes',
     householdGoods = 'householdGoods',
@@ -30,5 +32,13 @@ export interface IProduct {
 
 export interface ISimplifiedProduct extends Pick<IProduct, 'id' | 'name' | 'price'> {}
 
-export type ProductListType = { [key in CategoryEnum]: (IProduct)[];
+export type ProductListType = { [key in CategoryEnum]: (IProduct)[]}
+
+export interface IGetFakeProductResponse {
+    data?: {
+        products: ProductListType,
+        categories: ICategoryItem[],
+    };
+    status?: ApiStatusEnum;
+    message?: string;
 }
