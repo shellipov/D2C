@@ -3,7 +3,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList, ScreenName } from './AppPouter.types';
 import { ScreenAuth } from '@components/screens/Auth';
-import { UserDataStore } from './api/UserDataStore';
 import { observer } from 'mobx-react';
 import { ScreenCategory } from '@components/screens/Category';
 import { ScreenCart } from '@components/screens/Сart';
@@ -19,14 +18,18 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { TextUI } from '@components/ui/TextUI';
 import { ButtonUI } from '@components/ui/ButtonUI';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useInjection } from 'inversify-react';
+import { TYPES } from '@/boot/IoC/types';
+import { IUserDataStore } from '@/api';
 
 export const AppRouter = observer(() => {
-  const { isError, isEmpty, isAuth } = UserDataStore;
+  const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
+  const { isError, isEmpty, isAuth } = userStore;
   const theme = useAppTheme();
   const { color } = theme;
 
   useEffect(() => {
-    UserDataStore.refresh().then();
+    userStore.refresh().then();
   }, [isAuth]);
 
   const NOT_AUTH_SCREENS: { [key in ScreenName]?: { screen: React.ComponentType<any>; navigationOptions?: any } } = {
@@ -55,20 +58,20 @@ export const AppRouter = observer(() => {
       <SafeAreaView style={errorViewStyle}>
         <View style={styles.errorView}>
           <TextUI size={'bigTitle'} style={[styles.errorText, { color: color.textRed }]} text={'Ошибка обновления\nданных'} />
-          <ButtonUI title={'Обновить'} style={styles.button} type={'redBorder'} onPress={UserDataStore.refresh} />
+          <ButtonUI title={'Обновить'} style={styles.button} type={'redBorder'} onPress={userStore.refresh} />
         </View>
       </SafeAreaView>
     );
   }
 
-  if (UserDataStore.isEmpty) {
+  if (userStore.isEmpty) {
     return null;
   }
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={UserDataStore.isAuth ? 'Main' : 'Auth'} screenOptions={{ headerShown: false }}>
-        {UserDataStore.isAuth && (
+      <Stack.Navigator initialRouteName={userStore.isAuth ? 'Main' : 'Auth'} screenOptions={{ headerShown: false }}>
+        {userStore.isAuth && (
           (Object.keys(AUTH_SCREENS) as (keyof typeof AUTH_SCREENS)[]).map((name) => (
             <Stack.Screen
               key={name} name={name} component={AUTH_SCREENS[name]!.screen}

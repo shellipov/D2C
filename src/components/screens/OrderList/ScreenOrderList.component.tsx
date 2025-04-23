@@ -6,16 +6,19 @@ import { useNavigationHook } from '@/hooks/useNavigation';
 import { OrderDataStore } from '../../../api/OrderDataStore';
 import { Row } from '@shared/Row';
 import { NavBar } from '@shared/NavBar';
-import { UserDataStore } from '../../../api/UserDataStore';
 import { Screen } from '@shared/Screen';
 import { First } from '@shared/Firts';
 import { FlatListWithPagination } from '@shared/FlatListWithPagination';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useInjection } from 'inversify-react';
+import { IUserDataStore } from '@/api';
+import { TYPES } from '@/boot/IoC/types';
 
 export interface IScreenOrderListProps {}
 
 export const ScreenOrderList = observer((props: { route: { params: IScreenOrderListProps } }) => {
-  const user = UserDataStore.user;
+  const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
+  const user = userStore.model.data;
   const orders = OrderDataStore.orders.filter(i => i.user.id === user?.id);
   const navigation = useNavigationHook();
   const theme = useAppTheme();
@@ -24,11 +27,11 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
     OrderDataStore.refresh().then();
   }, []);
 
-  const isError = UserDataStore.isError || OrderDataStore.isError;
+  const isError = userStore.isError || OrderDataStore.isError;
 
   const onRefresh = () => {
-    if (UserDataStore.isError) {
-      UserDataStore.refresh().then();
+    if (userStore.isError) {
+      userStore.refresh().then();
     }
 
     if (OrderDataStore.isError) {

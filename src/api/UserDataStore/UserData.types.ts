@@ -1,3 +1,5 @@
+import { ApiStatusEnum } from '@/api/ApiTypes.types';
+
 export interface IUser {
     id: number;
     userName: string;
@@ -5,6 +7,12 @@ export interface IUser {
     phone: string;
     address?: string;
     favorites: number[]
+}
+
+export interface IGetFakeUserResponse {
+    data?: IUser;
+    status?: ApiStatusEnum;
+    message?: string;
 }
 
 export interface ISimplifiedUser extends Pick<IUser, 'id' | 'userName'> {}

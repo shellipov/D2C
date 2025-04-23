@@ -4,17 +4,19 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { TextUI } from '../../ui/TextUI';
 import { TextInputUI } from '../../ui/TextInputUI';
 import { ButtonUI } from '../../ui/ButtonUI';
-import { UserDataStore } from '../../../api/UserDataStore';
 import { useNavigationHook } from '@/hooks/useNavigation';
 import { observer } from 'mobx-react';
 import { Col } from '@shared/Col';
 import { Screen } from '@shared/Screen';
+import { useInjection } from 'inversify-react';
+import { IUserDataStore } from '@/api';
+import { TYPES } from '@/boot/IoC/types';
 
 export interface IScreenAuthProps {}
  type Props = IScreenAuthProps | undefined
 
 export const ScreenAuth = observer((props: Props) => {
-  const userStore = UserDataStore;
+  const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
   const [name, setName] = React.useState<string>('');
   const navigation = useNavigationHook();
   const isButtonDisabled = useMemo(()=> name.length < 4, [name]);
@@ -31,11 +33,12 @@ export const ScreenAuth = observer((props: Props) => {
 
   const onPressLogin = useCallback(() => {
     userStore.login(name).then();
+    setName('');
   }, [name]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <Screen isError={UserDataStore.isError} onRefresh={UserDataStore.refresh}>
+      <Screen isError={userStore.isError} onRefresh={userStore.refresh}>
         <Col style={styles.block}>
           <TextUI text={'Введите Ваш ник'} size={'title'} />
           <TextUI text={'и постарайтесь не забыть его'} size={'small'} />
