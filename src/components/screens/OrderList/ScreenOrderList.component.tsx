@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '@/hooks/useNavigation';
-import { OrderDataStore } from '../../../api/OrderDataStore';
 import { Row } from '@shared/Row';
 import { NavBar } from '@shared/NavBar';
 import { Screen } from '@shared/Screen';
@@ -11,7 +10,7 @@ import { First } from '@shared/Firts';
 import { FlatListWithPagination } from '@shared/FlatListWithPagination';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useInjection } from 'inversify-react';
-import { IUserDataStore } from '@/api';
+import { IOrderDataStore, IUserDataStore } from '@/api';
 import { TYPES } from '@/boot/IoC/types';
 
 export interface IScreenOrderListProps {}
@@ -19,23 +18,24 @@ export interface IScreenOrderListProps {}
 export const ScreenOrderList = observer((props: { route: { params: IScreenOrderListProps } }) => {
   const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
   const user = userStore.model.data;
-  const orders = OrderDataStore.orders.filter(i => i.user.id === user?.id);
+  const orderStore = useInjection<IOrderDataStore>(TYPES.OrderDataStore);
+  const orders = orderStore.orders.filter(i => i.user.id === user?.id);
   const navigation = useNavigationHook();
   const theme = useAppTheme();
 
   useEffect(() => {
-    OrderDataStore.refresh().then();
+    orderStore.refresh().then();
   }, []);
 
-  const isError = userStore.isError || OrderDataStore.isError;
+  const isError = userStore.isError || orderStore.isError;
 
   const onRefresh = () => {
     if (userStore.isError) {
       userStore.refresh().then();
     }
 
-    if (OrderDataStore.isError) {
-      OrderDataStore.refresh().then();
+    if (orderStore.isError) {
+      orderStore.refresh().then();
     }
   };
 

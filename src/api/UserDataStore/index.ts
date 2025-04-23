@@ -1,2 +1,2 @@
-export * from './UserDataStore';
+export * from './UserData.store';
 export * from './UserData.types';

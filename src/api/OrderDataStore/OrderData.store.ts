@@ -1,37 +1,40 @@
-import { action, computed, makeObservable, observable, runInAction } from 'mobx';
+import { action, computed, makeObservable } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as OrderDataTypes from './OrderData.types';
+import { ErrorTypeEnum, IGetFakeOrderResponse, IOrder } from '@/api';
 import { errorService } from '../ErrorDataStore/errorService';
-import { ErrorTypeEnum } from '@/api';
 import { suddenError } from '@/helpers';
+import { injectable } from 'inversify';
+import { AsyncDataHolder } from '@/utils/AsyncDataHolder';
+import { ApiStatusEnum } from '@/api/ApiTypes.types';
 
 export interface IOrderDataStore {
   readonly orders: OrderDataTypes.IOrder[];
   readonly isError: boolean;
+  readonly lastOrder: IOrder;
   readonly paymentMethods: { type: OrderDataTypes.PaymentMethodsEnum, title: string }[];
   readonly deliveryOptions: { type: OrderDataTypes.DeliveryOptionsEnum, title: string }[];
-
   addOrder(order: OrderDataTypes.IOrder): Promise<OrderDataTypes.OrderCreateStatusEnum>
-
   refresh(): Promise<void>;
 }
 
-class OrderDataStore implements IOrderDataStore {
-  private static _instance: OrderDataStore | null = null;
-  @observable public orders: OrderDataTypes.IOrder[] = [];
-  @observable public isError = false;
+@injectable()
+export class OrderDataStore implements IOrderDataStore {
+  private _holder = new AsyncDataHolder<IGetFakeOrderResponse>();
 
-  private constructor () {
+  public constructor () {
     makeObservable(this);
   }
 
-  public static get instance (): OrderDataStore {
-    if (!OrderDataStore._instance) {
-      OrderDataStore._instance = new OrderDataStore();
-    }
+  @computed
+  public get orders () {
+    return this._holder.data?.data || [];
+  }
 
-    return OrderDataStore._instance;
-  };
+  @computed
+  public get isError () {
+    return this._holder.isError;
+  }
 
   @computed
   public get lastOrder () {
@@ -104,18 +107,14 @@ class OrderDataStore implements IOrderDataStore {
       await suddenError('OrderDataStore: refresh');
       const jsonOrders = await AsyncStorage.getItem(OrderDataTypes.OrderStorageTypeEnum.Orders);
       if (!!jsonOrders) {
-        runInAction(() => {
-          OrderStore.orders = JSON.parse(jsonOrders);
-          OrderStore.isError = false;
+        this._holder.setData({
+          data: JSON.parse(jsonOrders),
+          status: ApiStatusEnum.Success,
         });
       }
     } catch (error: any) {
-      runInAction(() => {
-        this.isError = true;
-      });
+      this._holder.setError(error);
       await errorService({ type:ErrorTypeEnum.LoadData, error, withoutAlerts: true });
     }
   }
 }
-
-export const OrderStore = OrderDataStore.instance;
