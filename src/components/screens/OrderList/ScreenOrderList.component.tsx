@@ -2,15 +2,15 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
-import { useNavigationHook } from '../../../hooks/useNavigation';
+import { useNavigationHook } from '@/hooks/useNavigation';
 import { OrderDataStore } from '../../../api/OrderDataStore';
-import { Row } from '../../shared/Row';
-import { NavBar } from '../../shared/NavBar';
+import { Row } from '@shared/Row';
+import { NavBar } from '@shared/NavBar';
 import { UserDataStore } from '../../../api/UserDataStore';
-import { Screen } from '../../shared/Screen';
-import { First } from '../../shared/Firts';
-import { FlatListWithPagination } from '../../shared/FlatListWithPagination';
-import { Theme } from '../../../store';
+import { Screen } from '@shared/Screen';
+import { First } from '@shared/Firts';
+import { FlatListWithPagination } from '@shared/FlatListWithPagination';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export interface IScreenOrderListProps {}
 
@@ -18,6 +18,7 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
   const user = UserDataStore.user;
   const orders = OrderDataStore.orders.filter(i => i.user.id === user?.id);
   const navigation = useNavigationHook();
+  const theme = useAppTheme();
 
   useEffect(() => {
     OrderDataStore.refresh().then();
@@ -36,10 +37,10 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
   };
 
   const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity style={[styles.item, { backgroundColor: Theme.color.bgAdditionalTwo }]} onPress={() => navigation.navigate('Order', { order: item })}>
+    <TouchableOpacity style={[styles.item, { backgroundColor: theme.color.bgAdditionalTwo }]} onPress={() => navigation.navigate('Order', { order: item })}>
       <View style={{ paddingBottom: 6 }}>
         <Row style={[styles.row]}>
-          <TextUI size={'large'} text={`Заказ № ${item.id}`} style={{ color: Theme.color.textGreen }} />
+          <TextUI size={'large'} text={`Заказ № ${item.id}`} style={{ color: theme.color.textGreen }} />
         </Row>
         <Row style={[styles.row, { justifyContent: 'space-between', alignItems: 'center' }]}>
           <TextUI size={'large'} text={'Время'} />
@@ -72,7 +73,7 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
   return (
     <Screen isError={isError} onRefresh={onRefresh}>
       <NavBar title={'Заказы'} />
-      <View style={{ flex: 1, paddingTop: 8, backgroundColor: Theme.color.bgAdditional }}>
+      <View style={{ flex: 1, paddingTop: 8, backgroundColor: theme.color.bgAdditional }}>
         <First>
           {!orders?.length && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

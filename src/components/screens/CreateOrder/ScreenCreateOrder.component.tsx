@@ -4,20 +4,20 @@ import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '../../../hooks/useNavigation';
 import { ButtonUI } from '../../ui/ButtonUI';
-import { SettingsVars } from '../../../settings';
-import { Row } from '../../shared/Row';
-import { Col } from '../../shared/Col';
-import { Chip } from '../../shared/Chip';
-import { dateFormatter, eventCreator } from '../../../helpers';
-import { Screen } from '../../shared/Screen';
+import { SettingsVars } from '@/settings';
+import { Row } from '@shared/Row';
+import { Col } from '@shared/Col';
+import { Chip } from '@shared/Chip';
+import { dateFormatter, eventCreator } from '@/helpers';
+import { Screen } from '@shared/Screen';
 import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, OrderDataStore, PaymentMethodsEnum } from '../../../api/OrderDataStore';
 import { CartDataStore } from '../../../api/CartDataStore';
 import { UserDataStore } from '../../../api/UserDataStore';
 import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../api/EventDataStore';
 import { ProductDataStore } from '../../../api';
-import { phoneFormatter } from '../../../helpers/phoneFormatter';
+import { phoneFormatter } from '@/helpers/phoneFormatter';
 import { OrderCartItem } from '../Order/components';
-import { Theme } from '../../../store';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export interface IScreenCreateOrderProps {}
 
@@ -28,7 +28,8 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
   const orderStore = OrderDataStore;
   const eventStore = EventDataStore;
   const cart = cartStore.cart;
-  const { color } = Theme;
+  const theme = useAppTheme();
+  const { color } = theme;
   const totalSum = CartDataStore.cartSum + SettingsVars.shippingCost;
   const isValidPhone = useMemo(() => phoneFormatter(user?.phone).isValid, [user?.phone]);
   const isUserProfileError = !user?.name || !user?.phone || !user?.address || !isValidPhone;

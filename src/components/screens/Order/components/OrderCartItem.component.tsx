@@ -1,16 +1,16 @@
 import React from 'react';
-import { ICartItem } from '../../../../api';
-import { Row } from '../../../shared/Row';
-import { Col } from '../../../shared/Col';
+import { ICartItem } from '@/api';
+import { Row } from '@shared/Row';
+import { Col } from '@shared/Col';
 import { StyleSheet, View } from 'react-native';
 import { TextUI } from '../../../ui/TextUI';
-import { Theme } from '../../../../store';
-
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export const OrderCartItem = (item: ICartItem) => {
+  const theme = useAppTheme();
   const itemColor = {
-    backgroundColor: Theme.color.bgAdditionalTwo,
-    borderColor: Theme.color.bgAdditionalTwo,
+    backgroundColor: theme.color.bgAdditionalTwo,
+    borderColor: theme.color.bgAdditionalTwo,
   };
 
   return (

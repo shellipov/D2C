@@ -1,7 +1,7 @@
 import { Text, TextProps } from 'react-native';
 import React from 'react';
-import { Theme } from '@/store';
 import { observer } from 'mobx-react';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 type TextSize = 'small' | 'medium' | 'large' | 'title' | 'bigTitle'
 
@@ -21,7 +21,8 @@ export interface ITextUIProps extends TextProps{
 
 export const TextUI = observer((props: ITextUIProps)=> {
   const { text, size, children, style, ...rest } = props;
-  const styles = { color: Theme.color.textPrimary, fontSize: TEXT_SIZE[size || 'medium'] };
+  const theme = useAppTheme();
+  const styles = { color: theme.color.textPrimary, fontSize: TEXT_SIZE[size || 'medium'] };
 
   return (
     <Text style={[styles, style]} {...rest}>

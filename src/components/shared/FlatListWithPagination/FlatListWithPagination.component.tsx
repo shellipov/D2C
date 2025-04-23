@@ -1,10 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { FlatList, ListRenderItem, StyleSheet, View, ViewProps } from 'react-native';
-import { FlatListVars } from '../../../settings/FlatList.vars';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { FlatListVars } from '@/settings/FlatList.vars';
 import { Chip } from '../Chip';
-import { paginationData } from '../../../helpers';
-import { Theme } from '../../../store';
+import { paginationData } from '@/helpers';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export interface IListItem {
   id: string | number | undefined;
@@ -38,6 +37,7 @@ export function FlatListWithPagination<T extends IListItem> ({
   const pageButtons = Object.keys(formattedData);
   const isPaginationVisible = pageButtons.length > 1;
   const [selectedPage, setSelectedPage] = useState(1);
+  const theme = useAppTheme();
 
   const renderPageButton = ({ item }: { item: string }) => {
     const onPress = () => {
@@ -53,7 +53,7 @@ export function FlatListWithPagination<T extends IListItem> ({
   };
 
   return (
-    <View style={[styles.contentContainer, { backgroundColor: Theme.color.bgAdditional }, viewProps.style]}>
+    <View style={[styles.contentContainer, { backgroundColor: theme.color.bgAdditional }, viewProps.style]}>
       <FlatList<T>
         style={styles.list}
         ListHeaderComponent={header}

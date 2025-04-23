@@ -5,11 +5,12 @@ import { observer } from 'mobx-react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { TextUI } from '../../ui/TextUI';
 import { CartDataStore } from '../../../api/CartDataStore';
-import { useNavigationHook } from '../../../hooks/useNavigation';
-import { Theme } from '../../../store';
+import { useNavigationHook } from '@/hooks/useNavigation';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export const CartBlockComponent = observer(()=> {
   const navigation = useNavigationHook();
+  const theme = useAppTheme();
 
   useEffect(() => {
     if (CartDataStore.isEmpty) {
@@ -17,14 +18,14 @@ export const CartBlockComponent = observer(()=> {
     }
   }, [CartDataStore.isEmpty]);
 
-  const backgroundColor = { backgroundColor: Theme.color.elementPrimary };
+  const backgroundColor = { backgroundColor: theme.color.elementPrimary };
 
 
   return (
     <TouchableOpacity
       style={[styles.cartBlock, backgroundColor]} onPress={()=> navigation.navigate('Cart')}>
-      <Ionicons name={'shoppingcart'} size={28} color={Theme.color.black} />
-      <TextUI size={'small'} style={{ color: Theme.color.textGreen }} text={`${CartDataStore.cartSum} ₽`} />
+      <Ionicons name={'shoppingcart'} size={28} color={theme.color.black} />
+      <TextUI size={'small'} style={{ color: theme.color.textGreen }} text={`${CartDataStore.cartSum} ₽`} />
     </TouchableOpacity>
   );
 });

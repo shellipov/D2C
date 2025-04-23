@@ -18,11 +18,12 @@ import { ScreenMain } from '@components/screens/Main';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { TextUI } from '@components/ui/TextUI';
 import { ButtonUI } from '@components/ui/ButtonUI';
-import { Theme } from './store';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export const AppRouter = observer(() => {
   const { isError, isEmpty, isAuth } = UserDataStore;
-  const { color } = Theme;
+  const theme = useAppTheme();
+  const { color } = theme;
 
   useEffect(() => {
     UserDataStore.refresh().then();

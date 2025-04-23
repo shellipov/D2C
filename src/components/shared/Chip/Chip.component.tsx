@@ -1,9 +1,9 @@
 import { StyleSheet, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 import { ITextUIProps, TextUI } from '../../ui/TextUI';
 import React from 'react';
-import { Theme } from '@/store';
 import { useCompoundProps } from '@/utils/CompoundUtils';
 import { observer } from 'mobx-react';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface IChipProps extends TouchableOpacityProps {
     isSelected: boolean,
@@ -12,15 +12,16 @@ interface IChipProps extends TouchableOpacityProps {
 
 export const _Chip = (props: IChipProps) => {
   const { style, isSelected = false, onPress, ...rest } = props;
-  const selectedStyle = isSelected ? { borderColor: Theme.color.basicInversion, borderWidth: 1 } : {};
+  const theme = useAppTheme();
+  const selectedStyle = isSelected ? { borderColor: theme.color.basicInversion, borderWidth: 1 } : {};
 
   const innerProps = useCompoundProps(props, _Chip, 'Text');
 
   return (
     <TouchableOpacity
-      style={[styles.chip, { backgroundColor: Theme.color.transparent }, selectedStyle, style]}
+      style={[styles.chip, { backgroundColor: theme.color.transparent }, selectedStyle, style]}
       onPress={onPress} {...rest}>
-      <TextUI size={'medium'} style={[{ color: Theme.color.textGray }, isSelected && { color: Theme.color.textPrimary }]} {...innerProps.text} />
+      <TextUI size={'medium'} style={[{ color: theme.color.textGray }, isSelected && { color: theme.color.textPrimary }]} {...innerProps.text} />
     </TouchableOpacity>
   );
 };
