@@ -1,5 +1,6 @@
-import { IUser } from '../UserDataStore';
-import { ICart } from '../CartDataStore';
+import { IEvent, IUser } from '@/api';
+import { ICart } from '@/api';
+import { ApiStatusEnum } from '@/api/ApiTypes.types';
 
 export enum PaymentMethodsEnum {
     Card = 'Card',
@@ -34,4 +35,10 @@ export interface IOrder {
     totalSum: number;
     paymentMethod: {type: PaymentMethodsEnum, title: string };
     deliveryOption: {type: DeliveryOptionsEnum, title: string };
+}
+
+export interface IGetFakeOrderResponse {
+    data?: IOrder[];
+    status?: ApiStatusEnum;
+    message?: string;
 }
