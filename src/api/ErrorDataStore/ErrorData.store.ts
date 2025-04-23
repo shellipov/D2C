@@ -1,6 +1,6 @@
 import { action, computed, makeObservable } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { errorStorageTypeEnum, ErrorTypeEnum, IGetFakeErrorResponse } from '@/api';
+import { ErrorStorageTypeEnum, ErrorTypeEnum, IGetFakeErrorResponse } from '@/api';
 import { errorService } from './errorService';
 import { suddenError } from '@/helpers';
 import { injectable } from 'inversify';
@@ -42,7 +42,7 @@ export class ErrorDataStore implements IErrorDataStore {
 
   @action.bound
   public async clear (): Promise<void> {
-    await AsyncStorage.removeItem(errorStorageTypeEnum.Errors);
+    await AsyncStorage.removeItem(ErrorStorageTypeEnum.Errors);
     await this.refresh();
   }
 
@@ -51,7 +51,7 @@ export class ErrorDataStore implements IErrorDataStore {
     try {
       this.holder.setLoading();
       await suddenError('ErrorDataStore: refresh');
-      const jsonErrors = await AsyncStorage.getItem(errorStorageTypeEnum.Errors);
+      const jsonErrors = await AsyncStorage.getItem(ErrorStorageTypeEnum.Errors);
       if (!!jsonErrors) {
         this.holder.setData({
           data: JSON.parse(jsonErrors),

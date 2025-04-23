@@ -1,43 +1,45 @@
-import { action, makeObservable, observable, runInAction } from 'mobx';
+import { action, computed, makeObservable } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as EventDataTypes from './EventData.types';
+import { ErrorTypeEnum, IGetFakeEventResponse } from '@/api';
 import { errorService } from '../ErrorDataStore/errorService';
-import { ErrorTypeEnum } from '@/api';
+import { injectable } from 'inversify';
+import { AsyncDataHolder } from '@/utils/AsyncDataHolder';
+import { ApiStatusEnum } from '@/api/ApiTypes.types';
 
 export interface IEventDataStore {
   readonly events: EventDataTypes.IEvent[];
   readonly isError: boolean;
-
-  addEvent(order: EventDataTypes.IEvent): Promise<void>
-
+  addEvent(order: EventDataTypes.ISimplifiedEvent): Promise<void>
   refresh(): Promise<void>;
 }
 
-class EventDataStore implements IEventDataStore {
-  private static _instance: EventDataStore | null = null;
-  @observable public events: EventDataTypes.IEvent[] = [];
-  @observable public isError = false;
+@injectable()
+export class EventDataStore implements IEventDataStore {
+  private _holder = new AsyncDataHolder<IGetFakeEventResponse>();
 
-  private constructor () {
+  public constructor () {
     makeObservable(this);
   }
 
-  public static get instance (): EventDataStore {
-    if (!EventDataStore._instance) {
-      EventDataStore._instance = new EventDataStore();
-    }
+  @computed
+  public get events () {
+    return this._holder.data?.data || [];
+  }
 
-    return EventDataStore._instance;
-  };
+  @computed
+  public get isError () {
+    return this._holder.isError;
+  }
 
   @action.bound
   public async addEvent (order: EventDataTypes.ISimplifiedEvent): Promise<void> {
     try {
-      const jsonEvents = await AsyncStorage.getItem(EventDataTypes.OrderStorageTypeEnum.Events);
+      const jsonEvents = await AsyncStorage.getItem(EventDataTypes.EventStorageTypeEnum.Events);
       const orders = jsonEvents ? JSON.parse(jsonEvents) : [];
       if (orders) {
         const newEvents = [{ ...order, id: orders.length + 1 }, ...orders];
-        await AsyncStorage.setItem(EventDataTypes.OrderStorageTypeEnum.Events, JSON.stringify(newEvents));
+        await AsyncStorage.setItem(EventDataTypes.EventStorageTypeEnum.Events, JSON.stringify(newEvents));
       } else {
         await errorService({ type: ErrorTypeEnum.LoadData });
       }
@@ -51,20 +53,17 @@ class EventDataStore implements IEventDataStore {
   @action.bound
   public async refresh (): Promise<void> {
     try {
-      const jsonEvents = await AsyncStorage.getItem(EventDataTypes.OrderStorageTypeEnum.Events);
+      this._holder.setLoading();
+      const jsonEvents = await AsyncStorage.getItem(EventDataTypes.EventStorageTypeEnum.Events);
       if (!!jsonEvents) {
-        runInAction(() => {
-          EventStore.events = JSON.parse(jsonEvents);
-          EventStore.isError = false;
+        this._holder.setData({
+          data: JSON.parse(jsonEvents),
+          status: ApiStatusEnum.Success,
         });
       }
     } catch (error: any) {
-      runInAction(() => {
-        EventStore.isError = true;
-      });
+      this._holder.setError(error);
       await errorService({ type:ErrorTypeEnum.LoadData, error, withoutAlerts: true });
     }
   }
 }
-
-export const EventStore = EventDataStore.instance;

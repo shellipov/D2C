@@ -11,7 +11,7 @@ export enum DeliveryOptionsEnum {
     Door= 'LeaveAtTheDoor',
 }
 
-export enum orderStorageTypeEnum {
+export enum OrderStorageTypeEnum {
     Orders = 'Orders',
 }
 

@@ -11,7 +11,7 @@ import { Chip } from '@shared/Chip';
 import { dateFormatter, eventCreator } from '@/helpers';
 import { Screen } from '@shared/Screen';
 import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, OrderDataStore, PaymentMethodsEnum } from '../../../api/OrderDataStore';
-import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '../../../api/EventDataStore';
+import { EventTypeEnum, IEventDataStore, ISimplifiedEventData } from '@/api/EventDataStore';
 import { ICartDataStore, IUserDataStore, ProductDataStore } from '../../../api';
 import { phoneFormatter } from '@/helpers/phoneFormatter';
 import { OrderCartItem } from '../Order/components';
@@ -27,7 +27,7 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
   const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
   const user = userStore.model.data;
   const orderStore = OrderDataStore;
-  const eventStore = EventDataStore;
+  const eventStore = useInjection<IEventDataStore>(TYPES.EventDataStore);
   const cart = cartStore.model.data;
   const theme = useAppTheme();
   const { color } = theme;
@@ -43,14 +43,14 @@ export const ScreenCreateOrder = observer((props: { route: { params: IScreenCrea
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsEnum>(PaymentMethodsEnum.Card);
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOptionsEnum>(DeliveryOptionsEnum.Hand);
 
-  const isError = cartStore.isError || EventDataStore.isError || userStore.isError || ProductDataStore.isError || OrderDataStore.isError;
+  const isError = cartStore.isError || eventStore.isError || userStore.isError || ProductDataStore.isError || OrderDataStore.isError;
 
   const onRefresh = () => {
     if (cartStore.isError) {
       cartStore.refresh().then();
     }
-    if (EventDataStore.isError) {
-      EventDataStore.refresh().then();
+    if (eventStore.isError) {
+      eventStore.refresh().then();
     }
     if (userStore.isError) {
       userStore.refresh().then();

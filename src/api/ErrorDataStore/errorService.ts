@@ -1,4 +1,4 @@
-import { errorStorageTypeEnum, ErrorTypeEnum } from './ErrorData.types';
+import { ErrorStorageTypeEnum, ErrorTypeEnum } from './ErrorData.types';
 import { dateFormatter } from '../../helpers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
@@ -36,14 +36,14 @@ export async function errorService (props:IErrorService): Promise<ApiStatusEnum>
   const date = dateFormatter(new Date());
 
   try {
-    const jsonErrors = await AsyncStorage.getItem(errorStorageTypeEnum.Errors);
+    const jsonErrors = await AsyncStorage.getItem(ErrorStorageTypeEnum.Errors);
     const errors = jsonErrors ? JSON.parse(jsonErrors) : [];
     const id = errors.length;
 
     if (errors) {
       const newErrors = [{ ...errorData, id, date, message }, ...errors];
 
-      await AsyncStorage.setItem(errorStorageTypeEnum.Errors, JSON.stringify(newErrors));
+      await AsyncStorage.setItem(ErrorStorageTypeEnum.Errors, JSON.stringify(newErrors));
       if (!withoutAlerts) {
         Alert.alert(errorData.title, [errorData.description, message].join('\n'));
       }

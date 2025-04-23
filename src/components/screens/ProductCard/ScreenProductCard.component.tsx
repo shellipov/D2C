@@ -8,8 +8,8 @@ import { CartBlockComponent } from '@shared/CartBlock';
 import { NavBar } from '@shared/NavBar';
 import { Screen } from '@shared/Screen';
 import { eventCreator } from '@/helpers';
-import { ICartDataStore, IUserDataStore, ProductDataStore } from '@/api';
-import { EventDataStore, EventTypeEnum, ISimplifiedEventData } from '@/api/EventDataStore';
+import { ICartDataStore, IEventDataStore, IUserDataStore, ProductDataStore } from '@/api';
+import { EventTypeEnum, ISimplifiedEventData } from '@/api/EventDataStore';
 import { TextUI } from '@components/ui/TextUI';
 import { ButtonUI } from '@components/ui/ButtonUI';
 import { useAppTheme } from '@/hooks/useAppTheme';
@@ -22,7 +22,7 @@ export interface IScreenProductCardProps {
 
 export const ScreenProductCard = observer((props: { route: { params: IScreenProductCardProps }}) => {
   const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
-  const eventStore = EventDataStore;
+  const eventStore = useInjection<IEventDataStore>(TYPES.EventDataStore);
   const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
   const productStore = ProductDataStore;
   const id = props.route.params.id;
@@ -31,14 +31,14 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
   const totalCount = cartStore.model.totalCount(item);
   const theme = useAppTheme();
 
-  const isError = cartStore.isError || EventDataStore.isError || userStore.isError || ProductDataStore.isError;
+  const isError = cartStore.isError || eventStore.isError || userStore.isError || ProductDataStore.isError;
 
   const onRefresh = () => {
     if (cartStore.isError) {
       cartStore.refresh().then();
     }
-    if (EventDataStore.isError) {
-      EventDataStore.refresh().then();
+    if (eventStore.isError) {
+      eventStore.refresh().then();
     }
     if (userStore.isError) {
       userStore.refresh().then();

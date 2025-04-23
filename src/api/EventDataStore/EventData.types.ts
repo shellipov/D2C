@@ -1,7 +1,5 @@
-import { ISimplifiedUser } from '../UserDataStore';
-import { ICartInfo } from '../CartDataStore';
-import { ISimplifiedProduct } from '../ProductDataStore';
-import { IOrderOptions } from '../OrderDataStore';
+import { ICart, ICartInfo, IOrderOptions, ISimplifiedProduct, ISimplifiedUser } from '@/api';
+import { ApiStatusEnum } from '@/api/ApiTypes.types';
 
 export enum EventTypeEnum {
     AddToFavorites = 'AddToFavorites',
@@ -25,6 +23,12 @@ export interface ISimplifiedEvent extends Omit<IEvent, 'id'> {}
 
 export interface ISimplifiedEventData extends Omit<IEvent, 'id' | 'date' | 'eventType'> {}
 
-export enum OrderStorageTypeEnum {
+export enum EventStorageTypeEnum {
     Events= 'Events'
+}
+
+export interface IGetFakeEventResponse {
+    data?: IEvent[];
+    status?: ApiStatusEnum;
+    message?: string;
 }
