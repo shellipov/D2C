@@ -1,11 +1,10 @@
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/AntDesign';
-import React, { useEffect } from 'react';
-import { Image, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useEffect } from 'react';
+import { StatusBar } from 'react-native';
 import { ButtonUI } from '../../ui/ButtonUI';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
-import { ICartDataStore, IProductDataStore } from '@/api';
 import { useNavigationHook } from '@/hooks/useNavigation';
 import { CartBlockComponent } from '@shared/CartBlock';
 import { Screen } from '@shared/Screen';
@@ -14,104 +13,69 @@ import { Col } from '@shared/Col';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '@/boot/IoC/types';
+import { Row } from '@shared/Row';
+import { ImageUI } from '@components/ui/ImageUI';
+import { TouchableOpacityUI } from '@components/ui/TouchableOpacityUI';
+import { IScreenMainProps, IScreenMainVM } from './ScreenMain.types';
+import { useAppState } from '@/hooks/useAppState';
+import { CategoryEnum } from '@/api';
 
-export interface IScreenMainProps {}
-
-export const ScreenMain = observer((props: IScreenMainProps) => {
+export const ScreenMain = observer((props: { route: { params: IScreenMainProps } }) => {
+  const { isActive } = useAppState();
+  const vm = useInjection<IScreenMainVM>(TYPES.ScreenMainVM);
   const navigation = useNavigationHook();
   const theme = useAppTheme();
-  const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
-  const productStore = useInjection<IProductDataStore>(TYPES.ProductDataStore);
-
-  const onRefresh = () => {
-    if (productStore.isError) {
-      productStore.refresh().then();
-    }
-    if (cartStore.isError) {
-      cartStore.refresh().then();
-    }
-  };
+  const color = theme.color;
+  const onPressProfile = useCallback(() => navigation.navigate('Profile'), []);
+  const onPressItem = useCallback((type: CategoryEnum) => navigation.navigate('Category', { category: type }), []);
 
   useEffect(() => {
-    productStore.refresh().then();
-  }, []);
+    vm.initialize(() => ({ ...props.route.params, isActive }));
 
-  const backgroundColor = {
-    backgroundColor: theme.color.bgAdditional,
-    borderColor: theme.color.bgAdditional,
-  };
+    return () => {
+      vm.dispose();
+    };
+  }, [isActive]);
 
-  const itemColor = {
-    backgroundColor: theme.color.bgBasic,
-    borderColor: theme.color.bgBasic,
-  };
-
-  const renderHeader = () => {
-    return (<View style={{ height: 64 }} />);
-  };
-
-  const renderItem = ({ item }: { item: any }) => {
-    const onPress = () => navigation.navigate('Category', { category: item.type });
-
+  const renderItem = useCallback(({ item }: { item: any }) => {
     return (
-      <TouchableOpacity style={[styles.item, itemColor]} onPress={onPress}>
-        <TextUI text={item.name} size={'medium'} style={{ marginBottom: 4 }} />
-        <Col style={{ height: 70, padding: 2, borderRadius: 8, backgroundColor: theme.color.bgTransparentImage }}>
-          <Image src={item.image} resizeMode="contain" style={styles.image} />
+      <TouchableOpacityUI
+        flex height={130} radius={16} borderWidth={1} margin={8} padding={6} justifyContent={'space-between'}
+        bg={color.bgBasic} borderColor={color.bgBasic} onPress={onPressItem} context={item.type}>
+        <TextUI text={item.name} size={'medium'} mb={4} />
+        <Col height={70} padding={2} radius={8} bg={color.bgTransparentImage}>
+          <ImageUI src={item.image} resizeMode="contain" flex />
         </Col>
-      </TouchableOpacity>
+      </TouchableOpacityUI>
     );
-  };
+  }, [color]);
 
   return (
-    <Screen isError={productStore.isError || cartStore.isError} onRefresh={onRefresh}>
-      <View style={styles.block}>
+    <Screen isError={vm.isError} onRefresh={vm.onRefresh}>
+      <Col flex>
         <StatusBar barStyle={theme.isDark ? 'light-content' : 'dark-content'} />
-        <View style={[styles.header, backgroundColor]}>
-          <ButtonUI title={''} onPress={() =>navigation.navigate('Profile')} style={styles.profileButton}>
+        <Row justifyContent={'flex-end'} ph={8}>
+          <ButtonUI
+            height={50} width={50} radius={16} ph={0} pv={0} justifyContent={'center'} alignItems={'center'}
+            title={''} onPress={onPressProfile}>
             <Ionicons name={'user'} size={28} color={'black'} />
           </ButtonUI>
-        </View>
+        </Row>
         <FlatListWithPagination
-          data={productStore.categories}
-          style={[backgroundColor]}
+          data={vm.categories}
+          bg={color.bgAdditional}
+          borderColor={color.bgAdditional}
           renderItem={renderItem}
-          header={renderHeader}
+          header={renderListHeader}
           numColumns={3} />
-        <View style={{ position: 'absolute', right: 16, bottom: 16 }}>
+        <Col absolute right={16} bottom={16}>
           <CartBlockComponent />
-        </View>
-      </View>
+        </Col>
+      </Col>
     </Screen>
   );
 });
 
-const styles = StyleSheet.create({
-  block: {
-    flex: 1,
-  },
-  header: {
-    paddingHorizontal: 8,
-    alignItems: 'flex-end',
-  },
-  item: {
-    flex: 1,
-    height: 130,
-    borderRadius: 16,
-    borderWidth: 1,
-    margin: 8,
-    padding: 6,
-    justifyContent: 'space-between',
-  },
-  image: {
-    flex: 1,
-  },
-  profileButton: {
-    height: 50,
-    width: 50,
-    borderRadius: 16,
-    paddingHorizontal: 0,
-    paddingVertical: 0,
-    justifyContent: 'center',
-    alignItems: 'center' },
-});
+const renderListHeader = () => {
+  return (<Row height={64} />);
+};

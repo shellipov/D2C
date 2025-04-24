@@ -9,12 +9,9 @@ import { First } from '@shared/Firts';
 import { FlatListWithPagination } from '@shared/FlatListWithPagination';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '@/boot/IoC/types';
-import { IScreenErrorsVM } from './ScreenErrors.types';
+import { IScreenErrorsProps, IScreenErrorsVM } from './ScreenErrors.types';
 import { useAppState } from '@/hooks/useAppState';
 import { useAppTheme } from '@/hooks/useAppTheme';
-
-export interface IScreenErrorsProps {}
-export interface IScreenErrorsVMProps extends IScreenErrorsProps {isActive : boolean}
 
 export const ScreenErrors = observer((props: { route: { params: IScreenErrorsProps } }) => {
   const { isActive } = useAppState();

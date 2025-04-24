@@ -9,5 +9,6 @@ export const TYPES = {
   OrderDataStore: Symbol.for('OrderDataStore'),
   ProductDataStore: Symbol.for('ProductDataStore'),
   // view models
+  ScreenMainVM: Symbol.for('ScreenMainVM'),
   ScreenErrorsVM: Symbol.for('ScreenErrorsVM'),
 };
