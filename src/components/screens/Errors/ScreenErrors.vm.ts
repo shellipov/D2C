@@ -1,12 +1,13 @@
 import { inject, injectable } from 'inversify';
 import { action, computed, IReactionDisposer, makeObservable, observable, reaction } from 'mobx';
-import { IScreenErrorsVMProps } from './ScreenErrors.component';
 import { ValueHolder } from '@/utils/ValueHolder';
-import { Maybe } from '@/utils/types/typescript.types';
+import { IVMProps, Maybe } from '@/utils/types/typescript.types';
 import * as api from '@/api';
 import * as LambdaValue from '@/utils/LambdaValue';
-import { IScreenErrorsVM } from '@components/screens/Errors/ScreenErrors.types';
+import { IScreenErrorsProps, IScreenErrorsVM } from './ScreenErrors.types';
 import { TYPES } from '@/boot/IoC/types';
+
+export interface IScreenErrorsVMProps extends IScreenErrorsProps, IVMProps {}
 
 @injectable()
 export class ScreenErrorsVM implements IScreenErrorsVM {

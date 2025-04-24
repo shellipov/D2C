@@ -4,6 +4,7 @@ import { FlatListVars } from '@/settings/FlatList.vars';
 import { Chip } from '../Chip';
 import { paginationData } from '@/helpers';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { FlexProps, flexViewPropsStyle, getStyle } from '@/utils/PropsStyles';
 
 export interface IListItem {
   id: string | number | undefined;
@@ -14,7 +15,7 @@ export type IListData = IListItem[] | null | undefined;
 
 export type IRenderItem<T = IListItem> = ListRenderItem<T>;
 
-export interface IFlatListWithPaginationProps extends ViewProps {
+export interface IFlatListWithPaginationProps extends ViewProps, FlexProps {
   data: IListData;
   withoutScroll?: boolean;
   numColumns?: number;
@@ -30,7 +31,8 @@ export function FlatListWithPagination<T extends IListItem> ({
   withoutScroll,
   numColumns,
   children,
-  ...viewProps
+  style,
+  ...rest
 }: IFlatListWithPaginationProps) {
   const flatListRef = useRef<FlatList<T>>(null);
   const formattedData = paginationData(data!);
@@ -38,6 +40,9 @@ export function FlatListWithPagination<T extends IListItem> ({
   const isPaginationVisible = pageButtons.length > 1;
   const [selectedPage, setSelectedPage] = useState(1);
   const theme = useAppTheme();
+
+  const { styleSource, restProps } = flexViewPropsStyle(rest);
+  const SS = getStyle(style, styleSource);
 
   const renderPageButton = ({ item }: { item: string }) => {
     const onPress = () => {
@@ -53,7 +58,7 @@ export function FlatListWithPagination<T extends IListItem> ({
   };
 
   return (
-    <View style={[styles.contentContainer, { backgroundColor: theme.color.bgAdditional }, viewProps.style]}>
+    <View style={[styles.contentContainer, { backgroundColor: theme.color.bgAdditional }, SS.style]} {...restProps}>
       <FlatList<T>
         style={styles.list}
         ListHeaderComponent={header}

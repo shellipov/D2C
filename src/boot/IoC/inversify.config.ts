@@ -1,22 +1,24 @@
 import { Container } from 'inversify';
-import { ScreenErrorsVM } from '@components/screens/Errors/ScreenErrors.vm';
-import {
-  IUserDataStore,
-  UserDataStore,
-  ICartDataStore,
-  CartDataStore,
-  IErrorDataStore,
-  ErrorDataStore,
-  IEventDataStore,
-  EventDataStore,
-  IOrderDataStore,
-  OrderDataStore,
-  IProductDataStore,
-  ProductDataStore,
-} from '@/api';
-import { IScreenErrorsVM } from '@components/screens/Errors/ScreenErrors.types';
 import { TYPES } from './types';
 import { IThemeStore, ThemeStore } from '@/store';
+import {
+  CartDataStore,
+  ErrorDataStore,
+  EventDataStore,
+  ICartDataStore,
+  IErrorDataStore,
+  IEventDataStore,
+  IOrderDataStore,
+  IProductDataStore,
+  IUserDataStore,
+  OrderDataStore,
+  ProductDataStore,
+  UserDataStore,
+} from '@/api';
+import { ScreenMainVM } from '@components/screens/Main/MainScreen.vm';
+import { IScreenMainVM } from '@components/screens/Main';
+import { ScreenErrorsVM } from '@components/screens/Errors/ScreenErrors.vm';
+import { IScreenErrorsVM } from '@components/screens/Errors/ScreenErrors.types';
 
 const container = new Container();
 // system stores
@@ -29,6 +31,7 @@ container.bind<IEventDataStore>(TYPES.EventDataStore).to(EventDataStore);
 container.bind<IOrderDataStore>(TYPES.OrderDataStore).to(OrderDataStore);
 container.bind<IProductDataStore>(TYPES.ProductDataStore).to(ProductDataStore);
 // view models
+container.bind<IScreenMainVM>(TYPES.ScreenMainVM).to(ScreenMainVM);
 container.bind<IScreenErrorsVM>(TYPES.ScreenErrorsVM).to(ScreenErrorsVM);
 
 export { container };

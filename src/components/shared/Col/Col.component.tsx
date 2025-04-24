@@ -1,11 +1,25 @@
 import React from 'react';
-import { StyleSheet, View, ViewProps } from 'react-native';
+import { Animated, StyleSheet, View, ViewProps } from 'react-native';
+import { flexViewPropsStyle, getStyle, getStyleWithoutCache, StyleProps } from '@/utils/PropsStyles';
 
-export const Col = (props: ViewProps) => {
-  const { children, style, ...rest } = props;
+export interface FlexViewProps extends StyleProps, ViewProps {}
+
+export const Col = (props: FlexViewProps) => {
+  const { style, animated, children, ...rest } = props;
+
+  const { styleSource, restProps } = flexViewPropsStyle(rest);
+  const SS = (!!animated ? getStyleWithoutCache : getStyle)(style, styleSource);
+
+  if (!!animated) {
+    return (
+      <Animated.View style={[styles.col, SS.style]} {...restProps}>
+        {children}
+      </Animated.View>
+    );
+  }
 
   return (
-    <View style={[styles.col, style]} {...rest}>
+    <View style={[styles.col, SS.style]} {...restProps}>
       {children}
     </View>
   );

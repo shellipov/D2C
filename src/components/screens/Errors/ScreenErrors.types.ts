@@ -1,11 +1,9 @@
-import { IReactionDisposer } from 'mobx';
 import * as api from '@/api';
+import { IVMCore } from '@/utils/types/typescript.types';
 
-export interface ISupportInitialize {
-    initialize(arg?: any): Promise<void> | IReactionDisposer[];
+export interface IScreenErrorsProps {
 }
 
-export interface IScreenErrorsVM extends ISupportInitialize {
+export interface IScreenErrorsVM extends IVMCore {
     errorDataStore: api.IErrorDataStore
-    dispose(): void;
 }
