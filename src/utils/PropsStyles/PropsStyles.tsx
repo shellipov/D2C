@@ -1,88 +1,72 @@
 import { Animated, FlexAlignType, FlexStyle, StyleSheet, ViewStyle } from 'react-native';
 import { shadowStyle } from '@/helpers/shadowStyle.helper';
 import { StyleProp } from 'react-native/Libraries/StyleSheet/StyleSheet';
-// @ts-ignore
-import isNumber from 'lodash/isNumber';
-// @ts-ignore
-import isString from 'lodash/isString';
-import EStyleSheet from 'react-native-extended-stylesheet';
 
+// Constants
+const DEFAULT_TRUE_VALUE = 1;
+const ZERO = 0;
+const HIDDEN = 'hidden';
+const VISIBLE = 'visible';
+
+// Type definitions
 export interface StyleProps extends FlexProps {
   style?: StyleProp<ViewStyle>;
 }
 
 interface ColorProps {
-    bg?: string;
-    opacity?: number | string | Animated.AnimatedNode;
+  bg?: string;
+  opacity?: number | string | Animated.AnimatedNode;
 }
 
 interface PositionProps {
-    absolute?: boolean;
-    relative?: boolean;
-    absoluteFill?: boolean;
-    zIndex?: number;
+  absolute?: boolean;
+  relative?: boolean;
+  absoluteFill?: boolean;
+  zIndex?: number;
 }
 
 export type FlexWrapType = 'wrap' | 'nowrap' | 'wrap-reverse';
 
 interface FlexDirectionProps {
-    // flexDirection: 'row' (row-reverse)
-    row?: boolean;
-    // flexDirection: 'column' (column-reverse)
-    col?: boolean;
-    // flexDirection: row-reverse || column-reverse
-    reverse?: boolean;
-    wrap?: FlexWrapType | boolean;
+  row?: boolean;
+  col?: boolean;
+  reverse?: boolean;
+  wrap?: FlexWrapType | boolean;
 }
 
 export type NumericSpacesType = 0 | 2 | 4 | 6 | 8 | 10 | 12 | 14 | 16 | 18 | 20 | 22 | 24 | 26 | 28 | 30 | 32 | 36 | 38 | 40 | 44 | 46 | 48;
-
 export type SpacesType = NumericSpacesType;
 
 interface PaddingGridProps {
-    // paddingLeft
-    pl?: SpacesType;
-    // paddingRight
-    pr?: SpacesType;
-    // paddingTop
-    pt?: SpacesType;
-    // paddingBottom
-    pb?: SpacesType;
-    // paddingVertical
-    pv?: SpacesType;
-    // paddingHorizontal
-    ph?: SpacesType;
-    // padding
-    pa?: SpacesType;
+  pl?: SpacesType;
+  pr?: SpacesType;
+  pt?: SpacesType;
+  pb?: SpacesType;
+  pv?: SpacesType;
+  ph?: SpacesType;
+  pa?: SpacesType;
 }
 
 interface MarginGridProps {
-    // marginLeft
-    ml?: SpacesType;
-    // marginRight
-    mr?: SpacesType;
-    // marginTop
-    mt?: SpacesType;
-    // marginBottom
-    mb?: SpacesType;
-    // marginVertical
-    mv?: SpacesType;
-    // marginHorizontal
-    mh?: SpacesType;
-    // margin
-    ma?: SpacesType;
+  ml?: SpacesType;
+  mr?: SpacesType;
+  mt?: SpacesType;
+  mb?: SpacesType;
+  mv?: SpacesType;
+  mh?: SpacesType;
+  ma?: SpacesType;
 }
 
 interface PaddingProps {
-    paddingLeft?: number | string;
-    paddingRight?: number | string;
-    paddingTop?: number | string;
-    paddingBottom?: number | string;
-    paddingVertical?: number | string;
-    paddingHorizontal?: number | string;
-    padding?: number | string;
-    paddingStart?: number | string;
-    paddingEnd?: number | string;
+  paddingLeft?: number | string;
+  paddingRight?: number | string;
+  paddingTop?: number | string;
+  paddingBottom?: number | string;
+  paddingVertical?: number | string;
+  paddingHorizontal?: number | string;
+  padding?: number | string;
+  paddingStart?: number | string;
+  paddingEnd?: number | string;
 }
 
 interface MarginProps {
@@ -96,33 +80,24 @@ interface MarginProps {
 }
 
 interface SideProps {
-  // Более короткая запись <Col left/>, вместо <Col left={0}/>
   left?: number | string | boolean;
-  // Более короткая запись <Col right/>, вместо <Col right={0}/>
   right?: number | string | boolean;
-  // Более короткая запись <Col top/>, вместо <Col top={0}/>
   top?: number | string | boolean;
-  // Более короткая запись <Col bottom/>, вместо <Col bottom={0}/>
   bottom?: number | string | boolean;
 }
 
 interface FlexLayoutProps {
-  // Более короткая запись <Col flex/>, вместо <Col flex={1}/>
   flex?: number | string | boolean;
-  // Более короткая запись <Col flexGrow/>, вместо <Col flexGrow={1}/>
   flexGrow?: number | string | boolean;
   flexWrap?: 'wrap' | 'nowrap' | 'wrap-reverse';
-  // Более короткая запись <Col flexShrink/>, вместо <Col flexShrink={1}/>
   flexShrink?: number | string | boolean;
   flexBasis?: number | string;
 }
 
 interface SizeProps {
-  // Более короткая запись <Row height/>, вместо <Row height={'100%'}/>
   height?: number | string | boolean;
   minHeight?: number | string;
   maxHeight?: number | string;
-  // Более короткая запись <Col width/>, вместо <Col width={'100%'}/>
   width?: number | string | boolean;
   minWidth?: number | string;
   maxWidth?: number | string;
@@ -130,9 +105,7 @@ interface SizeProps {
 }
 
 export type AlignSelfType = 'auto' | FlexAlignType;
-
 export type JustifyContentType = 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'space-evenly';
-
 export type AlignContentType = 'flex-start' | 'flex-end' | 'center' | 'stretch' | 'space-between' | 'space-around';
 
 interface ShadowProps {
@@ -148,7 +121,6 @@ interface AlignProps {
 }
 
 interface BorderProps {
-  // borderRadius
   radius?: number | string;
   topRadius?: number | string;
   bottomRadius?: number | string;
@@ -158,7 +130,6 @@ interface BorderProps {
   topRightRadius?: number;
   topLeftRadius?: number;
   bottomRightRadius?: number;
-  // circle - диаметр круга
   circle?: number;
   overflow?: 'visible' | 'hidden' | 'scroll' | boolean;
   borderColor?: string;
@@ -171,10 +142,6 @@ interface BorderProps {
 
 interface TransformProps {
   animated?: boolean;
-  /**
-   * Value for: transform: [{rotate: string}]
-   * Examples: '90deg', '0.785398rad'
-   */
   rotate?: string | Animated.AnimatedNode;
   translateX?: number | Animated.AnimatedNode;
   translateY?: number | Animated.AnimatedNode;
@@ -189,10 +156,8 @@ interface DisplayProps {
 }
 
 export interface FlexProps extends PaddingGridProps, MarginGridProps, SideProps, SizeProps,
-    PaddingProps, MarginProps,
-    FlexLayoutProps, FlexDirectionProps, AlignProps, PositionProps, ShadowProps,
-    BorderProps, TransformProps, ColorProps, DisplayProps {
-}
+    PaddingProps, MarginProps, FlexLayoutProps, FlexDirectionProps, AlignProps,
+    PositionProps, ShadowProps, BorderProps, TransformProps, ColorProps, DisplayProps {}
 
 interface FlexViewDecoratorOpts {
   ignore?: (keyof FlexProps)[];
@@ -206,125 +171,122 @@ type TransformsStyleProps = (
     | { scaleX: number }
     )[];
 
-const NotUndefined = (v: any) => v !== undefined;
+// Helper functions
+const isTruthy = (v: any) => !!v;
 
-function extractStyleProp<P extends object> (props: P, key: keyof P, predicate: (v: any) => boolean, setter: (v: any) => void) {
-  const value = (props as any)[key];
+function extractStyleProp<P extends object> (
+  props: P,
+  key: keyof P,
+  setter: (v: any) => void,
+  transformer?: (v: any) => any,
+) {
+  const value = props[key];
   if (value !== undefined) {
-    setter(value);
+    setter(transformer ? transformer(value) : value);
+    delete props[key];
   }
-  delete (props as any)[key];
 }
 
-const colorPropsStyle = (props: ColorProps, ss: ViewStyle) => {
-  extractStyleProp(props, 'bg', NotUndefined, v => ss.backgroundColor = v);
-  // extractStyleProp(props, 'opacity', NotUndefined, v => ss.opacity = v);
-};
+// Style processors
+const styleProcessors = {
+  color: (props: ColorProps, ss: ViewStyle) => {
+    extractStyleProp(props, 'bg', v => ss.backgroundColor = v);
+  },
 
-const flexDirectionPropsStyle = (props: FlexDirectionProps, ss: ViewStyle) => {
-  const { row, reverse } = props;
-  let res = row ? 'row' : 'column';
-  if (reverse) {
-    res += '-reverse';
-  }
+  flexDirection: (props: FlexDirectionProps, ss: ViewStyle) => {
+    const { row, reverse } = props;
+    if (row || reverse) {
+      let direction = row ? 'row' : 'column';
+      if (reverse) {direction += '-reverse';}
+      ss.flexDirection = direction as any;
+    }
 
-  if (res !== 'column') {
-    ss.flexDirection = res as any;
-  }
+    extractStyleProp(props, 'wrap', v => {
+      ss.flexWrap = v === true ? 'wrap' : v;
+    });
+  },
 
-  if (props.wrap) {
-    ss.flexWrap = props.wrap === true ? 'wrap' : props.wrap;
-  }
+  position: (props: PositionProps, ss: ViewStyle) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    extractStyleProp(props, 'absolute', v => ss.position = 'absolute', isTruthy);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    extractStyleProp(props, 'relative', v => ss.position = 'relative', isTruthy);
+    extractStyleProp(props, 'zIndex', v => ss.zIndex = v, isTruthy);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    extractStyleProp(props, 'absoluteFill', v => {
+      ss.position = 'absolute';
+      ss.left = ZERO;
+      ss.right = ZERO;
+      ss.top = ZERO;
+      ss.bottom = ZERO;
+    }, isTruthy);
+  },
 
-  delete props.row;
-  delete props.reverse;
-};
+  paddingGrid: (props: PaddingGridProps, ss: ViewStyle) => {
+    extractStyleProp(props, 'pl', v => ss.paddingLeft = v, isTruthy);
+    extractStyleProp(props, 'pr', v => ss.paddingRight = v, isTruthy);
+    extractStyleProp(props, 'pt', v => ss.paddingTop = v, isTruthy);
+    extractStyleProp(props, 'pb', v => ss.paddingBottom = v, isTruthy);
+    extractStyleProp(props, 'pv', v => ss.paddingVertical = v, isTruthy);
+    extractStyleProp(props, 'ph', v => ss.paddingHorizontal = v, isTruthy);
+    extractStyleProp(props, 'pa', v => ss.padding = v, isTruthy);
+  },
 
-const IsTruth = (v: any) => !!v;
+  marginGrid: (props: MarginGridProps, ss: ViewStyle) => {
+    extractStyleProp(props, 'ml', v => ss.marginLeft = v, isTruthy);
+    extractStyleProp(props, 'mr', v => ss.marginRight = v, isTruthy);
+    extractStyleProp(props, 'mt', v => ss.marginTop = v, isTruthy);
+    extractStyleProp(props, 'mb', v => ss.marginBottom = v, isTruthy);
+    extractStyleProp(props, 'mv', v => ss.marginVertical = v, isTruthy);
+    extractStyleProp(props, 'mh', v => ss.marginHorizontal = v, isTruthy);
+    extractStyleProp(props, 'ma', v => ss.margin = v, isTruthy);
+  },
 
-const positionPropsStyle = (props: PositionProps, ss: ViewStyle) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  extractStyleProp(props, 'absolute', IsTruth, v => ss.position = 'absolute');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  extractStyleProp(props, 'relative', IsTruth, v => ss.position = 'relative');
-  extractStyleProp(props, 'zIndex', IsTruth, v => ss.zIndex = v);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  extractStyleProp(props, 'absoluteFill', IsTruth, v => {
-    ss.position = 'absolute';
-    ss.left = 0;
-    ss.right = 0;
-    ss.top = 0;
-    ss.bottom = 0;
-  });
-};
+  padding: (props: PaddingProps, ss: ViewStyle) => {
+    extractStyleProp(props, 'paddingLeft', v => ss.paddingLeft = v);
+    extractStyleProp(props, 'paddingRight', v => ss.paddingRight = v);
+    extractStyleProp(props, 'paddingTop', v => ss.paddingTop = v);
+    extractStyleProp(props, 'paddingBottom', v => ss.paddingBottom = v);
+    extractStyleProp(props, 'paddingVertical', v => ss.paddingVertical = v);
+    extractStyleProp(props, 'paddingHorizontal', v => ss.paddingHorizontal = v);
+    extractStyleProp(props, 'padding', v => ss.padding = v);
+    extractStyleProp(props, 'paddingStart', v => ss.paddingStart = v);
+    extractStyleProp(props, 'paddingEnd', v => ss.paddingEnd = v);
+  },
 
-const paddingGridPropsStyle = (props: PaddingGridProps, ss: ViewStyle) => {
-  extractStyleProp(props, 'pl', IsTruth, v => ss.paddingLeft = v);
-  extractStyleProp(props, 'pr', IsTruth, v => ss.paddingRight = v);
-  extractStyleProp(props, 'pt', IsTruth, v => ss.paddingTop = v);
-  extractStyleProp(props, 'pb', IsTruth, v => ss.paddingBottom = v);
-  extractStyleProp(props, 'pv', IsTruth, v => ss.paddingVertical = v);
-  extractStyleProp(props, 'ph', IsTruth, v => ss.paddingHorizontal = v);
-  extractStyleProp(props, 'pa', IsTruth, v => ss.padding = v);
-};
+  margin: (props: MarginProps, ss: ViewStyle) => {
+    extractStyleProp(props, 'marginLeft', v => ss.marginLeft = v);
+    extractStyleProp(props, 'marginRight', v => ss.marginRight = v);
+    extractStyleProp(props, 'marginTop', v => ss.marginTop = v);
+    extractStyleProp(props, 'marginBottom', v => ss.marginBottom = v);
+    extractStyleProp(props, 'marginVertical', v => ss.marginVertical = v);
+    extractStyleProp(props, 'marginHorizontal', v => ss.marginHorizontal = v);
+    extractStyleProp(props, 'margin', v => ss.margin = v);
+  },
 
-const marginGridPropsStyle = (props: MarginGridProps, ss: ViewStyle) => {
-  extractStyleProp(props, 'ml', IsTruth, v => ss.marginLeft = v);
-  extractStyleProp(props, 'mr', IsTruth, v => ss.marginRight = v);
-  extractStyleProp(props, 'mt', IsTruth, v => ss.marginTop = v);
-  extractStyleProp(props, 'mb', IsTruth, v => ss.marginBottom = v);
-  extractStyleProp(props, 'mv', IsTruth, v => ss.marginVertical = v);
-  extractStyleProp(props, 'mh', IsTruth, v => ss.marginHorizontal = v);
-  extractStyleProp(props, 'ma', IsTruth, v => ss.margin = v);
-};
+  side: (props: SideProps, ss: ViewStyle) => {
+    extractStyleProp(props, 'left', v => ss.left = v === true ? ZERO : v);
+    extractStyleProp(props, 'right', v => ss.right = v === true ? ZERO : v);
+    extractStyleProp(props, 'top', v => ss.top = v === true ? ZERO : v);
+    extractStyleProp(props, 'bottom', v => ss.bottom = v === true ? ZERO : v);
+  },
 
-const paddingPropsStyle = (props: PaddingProps, ss: ViewStyle) => {
-  extractStyleProp(props, 'paddingLeft', NotUndefined, v => ss.paddingLeft = v);
-  extractStyleProp(props, 'paddingRight', NotUndefined, v => ss.paddingRight = v);
-  extractStyleProp(props, 'paddingTop', NotUndefined, v => ss.paddingTop = v);
-  extractStyleProp(props, 'paddingBottom', NotUndefined, v => ss.paddingBottom = v);
-  extractStyleProp(props, 'paddingVertical', NotUndefined, v => ss.paddingVertical = v);
-  extractStyleProp(props, 'paddingHorizontal', NotUndefined, v => ss.paddingHorizontal = v);
-  extractStyleProp(props, 'padding', NotUndefined, v => ss.padding = v);
-  extractStyleProp(props, 'paddingStart', NotUndefined, v => ss.paddingStart = v);
-  extractStyleProp(props, 'paddingEnd', NotUndefined, v => ss.paddingEnd = v);
-};
+  flex: (props: FlexLayoutProps, ss: ViewStyle) => {
+    extractStyleProp(props, 'flex', v => ss.flex = v === true ? DEFAULT_TRUE_VALUE : v);
+    extractStyleProp(props, 'flexGrow', v => ss.flexGrow = v === true ? DEFAULT_TRUE_VALUE : v);
+    extractStyleProp(props, 'flexShrink', v => ss.flexShrink = v === true ? DEFAULT_TRUE_VALUE : v);
+    extractStyleProp(props, 'flexBasis', v => ss.flexBasis = v === true ? DEFAULT_TRUE_VALUE : v);
+  },
 
-const marginPropsStyle = (props: MarginProps, ss: ViewStyle) => {
-  extractStyleProp(props, 'marginLeft', NotUndefined, v => ss.marginLeft = v);
-  extractStyleProp(props, 'marginRight', NotUndefined, v => ss.marginRight = v);
-  extractStyleProp(props, 'marginTop', NotUndefined, v => ss.marginTop = v);
-  extractStyleProp(props, 'marginBottom', NotUndefined, v => ss.marginBottom = v);
-  extractStyleProp(props, 'marginVertical', NotUndefined, v => ss.marginVertical = v);
-  extractStyleProp(props, 'marginHorizontal', NotUndefined, v => ss.marginHorizontal = v);
-  extractStyleProp(props, 'margin', NotUndefined, v => ss.margin = v);
-};
-
-const sidePropsStyle = (props: SideProps, ss: ViewStyle) => {
-  extractStyleProp(props, 'left', NotUndefined, v => ss.left = v === true ? 0 : v);
-  extractStyleProp(props, 'right', NotUndefined, v => ss.right = v === true ? 0 : v);
-  extractStyleProp(props, 'top', NotUndefined, v => ss.top = v === true ? 0 : v);
-  extractStyleProp(props, 'bottom', NotUndefined, v => ss.bottom = v === true ? 0 : v);
-};
-
-const flexPropsStyle = (props: FlexLayoutProps, ss: ViewStyle) => {
-  extractStyleProp(props, 'flex', NotUndefined, v => ss.flex = v === true ? 1 : v);
-  extractStyleProp(props, 'flexGrow', NotUndefined, v => ss.flexGrow = v === true ? 1 : v);
-  extractStyleProp(props, 'flexShrink', NotUndefined, v => ss.flexShrink = v === true ? 1 : v);
-  extractStyleProp(props, 'flexBasis', NotUndefined, v => ss.flexBasis = v === true ? 1 : v);
-};
-
-const sizePropsStyle = (props: SizeProps, ss: ViewStyle) => {
-  extractStyleProp(props, 'width', NotUndefined, v => ss.width = v === true ? '100%' : v);
-  extractStyleProp(props, 'height', NotUndefined, v => ss.height = v === true ? '100%' : v);
-  extractStyleProp(props, 'minHeight', NotUndefined, v => ss.minHeight = v);
-  extractStyleProp(props, 'maxHeight', NotUndefined, v => ss.maxHeight = v);
-  extractStyleProp(props, 'minWidth', NotUndefined, v => ss.minWidth = v);
-  extractStyleProp(props, 'maxWidth', NotUndefined, v => ss.maxWidth = v);
-  extractStyleProp(props, 'sizeWH', NotUndefined, v => {
-    ss.width = v === true ? '100%' : v;
-    ss.height = v === true ? '100%' : v;
-  });
+  size: (props: SizeProps, ss: ViewStyle) => {
+    extractStyleProp(props, 'width', v => ss.width = v);
+    extractStyleProp(props, 'height', v => ss.height = v);
+    extractStyleProp(props, 'minHeight', v => ss.minHeight = v);
+    extractStyleProp(props, 'maxHeight', v => ss.maxHeight = v);
+    extractStyleProp(props, 'minWidth', v => ss.minWidth = v);
+    extractStyleProp(props, 'maxWidth', v => ss.maxWidth = v);
+    extractStyleProp(props, 'sizeWH', v => {ss.width = v;ss.height = v;});
+  },
 };
 
 export const getStyleWithoutCache = (style: StyleProp<ViewStyle>, flexViewStyle: FlexStyle) => {
@@ -333,49 +295,28 @@ export const getStyleWithoutCache = (style: StyleProp<ViewStyle>, flexViewStyle:
     ...flexViewStyle,
   };
 
-  // анимированный opacity оказывается нельзя прогонять через StyleSheet.create
-  const isAnimatedOpacity = !!opacity && !isNumber(opacity) && !isString(opacity);
-  if (!isAnimatedOpacity) {
-    (styleSource as any).opacity = opacity;
+  if (opacity !== undefined && (typeof opacity === 'number')) {
+    (styleSource as ViewStyle).opacity = opacity;
   }
 
-  let result;
-
-  EStyleSheet.build({});
-
-  if (EStyleSheet.create) {
-    result = EStyleSheet.create({
-      style: styleSource,
-    });
-  } else {
-    result = StyleSheet.create({
-      style: styleSource,
-    });
-  }
-
-  if (isAnimatedOpacity) {
-    result.style = { ...result.style, opacity };
-  }
-
-  return result;
+  return { style: styleSource };
 };
 
 export const getStyle = getStyleWithoutCache;
 
-
-export function flexViewPropsStyle<P> (inProps: FlexProps & P, opts?: FlexViewDecoratorOpts): { styleSource: FlexStyle; restProps: P } {
+export function flexViewPropsStyle<P> (
+  inProps: FlexProps & P,
+  opts?: FlexViewDecoratorOpts,
+): { styleSource: FlexStyle; restProps: P } {
   const passProps = { ...inProps };
-  // exclude
-  let ignore: any;
-  if (opts && opts.ignore) {
-    ignore = {};
-    opts.ignore.forEach(prop => {
-      if (passProps[prop]) {
-        ignore[prop] = passProps[prop];
-      }
+  const ignoreProps = opts?.ignore?.reduce((acc, prop) => {
+    if (passProps[prop] !== undefined) {
+      acc[prop] = passProps[prop];
       delete passProps[prop];
-    });
-  }
+    }
+
+    return acc;
+  }, {} as Record<string, any>) || {};
 
   const {
     alignItems,
@@ -383,7 +324,6 @@ export function flexViewPropsStyle<P> (inProps: FlexProps & P, opts?: FlexViewDe
     justifyContent,
     centerContent,
     elevation,
-    // border
     radius,
     topRadius,
     bottomRadius,
@@ -395,13 +335,11 @@ export function flexViewPropsStyle<P> (inProps: FlexProps & P, opts?: FlexViewDe
     bottomRightRadius,
     circle,
     overflow,
-    // transform
     rotate,
     translateX,
     translateY,
     scale,
     scaleX,
-    // border
     borderColor,
     borderWidth,
     borderBottomWidth,
@@ -410,38 +348,28 @@ export function flexViewPropsStyle<P> (inProps: FlexProps & P, opts?: FlexViewDe
     borderRightWidth,
     opacity,
     display,
-
     ...props
   } = passProps;
 
   const ss: ViewStyle = {};
 
+  // Alignment
   if (centerContent) {
     ss.alignItems = 'center';
     ss.justifyContent = 'center';
   }
-  if (alignItems) {
-    ss.alignItems = alignItems;
-  }
-  if (alignSelf) {
-    ss.alignSelf = alignSelf;
-  }
-  if (justifyContent) {
-    ss.justifyContent = justifyContent;
-  }
-  if (elevation !== undefined) {
-    Object.assign(ss, shadowStyle(elevation));
-  }
+  if (alignItems) {ss.alignItems = alignItems;}
+  if (alignSelf) {ss.alignSelf = alignSelf;}
+  if (justifyContent) {ss.justifyContent = justifyContent;}
+  if (elevation !== undefined) {Object.assign(ss, shadowStyle(elevation));}
 
-  // border
+  // Borders
   if (circle && Number.isFinite(circle)) {
     ss.width = circle;
     ss.height = circle;
     ss.borderRadius = circle / 2;
   }
-  if (radius) {
-    ss.borderRadius = radius as any;
-  }
+  if (radius) {ss.borderRadius = radius as any;}
   if (topRadius) {
     ss.borderTopLeftRadius = topRadius as any;
     ss.borderTopRightRadius = topRadius as any;
@@ -458,112 +386,39 @@ export function flexViewPropsStyle<P> (inProps: FlexProps & P, opts?: FlexViewDe
     ss.borderBottomRightRadius = rightRadius as any;
     ss.borderTopRightRadius = rightRadius as any;
   }
-  if (bottomLeftRadius) {
-    ss.borderBottomLeftRadius = bottomLeftRadius as any;
-  }
-  if (topRightRadius) {
-    ss.borderTopRightRadius = topRightRadius as any;
-  }
-  if (topLeftRadius) {
-    ss.borderTopLeftRadius = topLeftRadius as any;
-  }
-  if (bottomRightRadius) {
-    ss.borderBottomRightRadius = bottomRightRadius as any;
-  }
-  if (borderColor) { ss.borderColor = borderColor; }
-  if (borderWidth) { ss.borderWidth = borderWidth; }
-  if (borderBottomWidth) { ss.borderBottomWidth = borderBottomWidth; }
-  if (borderTopWidth) { ss.borderTopWidth = borderTopWidth; }
-  if (borderLeftWidth) { ss.borderLeftWidth = borderLeftWidth; }
-  if (borderRightWidth) { ss.borderRightWidth = borderRightWidth; }
-  if (opacity !== undefined) { ss.opacity = opacity as any; }
-  if (display) { ss.display = display; }
+  if (bottomLeftRadius) {ss.borderBottomLeftRadius = bottomLeftRadius as any;}
+  if (topRightRadius) {ss.borderTopRightRadius = topRightRadius as any;}
+  if (topLeftRadius) {ss.borderTopLeftRadius = topLeftRadius as any;}
+  if (bottomRightRadius) {ss.borderBottomRightRadius = bottomRightRadius as any;}
 
+  if (borderColor) {ss.borderColor = borderColor;}
+  if (borderWidth) {ss.borderWidth = borderWidth;}
+  if (borderBottomWidth) {ss.borderBottomWidth = borderBottomWidth;}
+  if (borderTopWidth) {ss.borderTopWidth = borderTopWidth;}
+  if (borderLeftWidth) {ss.borderLeftWidth = borderLeftWidth;}
+  if (borderRightWidth) {ss.borderRightWidth = borderRightWidth;}
+  if (opacity !== undefined) {ss.opacity = opacity as any;}
+  if (display) {ss.display = display;}
+
+  // Overflow
   if (overflow !== undefined) {
-    ss.overflow = overflow === false ? 'hidden' : (overflow === true ? 'visible' : overflow);
+    ss.overflow = overflow === false ? HIDDEN : (overflow === true ? VISIBLE : overflow);
   }
 
-  // transform
+  // Transforms
   const transform: TransformsStyleProps = [];
-  if (rotate) {
-    transform.push({ rotate: rotate as string });
-  }
-  if (translateX) {
-    transform.push({ translateX: translateX as number });
-  }
-  if (translateY) {
-    transform.push({ translateY: translateY as number });
-  }
-  if (scale) {
-    transform.push({ scale: scale as number });
-  }
-  if (scaleX) {
-    transform.push({ scaleX: scaleX as number });
-  }
-  if (transform.length) {
-    ss.transform = transform;
-  }
+  if (rotate) {transform.push({ rotate: rotate as string });}
+  if (translateX) {transform.push({ translateX: translateX as number });}
+  if (translateY) {transform.push({ translateY: translateY as number });}
+  if (scale) {transform.push({ scale: scale as number });}
+  if (scaleX) {transform.push({ scaleX: scaleX as number });}
+  if (transform.length) {ss.transform = transform;}
 
-  colorPropsStyle(props, ss);
-  flexDirectionPropsStyle(props, ss);
-  positionPropsStyle(props, ss);
-  paddingGridPropsStyle(props, ss);
-  marginGridPropsStyle(props, ss);
-  paddingPropsStyle(props, ss);
-  marginPropsStyle(props, ss);
-  sidePropsStyle(props, ss);
-  flexPropsStyle(props, ss);
-  sizePropsStyle(props, ss);
+  // Process all style props
+  Object.values(styleProcessors).forEach(processor => processor(props, ss));
 
-  if (ignore) {
-    Object.assign(props, ignore);
-  }
+  // Restore ignored props
+  Object.assign(props, ignoreProps);
 
-  const styleSource = { ...ss } as FlexStyle;
-
-  return { styleSource, restProps: props as P };
+  return { styleSource: ss as FlexStyle, restProps: props as P };
 }
-
-// TODO: декоратор для добавления пропсов, нужно протестить
-
-// function flexViewDecorator (opts?: FlexViewDecoratorOpts) {
-//   return function decorator<T extends ComponentType<any>> (Component: T): T {
-//     // @ts-ignore
-//     @observer
-//     class HOCComponent extends React.Component<any> {
-//       private _ref = React.createRef<any>();
-//
-//       constructor (props: any, context: any) {
-//         super(props, context);
-//
-//         return new Proxy(this, {
-//           get: (target: any, p: string | number | symbol, receiver: any) => {
-//             if (!target[p] && this._ref.current != null && !!this._ref.current?.[p]) {
-//               return this._ref.current[p];
-//             }
-//
-//             return target[p];
-//           },
-//         });
-//       }
-//
-//       public render () {
-//         const { style, ...props } = this.props;
-//         const { styleSource, restProps } = flexViewPropsStyle(props, opts);
-//         const SS = getStyle(style, styleSource);
-//
-//         return (
-//         // @ts-ignore
-//           <Component style={SS.style} {...restProps} ref={this._ref} />
-//         );
-//       }
-//     }
-//
-//     hoistNonReactStatics(HOCComponent, Component);
-//     (HOCComponent as any).displayName = ((Component as any).displayName || (Component as any).name) + '_flexView';
-//
-//     return HOCComponent as any as T;
-//   };
-// }
-//
-// export const flexView = flexViewDecorator;

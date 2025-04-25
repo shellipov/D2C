@@ -1,10 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { FlatList, ListRenderItem, StyleSheet, View, ViewProps } from 'react-native';
 import { FlatListVars } from '@/settings/FlatList.vars';
 import { Chip } from '../Chip';
 import { paginationData } from '@/helpers';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { FlexProps, flexViewPropsStyle, getStyle } from '@/utils/PropsStyles';
 
 export interface IListItem {
   id: string | number | undefined;
@@ -12,10 +11,9 @@ export interface IListItem {
 }
 
 export type IListData = IListItem[] | null | undefined;
-
 export type IRenderItem<T = IListItem> = ListRenderItem<T>;
 
-export interface IFlatListWithPaginationProps extends ViewProps, FlexProps {
+export interface IFlatListWithPaginationProps extends ViewProps {
   data: IListData;
   withoutScroll?: boolean;
   numColumns?: number;
@@ -24,41 +22,60 @@ export interface IFlatListWithPaginationProps extends ViewProps, FlexProps {
   children?: React.ReactNode;
 }
 
-export function FlatListWithPagination<T extends IListItem> ({
+export const FlatListWithPagination = React.memo(<T extends IListItem>({
   data = [],
   renderItem,
   header,
   withoutScroll,
   numColumns,
   children,
-  style,
-  ...rest
-}: IFlatListWithPaginationProps) {
+  ...viewProps
+}: IFlatListWithPaginationProps) => {
   const flatListRef = useRef<FlatList<T>>(null);
-  const formattedData = paginationData(data!);
-  const pageButtons = Object.keys(formattedData);
-  const isPaginationVisible = pageButtons.length > 1;
-  const [selectedPage, setSelectedPage] = useState(1);
   const theme = useAppTheme();
 
-  const { styleSource, restProps } = flexViewPropsStyle(rest);
-  const SS = getStyle(style, styleSource);
+  // Мемоизация данных пагинации
+  const { formattedData, pageButtons } = useMemo(() => {
+    const formatted = paginationData(data!);
 
-  const renderPageButton = ({ item }: { item: string }) => {
-    const onPress = () => {
+    return {
+      formattedData: formatted,
+      pageButtons: Object.keys(formatted),
+    };
+  }, [data]);
+
+  const [selectedPage, setSelectedPage] = useState(1);
+  const isPaginationVisible = pageButtons.length > 1;
+
+  // Оптимизация рендера кнопок пагинации
+  const renderPageButton = useCallback(({ item }: { item: string }) => {
+    const handlePress = () => {
       setSelectedPage(+item);
       flatListRef.current?.scrollToOffset({ offset: 0, animated: false });
     };
 
     return (
-      <Chip style={styles.chip} isSelected={+item === selectedPage} onPress={onPress}>
+      <Chip
+        style={styles.chip}
+        isSelected={+item === selectedPage}
+        onPress={handlePress}>
         <Chip.Text text={item} />
       </Chip>
     );
-  };
+  }, [selectedPage]);
+
+  // Мемоизация ключей элементов
+  const keyExtractor = useCallback((item: T) => `item_${item?.id || item?.product?.id}`, []);
+
+  // Мемоизация стилей
+  const containerStyle = useMemo(() => [
+    styles.contentContainer,
+    { backgroundColor: theme.color.bgAdditional },
+    viewProps.style,
+  ], [theme.color.bgAdditional, viewProps.style]);
 
   return (
-    <View style={[styles.contentContainer, { backgroundColor: theme.color.bgAdditional }, SS.style]} {...restProps}>
+    <View style={containerStyle}>
       <FlatList<T>
         style={styles.list}
         ListHeaderComponent={header}
@@ -66,7 +83,7 @@ export function FlatListWithPagination<T extends IListItem> ({
         numColumns={numColumns}
         scrollEnabled={!withoutScroll}
         data={formattedData[selectedPage] as T[]}
-        keyExtractor={(item) => `item_${item?.id || item?.product?.id}`}
+        keyExtractor={keyExtractor}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         {...FlatListVars} />
@@ -84,7 +101,7 @@ export function FlatListWithPagination<T extends IListItem> ({
       {children}
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   contentContainer: {
