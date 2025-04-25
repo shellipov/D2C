@@ -12,14 +12,16 @@ export const RootComponent = observer((): React.JSX.Element => {
   const theme = useAppTheme();
 
   useEffect(() => {
+    if (DebugVars?.enableReactotron) {
+      reactotronInit();
+    }
+  }, []);
+
+  useEffect(() => {
     if (isActive) {
       theme.refresh().then();
     }
   }, [isActive]);
-
-  if (DebugVars?.enableReactotron) {
-    reactotronInit();
-  }
 
 
   return (
