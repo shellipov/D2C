@@ -7,10 +7,12 @@ import { suddenError } from '@/helpers';
 import { injectable } from 'inversify';
 import { AsyncDataHolder } from '@/utils/AsyncDataHolder';
 import { ApiStatusEnum } from '@/api/ApiTypes.types';
+import { getDataWithRandomDelay } from '@/helpers/getDataWithRandomDelay.helper';
 
 export interface IOrderDataStore {
   readonly orders: OrderDataTypes.IOrder[];
   readonly isError: boolean;
+  readonly isLoading: boolean;
   readonly lastOrder: IOrder;
   readonly paymentMethods: { type: OrderDataTypes.PaymentMethodsEnum, title: string }[];
   readonly deliveryOptions: { type: OrderDataTypes.DeliveryOptionsEnum, title: string }[];
@@ -34,6 +36,11 @@ export class OrderDataStore implements IOrderDataStore {
   @computed
   public get isError () {
     return this._holder.isError;
+  }
+
+  @computed
+  public get isLoading () {
+    return this._holder.isLoading;
   }
 
   @computed
@@ -104,11 +111,13 @@ export class OrderDataStore implements IOrderDataStore {
   @action.bound
   public async refresh (): Promise<void> {
     try {
+      this._holder.setLoading();
       await suddenError('OrderDataStore: refresh');
       const jsonOrders = await AsyncStorage.getItem(OrderDataTypes.OrderStorageTypeEnum.Orders);
       if (!!jsonOrders) {
+        const data = await getDataWithRandomDelay(JSON.parse(jsonOrders));
         this._holder.setData({
-          data: JSON.parse(jsonOrders),
+          data,
           status: ApiStatusEnum.Success,
         });
       }

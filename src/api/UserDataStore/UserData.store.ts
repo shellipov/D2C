@@ -8,11 +8,13 @@ import { injectable } from 'inversify';
 import { AsyncDataHolder } from '@/utils/AsyncDataHolder';
 import { ApiStatusEnum } from '@/api/ApiTypes.types';
 import { UserDataModel } from '@/api/UserDataStore/UserData.model';
+import { getDataWithRandomDelay } from '@/helpers/getDataWithRandomDelay.helper';
 
 export interface IUserDataStore {
   readonly model: UserDataModel;
   readonly isAuth: boolean;
   readonly isError: boolean;
+  readonly isLoading: boolean;
   readonly isEmpty: boolean;
   updateAuthUserFields(fields: Partial<{ name: string; phone: string; address: string }>): Promise<void>;
   login(user: string): Promise<void>;
@@ -37,6 +39,11 @@ export class UserDataStore implements IUserDataStore {
   @computed
   public get isError () {
     return this._holder.isError;
+  }
+
+  @computed
+  public get isLoading () {
+    return this._holder.isLoading;
   }
 
   @computed
@@ -119,9 +126,9 @@ export class UserDataStore implements IUserDataStore {
       this._holder.setLoading();
       await suddenError('UserDataStore: refresh');
       const jsonUser = await AsyncStorage.getItem(UserStorageTypeEnum.AuthUser);
-
+      const data = await getDataWithRandomDelay(jsonUser ? JSON.parse(jsonUser) : undefined);
       this._holder.setData({
-        data: jsonUser ? JSON.parse(jsonUser) : undefined,
+        data,
         status: ApiStatusEnum.Success,
       });
     } catch (error: any) {

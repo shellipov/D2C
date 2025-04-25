@@ -19,6 +19,8 @@ import { TouchableOpacityUI } from '@components/ui/TouchableOpacityUI';
 import { IScreenMainProps, IScreenMainVM } from './ScreenMain.types';
 import { useAppState } from '@/hooks/useAppState';
 import { CategoryEnum } from '@/api';
+import { First } from '@shared/Firts';
+import { Loader } from '@shared/Loader';
 
 export const ScreenMain = observer((props: { route: { params: IScreenMainProps } }) => {
   const { isActive } = useAppState();
@@ -40,7 +42,7 @@ export const ScreenMain = observer((props: { route: { params: IScreenMainProps }
   const renderItem = useCallback(({ item }: { item: any }) => {
     return (
       <TouchableOpacityUI
-        flex height={130} radius={16} borderWidth={1} margin={8} padding={6} justifyContent={'space-between'}
+        flex height={130} radius={16} borderWidth={1} margin={6} padding={6} justifyContent={'space-between'}
         bg={color.bgBasic} borderColor={color.bgBasic} onPress={onPressItem} context={item.type}>
         <TextUI text={item.name} size={'medium'} mb={4} />
         <Col height={70} padding={2} radius={8} bg={color.bgTransparentImage}>
@@ -61,13 +63,16 @@ export const ScreenMain = observer((props: { route: { params: IScreenMainProps }
             <Ionicons name={'user'} size={28} color={'black'} />
           </ButtonUI>
         </Row>
-        <FlatListWithPagination
-          data={vm.categories}
-          bg={color.bgAdditional}
-          borderColor={color.bgAdditional}
-          renderItem={renderItem}
-          header={renderListHeader}
-          numColumns={3} />
+        <First>
+          {vm.isLoading && (
+            <Loader />
+          )}
+          <FlatListWithPagination
+            data={vm.categories}
+            renderItem={renderItem}
+            header={renderListHeader}
+            numColumns={3} />
+        </First>
         <Col absolute right={16} bottom={16}>
           <CartBlockComponent />
         </Col>

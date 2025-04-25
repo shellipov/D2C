@@ -6,9 +6,11 @@ import { suddenError } from '@/helpers';
 import { injectable } from 'inversify';
 import { AsyncDataHolder } from '@/utils/AsyncDataHolder';
 import { ApiStatusEnum } from '@/api/ApiTypes.types';
+import { getDataWithRandomDelay } from '@/helpers/getDataWithRandomDelay.helper';
 
 export interface IProductDataStore {
   readonly isError: boolean;
+  readonly isLoading: boolean;
   readonly products: ProductListType | undefined;
   readonly categories: ICategoryItem[]
   getCategory(category: CategoryEnum) : (IProduct | never)[]
@@ -41,6 +43,11 @@ export class ProductDataStore implements IProductDataStore {
     return this._holder.isError;
   }
 
+  @computed
+  public get isLoading () {
+    return this._holder.isLoading;
+  }
+
   public getCategory (category: CategoryEnum) : (IProduct | never)[] {
     return this.products?.[category] || [];
   }
@@ -66,12 +73,14 @@ export class ProductDataStore implements IProductDataStore {
   @action.bound
   public async refresh (): Promise<void> {
     try {
+      this._holder.setLoading();
       await suddenError('ProductDataStore: refresh');
+      const data = await getDataWithRandomDelay({
+        products: productList,
+        categories: categoryItems,
+      });
       this._holder.setData({
-        data: {
-          products: productList,
-          categories: categoryItems,
-        },
+        data,
         status: ApiStatusEnum.Success,
       });
     } catch (error: any) {

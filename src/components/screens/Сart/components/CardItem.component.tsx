@@ -85,8 +85,8 @@ export const CardItem = observer((props: ICardItemProps)=> {
           <Row style={{ marginVertical: 4, alignItems: 'flex-start', justifyContent: 'space-between' }}>
             <TextUI text={`в корзине - ${item.numberOfProducts} шт.`} size={'medium'} />
             <Row>
-              <ButtonUI title={'-'} style={[styles.button, { marginRight: 8 }]} onPress={onDeleteFromCart} />
-              <ButtonUI title={'+'} style={styles.button} onPress={onAddToCart} />
+              <ButtonUI title={'-'} style={[styles.button, { marginRight: 8 }]} onPress={onDeleteFromCart} disabled={cartStore.isLoading} />
+              <ButtonUI title={'+'} style={styles.button} onPress={onAddToCart} disabled={cartStore.isLoading} />
             </Row>
           </Row>
         </Col>

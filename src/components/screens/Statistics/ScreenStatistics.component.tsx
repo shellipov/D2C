@@ -13,6 +13,7 @@ import { InfoRow } from '@shared/InfoRow';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '@/boot/IoC/types';
+import { Loader } from '@shared/Loader';
 
 export interface IScreenStatisticsProps {}
 
@@ -79,6 +80,9 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
       <NavBar title={'Статистика'} />
       <View style={contentStyles}>
         <First>
+          {eventStore.isLoading && (
+            <Loader />
+          )}
           {!eventStore.events?.length && (
             <View style={styles.emptyView}>
               <TextUI size={'title'} text={'Tут пока ничего нет'} />

@@ -117,12 +117,12 @@ export const ScreenProductCard = observer((props: { route: { params: IScreenProd
           <First>
             {isInCart && (
               <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                <ButtonUI title={'-'} style={{ flex: 1 }} onPress={onDeleteFromCart} />
+                <ButtonUI title={'-'} style={{ flex: 1 }} onPress={onDeleteFromCart} disabled={cartStore.isLoading} />
                 <TextUI text={`${totalCount}`} size={'title'} style={{ marginHorizontal: 16 }} />
-                <ButtonUI title={'+'} style={{ flex: 1 }} onPress={onAddToCart} />
+                <ButtonUI title={'+'} style={{ flex: 1 }} onPress={onAddToCart} disabled={cartStore.isLoading} />
               </View>
             )}
-            <ButtonUI title={'в корзину'} style={{ width: '100%' }} onPress={onAddToCart} />
+            <ButtonUI title={'в корзину'} style={{ width: '100%' }} onPress={onAddToCart} disabled={cartStore.isLoading} />
           </First>
         </View>
       </View>

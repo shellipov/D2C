@@ -12,6 +12,7 @@ import { TYPES } from '@/boot/IoC/types';
 import { IScreenErrorsProps, IScreenErrorsVM } from './ScreenErrors.types';
 import { useAppState } from '@/hooks/useAppState';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { Loader } from '@shared/Loader';
 
 export const ScreenErrors = observer((props: { route: { params: IScreenErrorsProps } }) => {
   const { isActive } = useAppState();
@@ -52,6 +53,9 @@ export const ScreenErrors = observer((props: { route: { params: IScreenErrorsPro
       <NavBar title={'Ошибки'} />
       <View style={contentStyles}>
         <First>
+          {vm.errorDataStore.isLoading && (
+            <Loader />
+          )}
           {!vm.errorDataStore?.model.data?.length && (
             <View style={styles.errorView}>
               <TextUI size={'title'} text={'Tут пока ничего нет'} />

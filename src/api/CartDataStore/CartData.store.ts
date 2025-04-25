@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, runInAction } from 'mobx';
+import { action, computed, makeObservable } from 'mobx';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 import * as api from '@/api';
@@ -15,6 +15,7 @@ export interface ICartDataStore {
   readonly model: CartDataModel
   readonly isEmpty: boolean;
   readonly isError: boolean;
+  readonly isLoading: boolean;
   deleteFromCart (product: api.IProduct): Promise<void>
   addToCart(product: api.IProduct): Promise<void>
   deleteCart(): Promise<void>
@@ -40,12 +41,18 @@ export class CartDataStore implements ICartDataStore {
     return this._holder.isError;
   }
 
+  @computed
+  public get isLoading () {
+    return this._holder.isLoading;
+  }
+
   @action.bound
   public async deleteCart (): Promise<void> {
     try {
-      await AsyncStorage.removeItem(CartStorageTypeEnum.Cart);
-      runInAction(() => {
-        this._holder.setEmpty();
+      await AsyncStorage.setItem(CartStorageTypeEnum.Cart, JSON.stringify([]));
+      this._holder.setData({
+        data: [],
+        status: ApiStatusEnum.Success,
       });
 
       await this.refresh();
@@ -122,8 +129,9 @@ export class CartDataStore implements ICartDataStore {
         const newCart = [] as CartDataTypes.ICart;
         await AsyncStorage.setItem(CartStorageTypeEnum.Cart, JSON.stringify(newCart));
       } else {
+        const data = !!jsonCart ? JSON.parse(jsonCart) : undefined;
         this._holder.setData({
-          data: !!jsonCart ? JSON.parse(jsonCart) : undefined,
+          data,
           status: ApiStatusEnum.Success,
         });
       }

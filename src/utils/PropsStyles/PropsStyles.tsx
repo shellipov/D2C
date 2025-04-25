@@ -34,7 +34,7 @@ interface FlexDirectionProps {
   wrap?: FlexWrapType | boolean;
 }
 
-export type NumericSpacesType = 0 | 2 | 4 | 6 | 8 | 10 | 12 | 14 | 16 | 18 | 20 | 22 | 24 | 26 | 28 | 30 | 32 | 36 | 38 | 40 | 44 | 46 | 48;
+export type NumericSpacesType = 0 | 2 | 4 | 6 | 8 | 10 | 12 | 14 | 16 | 18 | 20 | 22 | 24 | 26 | 28 | 30 | 32 | 36 | 38 | 40 | 44 | 46 | 48 | 64;
 export type SpacesType = NumericSpacesType;
 
 interface PaddingGridProps {
@@ -211,7 +211,7 @@ const styleProcessors = {
     extractStyleProp(props, 'absolute', v => ss.position = 'absolute', isTruthy);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     extractStyleProp(props, 'relative', v => ss.position = 'relative', isTruthy);
-    extractStyleProp(props, 'zIndex', v => ss.zIndex = v, isTruthy);
+    extractStyleProp(props, 'zIndex', v => ss.zIndex = v);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     extractStyleProp(props, 'absoluteFill', v => {
       ss.position = 'absolute';
@@ -223,23 +223,23 @@ const styleProcessors = {
   },
 
   paddingGrid: (props: PaddingGridProps, ss: ViewStyle) => {
-    extractStyleProp(props, 'pl', v => ss.paddingLeft = v, isTruthy);
-    extractStyleProp(props, 'pr', v => ss.paddingRight = v, isTruthy);
-    extractStyleProp(props, 'pt', v => ss.paddingTop = v, isTruthy);
-    extractStyleProp(props, 'pb', v => ss.paddingBottom = v, isTruthy);
-    extractStyleProp(props, 'pv', v => ss.paddingVertical = v, isTruthy);
-    extractStyleProp(props, 'ph', v => ss.paddingHorizontal = v, isTruthy);
-    extractStyleProp(props, 'pa', v => ss.padding = v, isTruthy);
+    extractStyleProp(props, 'pl', v => ss.paddingLeft = v);
+    extractStyleProp(props, 'pr', v => ss.paddingRight = v);
+    extractStyleProp(props, 'pt', v => ss.paddingTop = v);
+    extractStyleProp(props, 'pb', v => ss.paddingBottom = v);
+    extractStyleProp(props, 'pv', v => ss.paddingVertical = v);
+    extractStyleProp(props, 'ph', v => ss.paddingHorizontal = v);
+    extractStyleProp(props, 'pa', v => ss.padding = v);
   },
 
   marginGrid: (props: MarginGridProps, ss: ViewStyle) => {
-    extractStyleProp(props, 'ml', v => ss.marginLeft = v, isTruthy);
-    extractStyleProp(props, 'mr', v => ss.marginRight = v, isTruthy);
-    extractStyleProp(props, 'mt', v => ss.marginTop = v, isTruthy);
-    extractStyleProp(props, 'mb', v => ss.marginBottom = v, isTruthy);
-    extractStyleProp(props, 'mv', v => ss.marginVertical = v, isTruthy);
-    extractStyleProp(props, 'mh', v => ss.marginHorizontal = v, isTruthy);
-    extractStyleProp(props, 'ma', v => ss.margin = v, isTruthy);
+    extractStyleProp(props, 'ml', v => ss.marginLeft = v);
+    extractStyleProp(props, 'mr', v => ss.marginRight = v);
+    extractStyleProp(props, 'mt', v => ss.marginTop = v);
+    extractStyleProp(props, 'mb', v => ss.marginBottom = v);
+    extractStyleProp(props, 'mv', v => ss.marginVertical = v);
+    extractStyleProp(props, 'mh', v => ss.marginHorizontal = v);
+    extractStyleProp(props, 'ma', v => ss.margin = v);
   },
 
   padding: (props: PaddingProps, ss: ViewStyle) => {

@@ -6,10 +6,12 @@ import { errorService } from '../ErrorDataStore/errorService';
 import { injectable } from 'inversify';
 import { AsyncDataHolder } from '@/utils/AsyncDataHolder';
 import { ApiStatusEnum } from '@/api/ApiTypes.types';
+import { getDataWithRandomDelay } from '@/helpers/getDataWithRandomDelay.helper';
 
 export interface IEventDataStore {
   readonly events: EventDataTypes.IEvent[];
   readonly isError: boolean;
+  readonly isLoading: boolean;
   addEvent(order: EventDataTypes.ISimplifiedEvent): Promise<void>
   refresh(): Promise<void>;
 }
@@ -30,6 +32,11 @@ export class EventDataStore implements IEventDataStore {
   @computed
   public get isError () {
     return this._holder.isError;
+  }
+
+  @computed
+  public get isLoading () {
+    return this._holder.isLoading;
   }
 
   @action.bound
@@ -56,8 +63,9 @@ export class EventDataStore implements IEventDataStore {
       this._holder.setLoading();
       const jsonEvents = await AsyncStorage.getItem(EventDataTypes.EventStorageTypeEnum.Events);
       if (!!jsonEvents) {
+        const data = await getDataWithRandomDelay(JSON.parse(jsonEvents));
         this._holder.setData({
-          data: JSON.parse(jsonEvents),
+          data,
           status: ApiStatusEnum.Success,
         });
       }

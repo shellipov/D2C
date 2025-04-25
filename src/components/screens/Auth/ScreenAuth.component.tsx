@@ -33,8 +33,9 @@ export const ScreenAuth = observer((props: Props) => {
   }, [name]);
 
   const onPressLogin = useCallback(() => {
-    userStore.login(name).then();
-    setName('');
+    userStore.login(name).then(()=> {
+      setName('');
+    });
   }, [name]);
 
   return (

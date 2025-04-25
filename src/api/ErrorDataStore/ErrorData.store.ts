@@ -8,6 +8,7 @@ import { AsyncDataHolder, IAsyncDataHolder } from '@/utils/AsyncDataHolder';
 import { Maybe } from '@/utils/types/typescript.types';
 import { ErrorDataModel } from '@/api/ErrorDataStore/ErrorData.model';
 import { ApiStatusEnum } from '@/api/ApiTypes.types';
+import { getDataWithRandomDelay } from '@/helpers/getDataWithRandomDelay.helper';
 
 type TData = Maybe<IGetFakeErrorResponse>;
 
@@ -16,6 +17,7 @@ export interface IErrorDataStore {
     readonly data: TData ;
     readonly model: ErrorDataModel
     readonly isError: boolean;
+    readonly isLoading: boolean;
     refresh(): Promise<void>;
     dispose(): void;
 }
@@ -40,6 +42,11 @@ export class ErrorDataStore implements IErrorDataStore {
     return this.holder.isError;
   }
 
+  @computed
+  public get isLoading () {
+    return this.holder.isLoading;
+  }
+
   @action.bound
   public async clear (): Promise<void> {
     await AsyncStorage.removeItem(ErrorStorageTypeEnum.Errors);
@@ -53,8 +60,9 @@ export class ErrorDataStore implements IErrorDataStore {
       await suddenError('ErrorDataStore: refresh');
       const jsonErrors = await AsyncStorage.getItem(ErrorStorageTypeEnum.Errors);
       if (!!jsonErrors) {
+        const data = await getDataWithRandomDelay(JSON.parse(jsonErrors));
         this.holder.setData({
-          data: JSON.parse(jsonErrors),
+          data,
           status: ApiStatusEnum.Success,
         });
       }
