@@ -17,6 +17,8 @@ import { useInjection } from 'inversify-react';
 import { TYPES } from '@/boot/IoC/types';
 import { TouchableOpacityUI } from '@components/ui/TouchableOpacityUI';
 import { ImageUI } from '@components/ui/ImageUI';
+import { First } from '@shared/Firts';
+import { Loader } from '@shared/Loader';
 
 export interface IScreenCategoryProps {
     category: CategoryEnum
@@ -80,11 +82,16 @@ export const ScreenCategory = observer((props: { route: { params: IScreenCategor
   return (
     <Screen isError={productStore.isError || cartStore.isError} onRefresh={onRefresh}>
       <NavBar title={productStore.getCategoryName(category)} />
-      <FlatListWithPagination data={data} renderItem={renderProductItem}>
-        <Col absolute right={16} bottom={cartBlockBottom}>
-          <CartBlockComponent />
-        </Col>
-      </FlatListWithPagination>
+      <First>
+        {productStore.isLoading && (
+          <Loader />
+        )}
+        <FlatListWithPagination data={data} renderItem={renderProductItem}>
+          <Col absolute right={16} bottom={cartBlockBottom}>
+            <CartBlockComponent />
+          </Col>
+        </FlatListWithPagination>
+      </First>
     </Screen>
   );
 });

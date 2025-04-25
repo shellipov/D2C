@@ -52,6 +52,11 @@ export class ScreenMainVM implements IScreenMainVM {
       return this.productStore.isError || this.cartStore.isError;
     }
 
+    @computed
+    public get isLoading () {
+      return this.productStore.isLoading || this.cartStore.isLoading;
+    }
+
     public onRefresh = () => {
       if (this.productStore.isError) {
         this.productStore.refresh().then();
@@ -69,6 +74,7 @@ export class ScreenMainVM implements IScreenMainVM {
     @action.bound
     private async _refresh () {
       this.productStore.refresh().then();
+      this.cartStore.refresh().then();
     }
 
     @action.bound

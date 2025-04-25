@@ -6,5 +6,6 @@ export interface IScreenMainProps {}
 export interface IScreenMainVM extends IVMCore {
     readonly categories: ICategoryItem[];
     readonly isError: boolean;
+    readonly isLoading: boolean;
     onRefresh(): void;
 }

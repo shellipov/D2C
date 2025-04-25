@@ -1575,7 +1575,7 @@ export const categoryItems: ICategoryItem[] = [
   {
     id: 6,
     type: CategoryEnum.constructionAndRenovation,
-    name: 'Строительство и ремонт',
+    name: 'Стройка и ремонт',
     image: 'https://cdn-icons-png.flaticon.com/512/1046/1046861.png',
   },
   {

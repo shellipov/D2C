@@ -12,6 +12,7 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import { useInjection } from 'inversify-react';
 import { IOrderDataStore, IUserDataStore } from '@/api';
 import { TYPES } from '@/boot/IoC/types';
+import { Loader } from '@shared/Loader';
 
 export interface IScreenOrderListProps {}
 
@@ -78,6 +79,9 @@ export const ScreenOrderList = observer((props: { route: { params: IScreenOrderL
       <NavBar title={'Заказы'} />
       <View style={{ flex: 1, paddingTop: 8, backgroundColor: theme.color.bgAdditional }}>
         <First>
+          {orderStore.isLoading && (
+            <Loader />
+          )}
           {!orders?.length && (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <TextUI size={'title'} text={'Tут пока ничего нет'} />
