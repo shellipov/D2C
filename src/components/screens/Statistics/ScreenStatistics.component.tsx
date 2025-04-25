@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
 import { observer } from 'mobx-react';
 import { EventTypeEnum, IEvent, IEventDataStore } from '@/api/EventDataStore';
 import { TextUI } from '@/components/ui/TextUI';
@@ -20,7 +19,6 @@ export interface IScreenStatisticsProps {}
 export const ScreenStatistics = observer((props: { route: { params: IScreenStatisticsProps } }) => {
   const theme = useAppTheme();
   const eventStore = useInjection<IEventDataStore>(TYPES.EventDataStore);
-  const contentStyles = { flex: 1, paddingTop: 8, backgroundColor: theme.color.bgAdditional };
   const colors : {[key in EventTypeEnum]? : string} = {
     [EventTypeEnum.AddToCart] : theme.color.textGreen,
     [EventTypeEnum.DeleteFromCart] : theme.color.textRed,
@@ -39,8 +37,8 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
     const cartValue = `${JSON.stringify(item?.cartInfo?.cart, null, 2)}`;
 
     return (
-      <Col style={[styles.item, { backgroundColor: theme.color.bgAdditionalTwo }]}>
-        <Row style={styles.row}>
+      <Col mv={4} mh={8} radius={8} ph={16} pt={8} pv={6} style={[{ backgroundColor: theme.color.bgAdditionalTwo }]}>
+        <Row pv={4}>
           <TextUI size={'small'} text={`${item.eventType}`} style={{ color: colors[item.eventType as IEvent['eventType']] }} />
         </Row>
         <InfoRow>
@@ -78,38 +76,19 @@ export const ScreenStatistics = observer((props: { route: { params: IScreenStati
   return (
     <Screen isError={eventStore.isError} onRefresh={eventStore.refresh}>
       <NavBar title={'Статистика'} />
-      <View style={contentStyles}>
+      <Col flex pt={8} bg={theme.color.bgAdditional}>
         <First>
           {eventStore.isLoading && (
             <Loader />
           )}
           {!eventStore.events?.length && (
-            <View style={styles.emptyView}>
+            <Col flex centerContent>
               <TextUI size={'title'} text={'Tут пока ничего нет'} />
-            </View>
+            </Col>
           )}
           <FlatListWithPagination data={eventStore.events} renderItem={renderProductItem} />
         </First>
-      </View>
+      </Col>
     </Screen>
   );
-});
-
-const styles = StyleSheet.create({
-  emptyView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  item: {
-    marginVertical: 4,
-    marginHorizontal: 8,
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 6,
-  },
-  row: {
-    paddingVertical: 4,
-  },
 });

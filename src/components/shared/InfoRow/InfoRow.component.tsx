@@ -4,7 +4,7 @@ import { getCompoundProps } from '@/utils/CompoundUtils';
 import { computed } from 'mobx';
 import { Row } from '@shared/Row';
 import { ITextUIProps, TextUI } from '@components/ui/TextUI';
-import { StyleSheet, ViewProps } from 'react-native';
+import { ViewProps } from 'react-native';
 
 interface Props extends ViewProps {
   multilineValue?: boolean;
@@ -25,9 +25,9 @@ export class InfoRow extends React.Component<Props> {
     const multilineValueStyles = multilineValue ? { justifyContent: 'space-between', alignItems: 'flex-start' } as ViewProps : {};
 
     return (
-      <Row style={[styles.row, multilineValueStyles, style]} {...rowProps}>
+      <Row pv={4} justifyContent={'space-between'} alignItems={'center'} style={[multilineValueStyles, style]} {...rowProps}>
         <TextUI {...innerProps.label} />
-        <TextUI style={styles.value} {...innerProps.value} />
+        <TextUI maxWidth={'70%'} {...innerProps.value} />
       </Row>
     );
   }
@@ -37,14 +37,3 @@ export class InfoRow extends React.Component<Props> {
     return getCompoundProps(this.props, InfoRow, 'Label', 'Value');
   }
 }
-
-const styles = StyleSheet.create({
-  row: {
-    paddingVertical: 4,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  value: {
-    maxWidth: '70%',
-  },
-});
