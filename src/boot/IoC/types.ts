@@ -11,4 +11,5 @@ export const TYPES = {
   // view models
   ScreenMainVM: Symbol.for('ScreenMainVM'),
   ScreenErrorsVM: Symbol.for('ScreenErrorsVM'),
+  ScreenCreateOrderVM: Symbol.for('ScreenCreateOrderVM'),
 };

@@ -11,9 +11,9 @@ export interface TouchableOpacityProps<T = any> extends Omit<RNTouchableOpacityP
   context?: T;
 }
 
-export interface ITouchableOpacityUI extends FlexProps, TouchableOpacityProps {}
+export interface ITouchableOpacityUIProps extends FlexProps, TouchableOpacityProps {}
 
-export const TouchableOpacityUI = observer((props: ITouchableOpacityUI) => {
+export const TouchableOpacityUI = observer((props: ITouchableOpacityUIProps) => {
   const { style, onPress, onLongPress, onPressIn, onPressOut, context, children, ...rest } = props;
   const { styleSource, restProps } = flexViewPropsStyle(rest);
   const SS = getStyle(style, styleSource);

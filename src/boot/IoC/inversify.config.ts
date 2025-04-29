@@ -19,6 +19,8 @@ import { ScreenMainVM } from '@components/screens/Main/MainScreen.vm';
 import { IScreenMainVM } from '@components/screens/Main';
 import { ScreenErrorsVM } from '@components/screens/Errors/ScreenErrors.vm';
 import { IScreenErrorsVM } from '@components/screens/Errors/ScreenErrors.types';
+import { ScreenCreateOrderVM } from '@components/screens/CreateOrder/ScreenCreateOrder.vm';
+import { IScreenCreateOrderVM } from '@components/screens/CreateOrder';
 
 const container = new Container();
 // system stores
@@ -33,6 +35,7 @@ container.bind<IProductDataStore>(TYPES.ProductDataStore).to(ProductDataStore);
 // view models
 container.bind<IScreenMainVM>(TYPES.ScreenMainVM).to(ScreenMainVM);
 container.bind<IScreenErrorsVM>(TYPES.ScreenErrorsVM).to(ScreenErrorsVM);
+container.bind<IScreenCreateOrderVM>(TYPES.ScreenCreateOrderVM).to(ScreenCreateOrderVM);
 
 export { container };
 

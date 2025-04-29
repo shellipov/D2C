@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { observer } from 'mobx-react';
 import { TextUI } from '../../ui/TextUI';
 import { useNavigationHook } from '@/hooks/useNavigation';
@@ -10,214 +10,182 @@ import { Col } from '@shared/Col';
 import { Chip } from '@shared/Chip';
 import { dateFormatter, eventCreator } from '@/helpers';
 import { Screen } from '@shared/Screen';
-import { DeliveryOptionsEnum, IOrder, IOrderDataStore, IProductDataStore, OrderCreateStatusEnum, PaymentMethodsEnum } from '@/api';
-import { EventTypeEnum, IEventDataStore, ISimplifiedEventData } from '@/api/EventDataStore';
-import { ICartDataStore, IUserDataStore } from '@/api';
+import { DeliveryOptionsEnum, IOrder, OrderCreateStatusEnum, PaymentMethodsEnum } from '@/api';
+import { EventTypeEnum, ISimplifiedEventData } from '@/api/EventDataStore';
 import { phoneFormatter } from '@/helpers/phoneFormatter';
 import { OrderCartItem } from '../Order/components';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useInjection } from 'inversify-react';
 import { TYPES } from '@/boot/IoC/types';
-
-export interface IScreenCreateOrderProps {}
+import { TouchableOpacityUI } from '@components/ui/TouchableOpacityUI';
+import { ScrollViewUI } from '@components/ui/ScrollViewUI';
+import { IScreenCreateOrderProps, IScreenCreateOrderVM } from './ScreenCreateOrder.types';
+import { useAppState } from '@/hooks/useAppState';
 
 export const ScreenCreateOrder = observer((props: { route: { params: IScreenCreateOrderProps }}) => {
+  const { isActive } = useAppState();
+  const vm = useInjection<IScreenCreateOrderVM>(TYPES.ScreenCreateOrderVM);
   const navigation = useNavigationHook();
-  const cartStore = useInjection<ICartDataStore>(TYPES.CartDataStore);
-  const userStore = useInjection<IUserDataStore>(TYPES.UserDataStore);
-  const orderStore = useInjection<IOrderDataStore>(TYPES.OrderDataStore);
-  const productStore = useInjection<IProductDataStore>(TYPES.ProductDataStore);
-  const user = userStore.model.data;
-  const eventStore = useInjection<IEventDataStore>(TYPES.EventDataStore);
-  const cart = cartStore.model.data;
   const theme = useAppTheme();
   const { color } = theme;
-  const totalSum = cartStore.model.cartSum + SettingsVars.shippingCost;
-  const isValidPhone = useMemo(() => phoneFormatter(user?.phone).isValid, [user?.phone]);
-  const isUserProfileError = !user?.name || !user?.phone || !user?.address || !isValidPhone;
-  const isUserProfileErrorText = [user?.name, user?.phone, user?.address].join('').length ? 'Исправьте данные профиля' : 'Заполните данные профиля';
-  const userNameColor = !user?.name ? color.textRed : color.textPrimary;
-  const userPhoneColor = !user?.phone ? color.textRed : color.textPrimary;
+  const isValidPhone = useMemo(() => phoneFormatter(vm.user?.phone).isValid, [vm.user?.phone]);
+  const isUserProfileError = !vm.user?.name || !vm.user?.phone || !vm.user?.address || !isValidPhone;
+  const isUserProfileErrorText = [vm.user?.name, vm.user?.phone, vm.user?.address].join('').length ? 'Исправьте данные профиля' : 'Заполните данные профиля';
+  const userNameColor = !vm.user?.name ? color.textRed : color.textPrimary;
+  const userPhoneColor = !vm.user?.phone ? color.textRed : color.textPrimary;
   const userPhoneValueColor = !isValidPhone ? color.textRed : color.textPrimary;
-  const userAddressColor = !user?.address ? color.textRed : color.textPrimary;
-  const itemColor = { backgroundColor: color.bgAdditionalTwo, borderColor: color.bgAdditionalTwo };
+  const userAddressColor = !vm.user?.address ? color.textRed : color.textPrimary;
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodsEnum>(PaymentMethodsEnum.Card);
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOptionsEnum>(DeliveryOptionsEnum.Hand);
 
-  const isError = cartStore.isError || eventStore.isError || userStore.isError || productStore.isError || orderStore.isError;
-
-  const onRefresh = () => {
-    if (cartStore.isError) {
-      cartStore.refresh().then();
-    }
-    if (eventStore.isError) {
-      eventStore.refresh().then();
-    }
-    if (userStore.isError) {
-      userStore.refresh().then();
-    }
-    if (productStore.isError) {
-      productStore.refresh().then();
-    }
-    if (orderStore.isError) {
-      orderStore.refresh().then();
-    }
-  };
-
   const getEventData = () => ({
-    user: userStore.model.simplifiedUser,
+    user: vm.userStore.model.simplifiedUser,
     orderOptions: {
       paymentMethod, deliveryOption,
     },
-    cartInfo: cartStore.model.cartInfo,
+    cartInfo: vm.cartStore.model.cartInfo,
   }) as ISimplifiedEventData;
 
   useEffect(() => {
-    orderStore.refresh().then();
-    productStore.refresh().then();
-  }, []);
+    vm.initialize(() => ({ ...props.route.params, isActive }));
 
-  const onPressConfirm = useCallback(async ()=>{
+    return () => {
+      vm.dispose();
+    };
+  }, [isActive]);
+
+  const onPressConfirm = useCallback(async ()=> {
     const date = dateFormatter(new Date());
     const order = {
-      id: orderStore.orders.length + 1,
+      id: vm.orderStore.orders.length + 1,
       date,
-      user,
-      cart,
+      user: vm.user,
+      cart: vm.cart,
       shippingCost: SettingsVars.shippingCost,
-      totalSum,
-      deliveryOption: orderStore.deliveryOptions.find(i => i.type === deliveryOption),
-      paymentMethod: orderStore.paymentMethods.find(i => i.type === paymentMethod),
+      totalSum: vm.totalCartSum,
+      deliveryOption: vm.orderStore.deliveryOptions.find(i => i.type === deliveryOption),
+      paymentMethod: vm.orderStore.paymentMethods.find(i => i.type === paymentMethod),
     } as IOrder;
 
-    const status = await orderStore.addOrder(order);
+    const status = await vm.orderStore.addOrder(order);
     if (status === OrderCreateStatusEnum.Success) {
-      cartStore.deleteCart().then();
+      vm.cartStore.deleteCart().then();
       navigation.reset({
         index: 1,
         routes: [
           { name: 'Main' },
-          { name: 'Order', params: { order: orderStore.lastOrder } },
+          { name: 'Order', params: { order: vm.orderStore.lastOrder } },
         ],
       });
       const newEvent = eventCreator({ ...getEventData(), eventType: EventTypeEnum.CreateOrder });
       if (!!newEvent) {
-        eventStore.addEvent(newEvent).then();
+        vm.eventStore.addEvent(newEvent).then();
       }
-    } else {
-      // TODO: add ScreenError
     }
-  }, [paymentMethod, deliveryOption, user?.name, user?.phone, user?.address]);
+  }, [paymentMethod, deliveryOption, vm.user?.name, vm.user?.phone, vm.user?.address]);
+
+  const goBack = useCallback(() => navigation.goBack(), [navigation]);
+  const goToProfile = useCallback(() => navigation.navigate('Profile'), [navigation]);
+  const onSetDeliveryOption = useCallback((type: DeliveryOptionsEnum) => setDeliveryOption(type), [vm.deliveryOptions]);
+  const onSetPaymentMethod = useCallback((type: PaymentMethodsEnum) => setPaymentMethod(type), [vm.paymentMethods]);
 
   return (
-    <Screen isError={isError} onRefresh={onRefresh}>
-      <Row style={{ paddingHorizontal: 16 }}>
-        <ButtonUI title={'Назад'} style={{ height: 40, borderRadius: 20, alignSelf: 'flex-start' }} onPress={()=> navigation.goBack()} />
+    <Screen isError={vm.isError} onRefresh={vm.onRefresh}>
+      <Row ph={16}>
+        <ButtonUI title={'Назад'} height={40} radius={20} alignItems={'flex-start'} onPress={goBack} />
       </Row>
-      <Row style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <TextUI size={'bigTitle'} text={'Создать заказ'} style={{ paddingVertical: 35 }} />
+      <Row centerContent>
+        <TextUI size={'bigTitle'} text={'Создать заказ'} ph={36} />
       </Row>
-      <View style={{ flex: 1 }}>
-        <ScrollView style={[styles.scrollView, { backgroundColor: color.bgAdditional, borderColor: color.bgAdditional }]}>
-          <TouchableOpacity onPress={()=> navigation.navigate('Profile')}>
-            <View style={[itemColor, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
-              <Row style={[styles.row, { justifyContent: 'space-between' }]}>
+      <Col flex>
+        <ScrollViewUI flex pv={8} overflow={'hidden'} bg={color.bgAdditional} borderColor={color.bgAdditional}>
+          <TouchableOpacityUI onPress={goToProfile}>
+            <Col bg={color.bgAdditionalTwo} borderColor={color.bgAdditionalTwo} mb={10} pt={4} pb={2}>
+              <Row justifyContent={'space-between'} {...styles.row}>
                 <TextUI size={'large'} style={{ color: userNameColor }} text={'Имя'} />
-                <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={user?.name} />
+                <TextUI size={'medium'} numberOfLines={1} maxWidth={'70%'} alignSelf={'flex-end'} text={vm.user?.name} />
               </Row>
-              <Row style={[styles.row, { justifyContent: 'space-between' }]}>
+              <Row justifyContent={'space-between'} {...styles.row}>
                 <TextUI size={'large'} style={{ color: userPhoneColor }} text={'Телефон'} />
                 <TextUI
-                  size={'medium'}
-                  numberOfLines={1}
-                  style={{ maxWidth: '70%', alignSelf: 'flex-end', color: userPhoneValueColor }}
-                  text={user?.phone} />
+                  size={'medium'} numberOfLines={1} maxWidth={'70%'} alignSelf={'flex-end'}
+                  style={{ color: userPhoneValueColor }} text={vm.user?.phone} />
               </Row>
-              <Row style={[styles.row, { justifyContent: 'space-between' }]}>
+              <Row justifyContent={'space-between'} {...styles.row}>
                 <TextUI size={'large'} style={{ color: userAddressColor }} text={'Адрес'} />
-                <TextUI size={'medium'} numberOfLines={1} style={{ maxWidth: '70%', alignSelf: 'flex-end' }} text={user?.address} />
+                <TextUI size={'medium'} numberOfLines={1} maxWidth={'70%'} alignSelf={'flex-end'} text={vm.user?.address} />
               </Row>
-            </View>
-          </TouchableOpacity>
+            </Col>
+          </TouchableOpacityUI>
 
-          <Col style={styles.container}>
-            {cart?.map(OrderCartItem)}
+          <Col mb={10}>
+            {vm.cart?.map(OrderCartItem)}
           </Col>
 
-          <View style={[itemColor, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
-            <Row style={[styles.row, { justifyContent: 'space-between' }]}>
+          <Col bg={color.bgAdditionalTwo} borderColor={color.bgAdditionalTwo} mb={10} pt={4} pb={2}>
+            <Row justifyContent={'space-between'} {...styles.row}>
               <TextUI size={'large'} text={'Стоимость доставки'} />
               <TextUI size={'medium'} text={`${SettingsVars.shippingCost} ₽`} />
             </Row>
-          </View>
+          </Col>
 
-          <View style={[itemColor, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
-            <Row style={[styles.row, { justifyContent: 'center', marginBottom: 12 }]}>
+          <Col bg={color.bgAdditionalTwo} borderColor={color.bgAdditionalTwo} mb={10} pt={4} pb={2}>
+            <Row {...styles.row} justifyContent={'center'} mb={12}>
               <TextUI size={'large'} text={'Доставка'} />
             </Row>
-            <Row style={[{ justifyContent: 'space-around' }]}>
-              {orderStore.deliveryOptions.map(i => {
+            <Row justifyContent={'space-around'}>
+              {vm.deliveryOptions.map(i => {
                 const isSelected = i.type === deliveryOption;
 
                 return (
-                  <Chip key={`_${i.type}`} isSelected={isSelected} onPress={()=> {setDeliveryOption(i.type);}}>
+                  <Chip key={`_${i.type}`} isSelected={isSelected} context={i.type} onPress={onSetDeliveryOption}>
                     <Chip.Text text={i.title} />
                   </Chip>
                 );
               })}
             </Row>
-          </View>
+          </Col>
 
-          <View style={[itemColor, { marginBottom: 10, paddingTop: 4, paddingBottom: 2 }]}>
-            <Row style={[styles.row, { justifyContent: 'center', marginBottom: 12 }]}>
+          <Col bg={color.bgAdditionalTwo} borderColor={color.bgAdditionalTwo} mb={10} pt={4} pb={2}>
+            <Row {... styles.row} justifyContent={'center'} mb={12}>
               <TextUI size={'large'} text={'Оплата'} />
             </Row>
-            <Row style={[{ justifyContent: 'space-around' }]}>
-              {orderStore.paymentMethods.map(i => {
+            <Row justifyContent={'space-around'}>
+              {vm.paymentMethods.map(i => {
                 const isSelected = i.type === paymentMethod;
 
                 return (
-                  <Chip key={`_${i.type}`} isSelected={isSelected} onPress={()=> {setPaymentMethod(i.type);}}>
+                  <Chip key={`_${i.type}`} isSelected={isSelected} onPress={onSetPaymentMethod} context={i.type}>
                     <Chip.Text text={i.title} />
                   </Chip>
                 );
               })}
             </Row>
-          </View>
+          </Col>
 
-          <View style={itemColor}>
-            <Row style={{ justifyContent: 'flex-end', padding: 12 }}>
-              <TextUI size={'title'} style={{ color: color.textGreen }} text={`итого: ${totalSum} ₽`} />
+          <Col bg={color.bgAdditionalTwo} borderColor={color.bgAdditionalTwo}>
+            <Row justifyContent={'flex-end'} pa={12}>
+              <TextUI size={'title'} style={{ color: color.textGreen }} text={vm.totalCartSumFormatted} />
             </Row>
-            <Row style={{ justifyContent: 'center' }}>
+            <Row justifyContent={'center'}>
               {isUserProfileError && (
                 <TextUI size={'medium'} text={isUserProfileErrorText} style={{ color: color.textRed }} />
               )}
             </Row>
-            <Row style={{ alignItems: 'center', height: 80, justifyContent: 'center' }}>
+            <Row alignItems={'center'} height={80} justifyContent={'center'}>
               <ButtonUI
-                title={'Подтвердить'}
-                style={{ width: '50%' }}
-                disabled={isUserProfileError}
-                onPress={onPressConfirm} />
+                title={'Подтвердить'} width={'50%'}
+                disabled={isUserProfileError} onPress={onPressConfirm} />
             </Row>
-          </View>
+          </Col>
 
-        </ScrollView>
-      </View>
+        </ScrollViewUI>
+      </Col>
     </Screen>
   );
 });
 
 const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-    paddingVertical: 8,
-    overflow: 'hidden',
-  },
-  container: {
-    marginBottom: 10,
-  },
   row: {
     paddingVertical: 6,
     paddingHorizontal: 16,

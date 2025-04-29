@@ -14,8 +14,8 @@ export interface IOrderDataStore {
   readonly isError: boolean;
   readonly isLoading: boolean;
   readonly lastOrder: IOrder;
-  readonly paymentMethods: { type: OrderDataTypes.PaymentMethodsEnum, title: string }[];
   readonly deliveryOptions: { type: OrderDataTypes.DeliveryOptionsEnum, title: string }[];
+  readonly paymentMethods: { type: OrderDataTypes.PaymentMethodsEnum, title: string }[];
   addOrder(order: OrderDataTypes.IOrder): Promise<OrderDataTypes.OrderCreateStatusEnum>
   refresh(): Promise<void>;
 }
